@@ -1,6 +1,6 @@
 # 351 Porject: Student/Alumni system
-#Team:
-#Shane Hess: HTML/CSS, login
-#Ethan Belote: DBA, account managment 
-#Mason DeGraef: Browsing, favorite tab
-#Scottie Sage, Company/Event/Listing Managment
+echo "Team: <br>
+Shane Hess: HTML/CSS, login <br>
+Ethan Belote: DBA, account managment <br>
+Mason DeGraef: Browsing, favorite tab <br>
+Scottie Sage, Company/Event/Listing Managment

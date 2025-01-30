@@ -1,10 +1,10 @@
 # 351 Porject: Student/Alumni system
 Team: <br>
-# Shane Hess:
+# Shane Hess
 HTML/CSS, login <br>
-# Ethan Belote: DBA: 
-account managment <br>
-# Mason DeGraef: 
+# Ethan Belote 
+DBA, account managment <br>
+# Mason DeGraef 
 Browsing, favorite tab <br>
-# Scottie Sage: 
+# Scottie Sage 
 Company/Event/Listing Managment

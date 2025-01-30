@@ -1,4 +1,4 @@
-# 351 Porject: Student/Alumni system
+# 351 Project: Student/Alumni system
 Team: <br>
 # Shane Hess
 HTML/CSS, login <br>

@@ -1,0 +1,29 @@
+
+body {
+	background-color: #b8b894;
+	background-size: cover;
+}
+			
+.username {
+	font-weight: bold;
+	font-size: 60px;
+	color: darkblue;
+	text-align: center;
+}
+.login {
+	color: #3d3d29;
+	font-style: italic;
+	font-size: 20px;
+	font-family: Helvetica;
+	text-align: center;
+
+				
+}
+.XV {
+	color: red;
+	font-family: papyrus;
+	font-size: 80px;
+	text-align: center;
+	padding-bottom: 200px;
+}
+	

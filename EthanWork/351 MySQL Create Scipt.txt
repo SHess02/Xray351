@@ -1,9 +1,11 @@
-CREATE TABLE IF NOT EXISTS `mydb`.`Favorite_List` (
+CREATE DATABASE alumniconnectdb;
+
+CREATE TABLE IF NOT EXISTS `alumniconnectdb`.`Favorite_List` (
   `listid` INT NOT NULL AUTO_INCREMENT,
   PRIMARY KEY (`listid`));
 
 
-CREATE TABLE IF NOT EXISTS `mydb`.`Student` (
+CREATE TABLE IF NOT EXISTS `alumniconnectdb`.`Student` (
   `email` VARCHAR(45) NOT NULL,
   `name` VARCHAR(45) NULL,
   `graduationyear` YEAR NULL,
@@ -14,19 +16,19 @@ CREATE TABLE IF NOT EXISTS `mydb`.`Student` (
   INDEX `fk_Student_Favorite_List1_idx` (`Favorite_List_listid` ASC),
   CONSTRAINT `fk_Student_Favorite_List1`
     FOREIGN KEY (`Favorite_List_listid`)
-    REFERENCES `mydb`.`Favorite_List` (`listid`)
+    REFERENCES `alumniconnectdb`.`Favorite_List` (`listid`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION);
 
 
-CREATE TABLE IF NOT EXISTS `mydb`.`Admin` (
+CREATE TABLE IF NOT EXISTS `alumniconnectdb`.`Admin` (
   `email` VARCHAR(45) NOT NULL,
   `name` VARCHAR(45) NULL,
   `jobtitle` VARCHAR(45) NULL,
   PRIMARY KEY (`email`));
 
 
-CREATE TABLE IF NOT EXISTS `mydb`.`Company` (
+CREATE TABLE IF NOT EXISTS `alumniconnectdb`.`Company` (
   `companyid` INT NOT NULL AUTO_INCREMENT,
   `name` VARCHAR(45) NULL,
   `description` LONGTEXT NULL,
@@ -36,12 +38,12 @@ CREATE TABLE IF NOT EXISTS `mydb`.`Company` (
   INDEX `fk_Company_Admin1_idx` (`Admin_email` ASC),
   CONSTRAINT `fk_Company_Admin1`
     FOREIGN KEY (`Admin_email`)
-    REFERENCES `mydb`.`Admin` (`email`)
+    REFERENCES `alumniconnectdb`.`Admin` (`email`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION);
 
 
-CREATE TABLE IF NOT EXISTS `mydb`.`Alumni` (
+CREATE TABLE IF NOT EXISTS `alumniconnectdb`.`Alumni` (
   `email` VARCHAR(45) NOT NULL,
   `Company_companyid` INT NOT NULL,
   `name` VARCHAR(45) NULL,
@@ -52,12 +54,12 @@ CREATE TABLE IF NOT EXISTS `mydb`.`Alumni` (
   INDEX `fk_Alumni_Company1_idx` (`Company_companyid` ASC),
   CONSTRAINT `fk_Alumni_Company1`
     FOREIGN KEY (`Company_companyid`)
-    REFERENCES `mydb`.`Company` (`companyid`)
+    REFERENCES `alumniconnectdb`.`Company` (`companyid`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION);
 
 
-CREATE TABLE IF NOT EXISTS `mydb`.`Job` (
+CREATE TABLE IF NOT EXISTS `alumniconnectdb`.`Job` (
   `jobid` INT NOT NULL AUTO_INCREMENT,
   `title` VARCHAR(45) NULL,
   `description` LONGTEXT NULL,
@@ -69,17 +71,17 @@ CREATE TABLE IF NOT EXISTS `mydb`.`Job` (
   INDEX `fk_Job_Admin1_idx` (`Admin_email` ASC),
   CONSTRAINT `fk_Job_Alumni1`
     FOREIGN KEY (`Alumni_email`)
-    REFERENCES `mydb`.`Alumni` (`email`)
+    REFERENCES `alumniconnectdb`.`Alumni` (`email`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
   CONSTRAINT `fk_Job_Admin1`
     FOREIGN KEY (`Admin_email`)
-    REFERENCES `mydb`.`Admin` (`email`)
+    REFERENCES `alumniconnectdb`.`Admin` (`email`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION);
 
 
-CREATE TABLE IF NOT EXISTS `mydb`.`Application` (
+CREATE TABLE IF NOT EXISTS `alumniconnectdb`.`Application` (
   `Student_email` VARCHAR(45) NOT NULL,
   `Job_jobid` INT NOT NULL,
   `datecreated` DATE NULL,
@@ -89,17 +91,17 @@ CREATE TABLE IF NOT EXISTS `mydb`.`Application` (
   INDEX `fk_Applications_Job1_idx` (`Job_jobid` ASC),
   CONSTRAINT `fk_Applications_Student1`
     FOREIGN KEY (`Student_email`)
-    REFERENCES `mydb`.`Student` (`email`)
+    REFERENCES `alumniconnectdb`.`Student` (`email`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
   CONSTRAINT `fk_Applications_Job1`
     FOREIGN KEY (`Job_jobid`)
-    REFERENCES `mydb`.`Job` (`jobid`)
+    REFERENCES `alumniconnectdb`.`Job` (`jobid`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION);
 
 
-CREATE TABLE IF NOT EXISTS `mydb`.`Event` (
+CREATE TABLE IF NOT EXISTS `alumniconnectdb`.`Event` (
   `eventid` INT NOT NULL AUTO_INCREMENT,
   `name` VARCHAR(45) NULL,
   `location` VARCHAR(45) NULL,
@@ -111,17 +113,17 @@ CREATE TABLE IF NOT EXISTS `mydb`.`Event` (
   INDEX `fk_Event_Admin1_idx` (`Admin_email` ASC),
   CONSTRAINT `fk_Event_Alumni1`
     FOREIGN KEY (`Alumni_email`)
-    REFERENCES `mydb`.`Alumni` (`email`)
+    REFERENCES `alumniconnectdb`.`Alumni` (`email`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
   CONSTRAINT `fk_Event_Admin1`
     FOREIGN KEY (`Admin_email`)
-    REFERENCES `mydb`.`Admin` (`email`)
+    REFERENCES `alumniconnectdb`.`Admin` (`email`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION);
 
 
-CREATE TABLE IF NOT EXISTS `mydb`.`Message` (
+CREATE TABLE IF NOT EXISTS `alumniconnectdb`.`Message` (
   `messageid` INT NOT NULL AUTO_INCREMENT,
   `Student_email` VARCHAR(45) NOT NULL,
   `Alumni_email` VARCHAR(45) NOT NULL,
@@ -134,17 +136,17 @@ CREATE TABLE IF NOT EXISTS `mydb`.`Message` (
   INDEX `fk_Message_Alumni1_idx` (`Alumni_email` ASC),
   CONSTRAINT `fk_Message_Student1`
     FOREIGN KEY (`Student_email`)
-    REFERENCES `mydb`.`Student` (`email`)
+    REFERENCES `alumniconnectdb`.`Student` (`email`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
   CONSTRAINT `fk_Message_Alumni1`
     FOREIGN KEY (`Alumni_email`)
-    REFERENCES `mydb`.`Alumni` (`email`)
+    REFERENCES `alumniconnectdb`.`Alumni` (`email`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION);
 
 
-CREATE TABLE IF NOT EXISTS `mydb`.`Favorite_Company` (
+CREATE TABLE IF NOT EXISTS `alumniconnectdb`.`Favorite_Company` (
   `Company_companyid` INT NOT NULL,
   `Favorite_List_listid` INT NOT NULL,
   PRIMARY KEY (`Company_companyid`, `Favorite_List_listid`),
@@ -152,18 +154,18 @@ CREATE TABLE IF NOT EXISTS `mydb`.`Favorite_Company` (
   INDEX `fk_Favorite_Company_Favorite_List1_idx` (`Favorite_List_listid` ASC),
   CONSTRAINT `fk_Favorite_Company_Company1`
     FOREIGN KEY (`Company_companyid`)
-    REFERENCES `mydb`.`Company` (`companyid`)
+    REFERENCES `alumniconnectdb`.`Company` (`companyid`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
   CONSTRAINT `fk_Favorite_Company_Favorite_List1`
     FOREIGN KEY (`Favorite_List_listid`)
-    REFERENCES `mydb`.`Favorite_List` (`listid`)
+    REFERENCES `alumniconnectdb`.`Favorite_List` (`listid`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION);
 
 
 
-CREATE TABLE IF NOT EXISTS `mydb`.`Favorite_Job` (
+CREATE TABLE IF NOT EXISTS `alumniconnectdb`.`Favorite_Job` (
   `Job_jobid` INT NOT NULL,
   `Favorite_List_listid` INT NOT NULL,
   PRIMARY KEY (`Job_jobid`, `Favorite_List_listid`),
@@ -171,11 +173,11 @@ CREATE TABLE IF NOT EXISTS `mydb`.`Favorite_Job` (
   INDEX `fk_Favorite_Job_Favorite_List1_idx` (`Favorite_List_listid` ASC),
   CONSTRAINT `fk_Favorite_Job_Job1`
     FOREIGN KEY (`Job_jobid`)
-    REFERENCES `mydb`.`Job` (`jobid`)
+    REFERENCES `alumniconnectdb`.`Job` (`jobid`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
   CONSTRAINT `fk_Favorite_Job_Favorite_List1`
     FOREIGN KEY (`Favorite_List_listid`)
-    REFERENCES `mydb`.`Favorite_List` (`listid`)
+    REFERENCES `alumniconnectdb`.`Favorite_List` (`listid`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION);

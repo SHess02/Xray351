@@ -1,23 +1,23 @@
 <?php
 session_start();
-if (!isset($_SESSION['student_id'])) {
+if (!isset($_SESSION['email'])) {
     // If the student is not logged in, redirect to the login page
     header("Location: ../SH_folder/login.php");
     exit();
 }
 
-$conn = new mysqli("localhost", "root", "", "AlumniConnect");
+$conn = new mysqli("localhost", "root", "", "alumniconnectdb");
 if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
 
-// Get the student's ID from the session
-$student_id = $_SESSION['student_id'];
+// Get the student's email from the session
+$email = $_SESSION['email'];
 
 // Fetch the student's current data
-$sql = "SELECT name, college_major, about_me, graduation_year FROM students WHERE id = ?";
+$sql = "SELECT name, college_major, about_me, graduation_year FROM students WHERE email = ?";
 $stmt = $conn->prepare($sql);
-$stmt->bind_param("i", $student_id);
+$stmt->bind_param("i", $email);
 $stmt->execute();
 $stmt->bind_result($name, $college_major, $about_me, $graduation_year);
 $stmt->fetch();
@@ -31,9 +31,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $graduation_year = $_POST['graduation_year'];
 
     // Update the database with the new information
-    $update_sql = "UPDATE students SET name = ?, college_major = ?, about_me = ?, graduation_year = ? WHERE id = ?";
+    $update_sql = "UPDATE students SET name = ?, college_major = ?, about_me = ?, graduation_year = ? WHERE email = ?";
     $update_stmt = $conn->prepare($update_sql);
-    $update_stmt->bind_param("sssii", $name, $college_major, $about_me, $graduation_year, $student_id);
+    $update_stmt->bind_param("sssii", $name, $college_major, $about_me, $graduation_year, $email);
     $update_stmt->execute();
     $update_stmt->close();
 
@@ -73,4 +73,3 @@ $conn->close();
 
 </body>
 </html>
-

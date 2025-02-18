@@ -4,16 +4,19 @@
 		
 		echo "<h1>Browsing Tab</h1>";
 	
+		// Search bar
+		// Query TITLE like, DESCRIPTION like, rather than equal to.
+	
 	
 		echo "<h3>Recent Jobs</h3>";
 		echo "3-5 most recent job postings";
-		// Links to jobposting.php 
+		// Links to job.php 
 		echo "<h3>Upcoming Events</h3>";
 		echo "3-4 soonest events";
-		// Links to eventposting.php 
+		// Links to event.php 
 		echo "<h3>Hiring Companies</h3>";
 		echo "3-5 companies hiring";
-		// Link to companypage.php 
+		// Link to company.php 
 		echo "<h4>View All Jobs</h4>";
 		// Link to browsingjobs
 		echo "<h4>View All Events</h4>";

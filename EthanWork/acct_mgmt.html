@@ -1,0 +1,76 @@
+<?php
+session_start();
+if (!isset($_SESSION['student_id'])) {
+    // If the student is not logged in, redirect to the login page
+    header("Location: login.php");
+    exit();
+}
+
+$conn = new mysqli("localhost", "root", "", "AlumniConnect");
+if ($conn->connect_error) {
+    die("Connection failed: " . $conn->connect_error);
+}
+
+// Get the student's ID from the session
+$student_id = $_SESSION['student_id'];
+
+// Fetch the student's current data
+$sql = "SELECT name, college_major, about_me, graduation_year FROM students WHERE id = ?";
+$stmt = $conn->prepare($sql);
+$stmt->bind_param("i", $student_id);
+$stmt->execute();
+$stmt->bind_result($name, $college_major, $about_me, $graduation_year);
+$stmt->fetch();
+$stmt->close();
+
+// If the form is submitted, update the student's information
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    $name = $_POST['name'];
+    $college_major = $_POST['college_major'];
+    $about_me = $_POST['about_me'];
+    $graduation_year = $_POST['graduation_year'];
+
+    // Update the database with the new information
+    $update_sql = "UPDATE students SET name = ?, college_major = ?, about_me = ?, graduation_year = ? WHERE id = ?";
+    $update_stmt = $conn->prepare($update_sql);
+    $update_stmt->bind_param("sssii", $name, $college_major, $about_me, $graduation_year, $student_id);
+    $update_stmt->execute();
+    $update_stmt->close();
+
+    // Reload the page to reflect the changes
+    header("Location: " . $_SERVER['PHP_SELF']);
+    exit();
+}
+
+$conn->close();
+?>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Account Management</title>
+    <link rel="stylesheet" href="../SH_folder/styles.css">
+</head>
+<body>
+<h2>Account Management</h2>
+<form method="POST" action="">
+    <label for="name">Full Name:</label><br>
+    <input type="text" id="name" name="name" value="<?php echo htmlspecialchars($name); ?>"><br><br>
+
+    <label for="college_major">College Major:</label><br>
+    <input type="text" id="college_major" name="college_major" value="<?php echo htmlspecialchars($college_major); ?>"><br><br>
+
+    <label for="about_me">About Me:</label><br>
+    <textarea id="about_me" name="about_me" rows="4" cols="50"><?php echo htmlspecialchars($about_me); ?></textarea><br><br>
+
+    <label for="graduation_year">Graduation Year:</label><br>
+    <input type="number" id="graduation_year" name="graduation_year" value="<?php echo htmlspecialchars($graduation_year); ?>"><br><br>
+
+    <input type="submit" value="Update Information">
+</form>
+
+</body>
+</html>
+

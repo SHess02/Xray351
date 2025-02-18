@@ -1,5 +1,8 @@
-CREATE TABLE IF NOT EXISTS `AlumniConnect`.`Student` (
+CREATE DATABASE alumniconnectdb;
+
+CREATE TABLE IF NOT EXISTS `alumniconnectdb`.`Student` (
   `email` VARCHAR(45) NOT NULL,
+  'password' VARCHAR(45) NOT NULL,
   `name` VARCHAR(45) NULL,
   `graduationyear` YEAR NULL,
   `major` VARCHAR(45) NULL,
@@ -7,8 +10,9 @@ CREATE TABLE IF NOT EXISTS `AlumniConnect`.`Student` (
   PRIMARY KEY (`email`)
 );
 
-CREATE TABLE IF NOT EXISTS `AlumniConnect`.`Alumni` (
+CREATE TABLE IF NOT EXISTS `alumniconnectdb`.`Alumni` (
   `email` VARCHAR(45) NOT NULL,
+  'password' VARCHAR(45) NOT NULL,
   `name` VARCHAR(45) NULL,
   `graduationyear` YEAR NULL,
   `major` VARCHAR(45) NULL,
@@ -16,14 +20,15 @@ CREATE TABLE IF NOT EXISTS `AlumniConnect`.`Alumni` (
   PRIMARY KEY (`email`)
 );
 
-CREATE TABLE IF NOT EXISTS `AlumniConnect`.`Admin` (
+CREATE TABLE IF NOT EXISTS `alumniconnectdb`.`Admin` (
   `email` VARCHAR(45) NOT NULL,
+  'password' VARCHAR(45) NOT NULL,
   `name` VARCHAR(45) NULL,
   `jobtitle` VARCHAR(45) NULL,
   PRIMARY KEY (`email`)
 );
 
-CREATE TABLE IF NOT EXISTS `AlumniConnect`.`Job` (
+CREATE TABLE IF NOT EXISTS `alumniconnectdb`.`Job` (
   `jobid` INT NOT NULL AUTO_INCREMENT,
   `title` VARCHAR(45) NULL,
   `description` LONGTEXT NULL,
@@ -31,11 +36,11 @@ CREATE TABLE IF NOT EXISTS `AlumniConnect`.`Job` (
   `Alumni_email` VARCHAR(45) NOT NULL,
   `Admin_email` VARCHAR(45) NOT NULL,
   PRIMARY KEY (`jobid`, `Alumni_email`, `Admin_email`),
-  FOREIGN KEY (`Alumni_email`) REFERENCES `AlumniConnect`.`Alumni` (`email`),
-  FOREIGN KEY (`Admin_email`) REFERENCES `AlumniConnect`.`Admin` (`email`)
+  FOREIGN KEY (`Alumni_email`) REFERENCES `alumniconnectdb`.`Alumni` (`email`),
+  FOREIGN KEY (`Admin_email`) REFERENCES `alumniconnectdb`.`Admin` (`email`)
 );
 
-CREATE TABLE IF NOT EXISTS `AlumniConnect`.`Event` (
+CREATE TABLE IF NOT EXISTS `alumniconnectdb`.`Event` (
   `eventid` INT NOT NULL AUTO_INCREMENT,
   `name` VARCHAR(45) NULL,
   `location` VARCHAR(45) NULL,
@@ -43,21 +48,21 @@ CREATE TABLE IF NOT EXISTS `AlumniConnect`.`Event` (
   `Alumni_email` VARCHAR(45) NOT NULL,
   `Admin_email` VARCHAR(45) NOT NULL,
   PRIMARY KEY (`eventid`, `Alumni_email`, `Admin_email`),
-  FOREIGN KEY (`Alumni_email`) REFERENCES `AlumniConnect`.`Alumni` (`email`),
-  FOREIGN KEY (`Admin_email`) REFERENCES `AlumniConnect`.`Admin` (`email`)
+  FOREIGN KEY (`Alumni_email`) REFERENCES `alumniconnectdb`.`Alumni` (`email`),
+  FOREIGN KEY (`Admin_email`) REFERENCES `alumniconnectdb`.`Admin` (`email`)
 );
 
-CREATE TABLE IF NOT EXISTS `AlumniConnect`.`Company` (
+CREATE TABLE IF NOT EXISTS `alumniconnectdb`.`Company` (
   `companyid` INT NOT NULL AUTO_INCREMENT,
   `name` VARCHAR(45) NULL,
   `description` LONGTEXT NULL,
   `activelistings` INT NULL,
   `Admin_email` VARCHAR(45) NOT NULL,
   PRIMARY KEY (`companyid`, `Admin_email`),
-  FOREIGN KEY (`Admin_email`) REFERENCES `AlumniConnect`.`Admin` (`email`)
+  FOREIGN KEY (`Admin_email`) REFERENCES `alumniconnectdb`.`Admin` (`email`)
 );
 
-CREATE TABLE IF NOT EXISTS `AlumniConnect`.`Message` (
+CREATE TABLE IF NOT EXISTS `alumniconnectdb`.`Message` (
   `messageid` INT NOT NULL AUTO_INCREMENT,
   `Student_email` VARCHAR(45) NOT NULL,
   `Alumni_email` VARCHAR(45) NOT NULL,
@@ -66,39 +71,39 @@ CREATE TABLE IF NOT EXISTS `AlumniConnect`.`Message` (
   `to` VARCHAR(45) NULL,
   `from` VARCHAR(45) NULL,
   PRIMARY KEY (`messageid`, `Student_email`, `Alumni_email`),
-  FOREIGN KEY (`Student_email`) REFERENCES `AlumniConnect`.`Student` (`email`),
-  FOREIGN KEY (`Alumni_email`) REFERENCES `AlumniConnect`.`Alumni` (`email`)
+  FOREIGN KEY (`Student_email`) REFERENCES `alumniconnectdb`.`Student` (`email`),
+  FOREIGN KEY (`Alumni_email`) REFERENCES `alumniconnectdb`.`Alumni` (`email`)
 );
 
-CREATE TABLE IF NOT EXISTS `AlumniConnect`.`Application` (
+CREATE TABLE IF NOT EXISTS `alumniconnectdb`.`Application` (
   `Student_email` VARCHAR(45) NOT NULL,
   `Job_jobid` INT NOT NULL,
   `datecreated` DATE NULL,
   `resume` BLOB NULL,
   PRIMARY KEY (`Student_email`, `Job_jobid`),
-  FOREIGN KEY (`Student_email`) REFERENCES `AlumniConnect`.`Student` (`email`),
-  FOREIGN KEY (`Job_jobid`) REFERENCES `AlumniConnect`.`Job` (`jobid`)
+  FOREIGN KEY (`Student_email`) REFERENCES `alumniconnectdb`.`Student` (`email`),
+  FOREIGN KEY (`Job_jobid`) REFERENCES `alumniconnectdb`.`Job` (`jobid`)
 );
 
-CREATE TABLE IF NOT EXISTS `AlumniConnect`.`Favorite_List` (
+CREATE TABLE IF NOT EXISTS `alumniconnectdb`.`Favorite_List` (
   `listid` INT NOT NULL AUTO_INCREMENT,
   `Student_email` VARCHAR(45) NOT NULL,
   PRIMARY KEY (`listid`, `Student_email`),
-  FOREIGN KEY (`Student_email`) REFERENCES `AlumniConnect`.`Student` (`email`)
+  FOREIGN KEY (`Student_email`) REFERENCES `alumniconnectdb`.`Student` (`email`)
 );
 
-CREATE TABLE IF NOT EXISTS `AlumniConnect`.`Favorite_Company` (
+CREATE TABLE IF NOT EXISTS `alumniconnectdb`.`Favorite_Company` (
   `Company_companyid` INT NOT NULL,
   `Favorite_List_listid` INT NOT NULL,
   PRIMARY KEY (`Company_companyid`, `Favorite_List_listid`),
-  FOREIGN KEY (`Company_companyid`) REFERENCES `AlumniConnect`.`Company` (`companyid`),
-  FOREIGN KEY (`Favorite_List_listid`) REFERENCES `AlumniConnect`.`Favorite_List` (`listid`)
+  FOREIGN KEY (`Company_companyid`) REFERENCES `alumniconnectdb`.`Company` (`companyid`),
+  FOREIGN KEY (`Favorite_List_listid`) REFERENCES `alumniconnectdb`.`Favorite_List` (`listid`)
 );
 
-CREATE TABLE IF NOT EXISTS `AlumniConnect`.`Favorite_Job` (
+CREATE TABLE IF NOT EXISTS `alumniconnectdb`.`Favorite_Job` (
   `Job_jobid` INT NOT NULL,
   `Favorite_List_listid` INT NOT NULL,
   PRIMARY KEY (`Job_jobid`, `Favorite_List_listid`),
-  FOREIGN KEY (`Job_jobid`) REFERENCES `AlumniConnect`.`Job` (`jobid`),
-  FOREIGN KEY (`Favorite_List_listid`) REFERENCES `AlumniConnect`.`Favorite_List` (`listid`)
+  FOREIGN KEY (`Job_jobid`) REFERENCES `alumniconnectdb`.`Job` (`jobid`),
+  FOREIGN KEY (`Favorite_List_listid`) REFERENCES `alumniconnectdb`.`Favorite_List` (`listid`)
 );

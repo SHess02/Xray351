@@ -2,7 +2,7 @@
 session_start();
 if (!isset($_SESSION['student_id'])) {
     // If the student is not logged in, redirect to the login page
-    header("Location: login.php");
+    header("Location: ../SH_folder/login.php");
     exit();
 }
 

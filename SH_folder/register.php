@@ -3,10 +3,9 @@
 session_start();
 
 // Create connection
-$servername = "localhost";
-$username = "root";
-$password = "";
-$dbname = "soundstash";
+
+require_once '../database.php';
+$dbname = new Database();
 $conn = new mysqli($servername, $username, $password, $dbname);
 
 // Check connection
@@ -89,7 +88,7 @@ if (isset($_POST['register'])) {
         <input type="password" id="confirm_password" name="confirm_password" required><br><br>
 
         <input type="submit" name="register" value="Register"><br><br>
-        <a href="login_sound.php">Back to login</a>
+        <a href="login.php">Back to login</a>
     </form>
 
     <?php if (!empty($error_message)) : ?>

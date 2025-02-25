@@ -3,10 +3,9 @@
 // Start the session
 session_start();
 
-$servername = "localhost"; 
-$username = "root";
-$password = "";
-$dbname = "alumniconnect";
+
+require_once '../database.php';
+$dbname = new Database();
 
 // Create connection
 $conn = new mysqli($servername, $username, $password, $dbname);
@@ -107,8 +106,8 @@ if (isset($_POST['submit'])) {
                 Password:<br>
                 <input type="password" name="passinput" required> <br><br>
                 
-                <input type="submit" name="submit" value="Login"><br>
-				<br><input type= "submit" name="submit" value ="Registar">
+				<input type="submit" name="submit" value="Login"><br><br>
+				<a href="register.php"><button type="button">Register</button></a>
             </p>
 		
         

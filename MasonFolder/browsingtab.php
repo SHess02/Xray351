@@ -1,6 +1,6 @@
 <?php
-
-	if(true){ // isset($_SESSION['username'])
+	session_start();
+	if(false){ // isset($_SESSION['username'])
 		require_once '../database.php';
 
 		$db = new Database();
@@ -74,6 +74,9 @@
 	}
 	else {
 		echo "User Not Logged in";
+		echo "<form action='../SH_folder/login.php'>";
+			echo "<input type='submit' value='Go to Login' />";
+		echo "</form>";
 	}
 
 ?>

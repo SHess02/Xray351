@@ -1,153 +1,180 @@
 <?php
-	
-	
+
 	if(true){ // isset($_SESSION['username'])
 		require_once '../database.php';
 
-		echo "<h1>Browsing Tab</h1>";
-	
-		// Search bar
-		// Query TITLE like, DESCRIPTION like, rather than equal to.
-	
-	
-		echo "<h3>Recent Jobs</h3>";
-		echo "3-5 most recent job postings";
-		// Links to job.php 
-		echo "<h3>Upcoming Events</h3>";
-		echo "3-4 soonest events";
-		// Links to event.php 
-		echo "<h3>Hiring Companies</h3>";
-		echo "3-5 companies hiring";
-		// Link to company.php 
-		echo "<h4>View All Jobs</h4>";
-		// Link to browsingjobs
-		echo "<h4>View All Events</h4>";
-		// Link to browsing events
-		echo "<h4>View All Companies</h4>";
-		// Link to browsing companies
-	
 		$db = new Database();
+		echo "<h1>Browsing Tab</h1>";
 
-		$select_job = 'select * from job'; // Get jobs from db, company, event
+		// Fetch the 3 most recent jobs
+		$query_jobs = "SELECT jobid, title FROM job ORDER BY opendate DESC LIMIT 3";
+		$result_jobs = $db->query($query_jobs);
 
-		switch (@$_GET['order']) {
-			case 'job':
-			case 'company':
-			case 'event': $select .= ' order by '.$_GET['order'];
-		}
+		// Fetch the 3 most recent companies
+		$query_companies = "SELECT companyid, name FROM company ORDER BY name ASC LIMIT 3";
+		$result_companies = $db->query($query_companies);
 
-		$result_job = $db->query( $select_job );
-		$rows_job   = $result_job->num_rows;
+		// Fetch the 3 most recent events
+		$query_events = "SELECT eventid, name FROM event ORDER BY datetime DESC LIMIT 3";
+		$result_events = $db->query($query_events);
 
-		echo "<table class=\"Browsing Tab\">\n";
-		echo "<tr>\n";
-		echo "<th></th>";
-		echo "<th><a href=\"browsingtab.php?order=title\" /> Title </a></th>";
-		echo "<th><a href=\"browsingtab.php?order=description\" /> Description </a></th>";
-		echo "<th><a href=\"browsingtab.php?order=opendate\" /> Date </a></th>";
-		echo "<tr>\n";
-		if ($rows_job == 0) {
-			echo "<tr>\n";
-			echo "<td colspan=\"3\">Nothing to Display</td>";
-			echo "</tr>\n";
-		}
-		else {
-			for ($i=0; $i<$rows_job; $i++) {
-				$row = $result_job->fetch_assoc();
-				echo "<tr class=\"highlight\">";
-				echo "<td>".($i+1)."</td>";
-				echo "<td><a href=\"job.php?title=".$row['jobid']."\" />".$row['title']."</a></td>";
-				echo"<td>".$row['description']."</td>";
-				echo"<td>".$row['opendate']."</td>";
-				echo "</tr>\n";
+		echo "<div class='lists-container'>";
+
+		// Jobs list
+		echo "<div class='list'>";
+		echo "<h3>Recent Jobs</h3>";
+		if ($result_jobs->num_rows > 0) {
+			echo "<ul>";
+			while ($row = $result_jobs->fetch_assoc()) {
+				echo "<li><a href=\"job.php?jobid=" . htmlspecialchars($row['jobid']) . "\">" . htmlspecialchars($row['title']) . "</a></li>";
 			}
+			echo "</ul>";
+		} else {
+			echo "<p>No recent jobs found.</p>";
 		}
-		echo "</table>\n";
+		echo "<a href='view_all.php?type=jobs' class='view-all-link'>View All Jobs</a>";
+		echo "</div>";
 
-		$result_job->free();
-
-
-		$select_company = 'select * from company';
-
-		switch (@$_GET['order']) {
-			case 'job':
-			case 'company':
-			case 'event': $select .= ' order by '.$_GET['order'];
-		}
-
-		$result_company = $db->query( $select_company );
-		$rows_company   = $result_company->num_rows;
-
-
-		echo "<table class=\"Browsing Tab\">\n";
-		echo "<tr>\n";
-		echo "<th></th>";
-		echo "<th><a href=\"browsingtab.php?order=name\" /> Comapny Name </a></th>";
-		echo "<th><a href=\"browsingtab.php?order=description\" /> Description </a></th>";
-		echo "<th><a href=\"browsingtab.php?order=activelistings\" /> Open Listings </a></th>";
-		echo "<tr>\n";
-		if ($rows_company == 0) {
-			echo "<tr>\n";
-			echo "<td colspan=\"3\">Nothing to Display</td>";
-			echo "</tr>\n";
-		}
-		else {
-			for ($i=0; $i<$rows_company; $i++) {
-				$row = $result_company->fetch_assoc();
-				echo "<tr class=\"highlight\">";
-				echo "<td>".($i+1)."</td>";
-				echo "<td><a href=\"company.php?name=".$row['companyid']."\" />".$row['name']."</a></td>";
-				echo"<td>".$row['description']."</td>";
-				echo"<td>".$row['activelistings']."</td>";
-				echo "</tr>\n";
+		// Companies list
+		echo "<div class='list'>";
+		echo "<h3>Hiring Companies</h3>";
+		if ($result_companies->num_rows > 0) {
+			echo "<ul>";
+			while ($row = $result_companies->fetch_assoc()) {
+				echo "<li><a href=\"company.php?companyid=" . htmlspecialchars($row['companyid']) . "\">" . htmlspecialchars($row['name']) . "</a></li>";
 			}
+			echo "</ul>";
+		} else {
+			echo "<p>No hiring companies found.</p>";
 		}
-		echo "</table>\n";
-		
-		$result_company->free();
+		echo "<a href='view_all.php?type=companies' class='view-all-link'>View All Companies</a>";
+		echo "</div>";
 
-		$select_event = 'select * from event';
-
-		switch (@$_GET['order']) {
-			case 'job':
-			case 'company':
-			case 'event': $select .= ' order by '.$_GET['order'];
-		}
-
-		$result_event = $db->query( $select_event );
-		$rows_event   = $result_event->num_rows;
-
-		echo "<table class=\"Browsing Tab\">\n";
-		echo "<tr>\n";
-		echo "<th></th>";
-		echo "<th><a href=\"browsingtab.php?order=name\" /> Event Name </a></th>";
-		echo "<th><a href=\"browsingtab.php?order=location\" /> Location </a></th>";
-		echo "<th><a href=\"browsingtab.php?order=datetime\" /> Date </a></th>";
-		echo "<tr>\n";
-		if ($rows_event == 0) {
-			echo "<tr>\n";
-			echo "<td colspan=\"3\">Nothing to Display</td>";
-			echo "</tr>\n";
-		}
-		else {
-			for ($i=0; $i<$rows_event; $i++) {
-				$row = $result_event->fetch_assoc();
-				echo "<tr class=\"highlight\">";
-				echo "<td>".($i+1)."</td>";
-				echo "<td><a href=\"event.php?name=".$row['eventid']."\" />".$row['name']."</a></td>";
-				echo"<td>".$row['location']."</td>";
-				echo"<td>".$row['datetime']."</td>";
-				echo "</tr>\n";
+		// Events list
+		echo "<div class='list'>";
+		echo "<h3>Recent Events</h3>";
+		if ($result_events->num_rows > 0) {
+			echo "<ul>";
+			while ($row = $result_events->fetch_assoc()) {
+				echo "<li><a href=\"event.php?eventid=" . htmlspecialchars($row['eventid']) . "\">" . htmlspecialchars($row['name']) . "</a></li>";
 			}
+			echo "</ul>";
+		} else {
+			echo "<p>No recent events found.</p>";
 		}
-		echo "</table>\n";
-		$result_event->free();
+		echo "<a href='view_all.php?type=events' class='view-all-link'>View All Events</a>";
+		echo "</div>";
 
-		
+		echo "</div>"; // Close lists container
+
+		$result_jobs->free();
+		$result_companies->free();
+		$result_events->free();
+
 	}
 	else {
-		
 		echo "User Not Logged in";
 	}
 
 ?>
+
+
+<style>
+    body {
+        font-family: Arial, sans-serif;
+    }
+
+    .lists-container {
+        display: flex;
+        justify-content: space-between;
+        gap: 20px;
+        margin-top: 20px;
+    }
+
+    .list {
+        flex: 1;
+        padding: 15px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+        background-color: #f9f9f9;
+        text-align: center;
+    }
+
+    h3 {
+        text-align: center;
+        font-size: 1.2em;
+        font-weight: bold;
+        color: #333;
+    }
+
+    ul {
+        list-style-type: none;
+        padding: 0;
+    }
+
+    ul li {
+        margin: 5px 0;
+    }
+
+    ul li a {
+        text-decoration: none;
+        color: #007bff;
+        font-weight: bold;
+        font-size: 1.1em;
+    }
+
+    ul li a:hover {
+        text-decoration: underline;
+    }
+
+    /* Table Styling */
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background-color: #f8f9fa;
+        border-radius: 8px;
+        overflow: hidden;
+    }
+
+    th, td {
+        border: 1px solid #ddd;
+        padding: 12px;
+        text-align: center;
+    }
+
+    th {
+        background-color: #007bff;
+        color: white;
+        font-weight: bold;
+        cursor: pointer;
+    }
+
+    td {
+        font-size: 1.1em;
+        color: #333;
+    }
+
+    tr:nth-child(even) {
+        background-color: #f2f2f2;
+    }
+
+    tr:hover {
+        background-color: #e2e6ea;
+    }
+	.view-all-link {
+        display: block;
+        margin-top: 15px;
+        text-align: center;
+        font-weight: bold;
+        color: #007bff;
+        text-decoration: none;
+    }
+
+    .view-all-link:hover {
+        text-decoration: underline;
+    }
+</style>
+

@@ -26,34 +26,32 @@ if ($conn->connect_error) {
   die("Connection failed: " . $conn->connect_error);
 }
 
+// Update company's name
 If (isset($_POST['companyname'])) {
 	$companyname = $_POST['companyname'];	
 	$query = "SELECT * FROM company WHERE name = '$companyname'";
 	$result = mysqli_query($conn, $query);
 	if(mysqli_num_rows($result) > 0) {
-		If (isset($_POST['newcompanyname'])) {
-			$companyname = $_POST['newcompanyname'];
-			$sql = "UPDATE company SET name = $companyname WHERE id = ?";
-			$stmt = $conn->prepare($sql);
-			$stmt->bind_param("si", $new_name, $company_id);
-
-			if ($stmt->execute()) {
-				echo "Company name updated successfully.";
-			} 
-			else {
-				echo "Error updating company name: " . $conn->error;
-			}
-		}
-		else {
-			echo "This company does not exist in our database.";
-		}
+	$newcompanyname = $_POST['newcompanyname'];
+	$companynamesql = "UPDATE company SET name='$newcompanyname' WHERE name='$companyname'";
+	if ($conn->query($sql) === TRUE) {
+	echo "Record updated successfully";
+	} else {
+		echo "Error updating record: " . $conn->error;
+	}
+	}
+	else {
+		echo "This company does not exist in our database.";
 	}
 }
 
-$query = "SELECT * FROM company";
+// Update company's description
 
-$result = mysqli_query($conn, $query);
 
+// Displays Table
+	$query = "SELECT * FROM company";
+	$result = mysqli_query($conn, $query);
+	
 if ($result->num_rows > 0) {
     echo "<table border='1'>
             <tr>
@@ -69,10 +67,7 @@ if ($result->num_rows > 0) {
                 <td>" . $row["activelistings"] . "</td>
               </tr>";
     }
-    
     echo "</table>";
-} else {
-    echo "No records found.";
 }
 
 ?>

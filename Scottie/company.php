@@ -1,10 +1,8 @@
 
 	<!DOCTYPE html>
 	<html lang="en">
+	<link rel="stylesheet" href="styles.css">
 	<html><body>
-	<form action="companyedit.php" method="get">
-    <button type="submit">Edit Company Data</button>
-	</form>
 	<br>
 	</body>
 	</html>	
@@ -44,8 +42,9 @@
 			}
 			echo "</table>";
 		}
-	// Return to browsing tab
+	// Editing tab
+	echo "<li><a href=\"companyedit.php?companyid=" . htmlspecialchars($company['companyid']) . "\">" . htmlspecialchars($company['name']) . "</a></li>";
+	// Return to companymanagment tab
 	echo "<br>";
-	echo "<button onclick='history.back()'>Go Back</button>";
-	
+	echo "<a href=\"companymanagment.php" style="display: inline-block; padding: 10px 20px; background-color: blue; color: white; text-decoration: none; border-radius: 5px;">Go to Back to Company Managment</a>";
 ?>

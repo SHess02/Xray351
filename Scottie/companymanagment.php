@@ -1,6 +1,7 @@
 
 <!DOCTYPE html>
 <html lang="en">
+<link rel="stylesheet" href="styles.css">
 <html><body>
 <form action="companymanagment.php" method="post">
 <input type="text" name="newcompanyname" id="newcompanyname">
@@ -44,33 +45,6 @@ if ($conn->connect_error) {
 		}
 		echo "<a href='view_all.php?type=companies' class='view-all-link'>View All Companies</a>";
 		echo "</div>";
-/**
-		
-// Update company's name
-
-If (isset($_POST['companyname'])) {
-	$companyname = $_POST['companyname'];	
-	$query = "SELECT * FROM company WHERE name = '$companyname'";
-	$result = mysqli_query($conn, $query);
-	if(mysqli_num_rows($result) > 0) {
-		$newcompanyname = $_POST['newcompanyname'];
-		$companynamesql = "UPDATE company SET name='$newcompanyname' WHERE name='$companyname'";
-	}
-	else {
-		echo "This company does not exist in our database.";
-	}
-}
-
-If ($_POST['newcompanyname'] != null) {
-	if ($conn->query($companynamesql) === TRUE) {
-		echo "Record updated successfully";
-	} 
-	else {
-		echo "Error updating record: " . $conn->error;
-	}
-}
-
-*/
 
 // Displays Table
 	$query = "SELECT * FROM company";

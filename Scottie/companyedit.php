@@ -1,4 +1,5 @@
 <?php
+
 // Database connection settings
 $servername = "localhost";
 $userName = "root";
@@ -15,7 +16,7 @@ if ($conn->connect_error) {
 // Fetch company details if ID is provided
 if (isset($_GET['companyid'])) {
     $companyid = intval($_GET['companyid']);
-    $sql = "SELECT * FROM companies WHERE companyid = $companyid";
+    $sql = "SELECT * FROM company WHERE companyid = $companyid";
     $result = $conn->query($sql);
     $company = $result->fetch_assoc();
 }
@@ -39,13 +40,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
     if (!empty($_POST['admin_email'])) {
         $admin_email = $conn->real_escape_string($_POST['admin_email']);
-        $update_fields[] = "admin_email='$admin_email'";
+        $update_fields[] = "Admin_email='$admin_email'";
     }
     
     if (!empty($update_fields)) {
-        $update_sql = "UPDATE companies SET " . implode(", ", $update_fields) . " WHERE companyid=$companyid";
+        $update_sql = "UPDATE company SET " . implode(", ", $update_fields) . " WHERE companyid=$companyid";
         if ($conn->query($update_sql) === TRUE) {
-            echo "Record updated successfully";
+            // Redirect back to the previous page
+            header("Location: " . $_SERVER['HTTP_REFERER']);
+            exit();
         } else {
             echo "Error updating record: " . $conn->error;
         }
@@ -53,11 +56,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         echo "No fields provided for update.";
     }
 }
-$conn->close();
+echo "<li><a href=\"company.php?companyid=" . htmlspecialchars($company['companyid']) . "\">" . htmlspecialchars($company['name']) . "</a></li>";
 ?>
 
 <!DOCTYPE html>
 <html>
+<link rel="stylesheet" href="styles.css">
 <head>
     <title>Edit Company</title>
 </head>
@@ -72,9 +76,8 @@ $conn->close();
         <label>Active Listings:</label>
         <input type="number" name="activelistings" value="<?php echo $company['activelistings']; ?>"><br>
         <label>Admin Email:</label>
-        <input type="email" name="admin_email" value="<?php echo htmlspecialchars($company['admin_email']); ?>"><br>
+        <input type="email" name="admin_email" value="<?php echo htmlspecialchars($company['Admin_email']); ?>"><br>
         <input type="submit" value="Update">
-    </form>
     <br>
 </body>
 </html>

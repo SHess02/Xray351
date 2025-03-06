@@ -1,7 +1,7 @@
+
 <?php
-	
 	if( isset($_GET['type'])){
-		require_once '../database.php';
+		include '../includes/includes.php';
 		$db = new Database();
 		
 		switch ($_GET['type']){
@@ -109,6 +109,4 @@
 				break;
 		}
 	}
-	// Return to browsing tab
-	echo "<button onclick='history.back()'>Go Back</button>";
 ?>

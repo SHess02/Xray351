@@ -1,7 +1,9 @@
+
 <?php
 	session_start();
-	if(false){ // isset($_SESSION['username'])
-		require_once '../database.php';
+	if(true){ // isset($_SESSION['username'])
+		
+		include '../includes/includes.php';
 
 		$db = new Database();
 		echo "<h1>Browsing Tab</h1>";
@@ -78,106 +80,6 @@
 			echo "<input type='submit' value='Go to Login' />";
 		echo "</form>";
 	}
-
 ?>
 
-
-<style>
-    body {
-        font-family: Arial, sans-serif;
-    }
-
-    .lists-container {
-        display: flex;
-        justify-content: space-between;
-        gap: 20px;
-        margin-top: 20px;
-    }
-
-    .list {
-        flex: 1;
-        padding: 15px;
-        border: 1px solid #ccc;
-        border-radius: 5px;
-        box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
-        background-color: #f9f9f9;
-        text-align: center;
-    }
-
-    h3 {
-        text-align: center;
-        font-size: 1.2em;
-        font-weight: bold;
-        color: #333;
-    }
-
-    ul {
-        list-style-type: none;
-        padding: 0;
-    }
-
-    ul li {
-        margin: 5px 0;
-    }
-
-    ul li a {
-        text-decoration: none;
-        color: #007bff;
-        font-weight: bold;
-        font-size: 1.1em;
-    }
-
-    ul li a:hover {
-        text-decoration: underline;
-    }
-
-    /* Table Styling */
-    table {
-        width: 100%;
-        border-collapse: collapse;
-        margin-top: 20px;
-        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        background-color: #f8f9fa;
-        border-radius: 8px;
-        overflow: hidden;
-    }
-
-    th, td {
-        border: 1px solid #ddd;
-        padding: 12px;
-        text-align: center;
-    }
-
-    th {
-        background-color: #007bff;
-        color: white;
-        font-weight: bold;
-        cursor: pointer;
-    }
-
-    td {
-        font-size: 1.1em;
-        color: #333;
-    }
-
-    tr:nth-child(even) {
-        background-color: #f2f2f2;
-    }
-
-    tr:hover {
-        background-color: #e2e6ea;
-    }
-	.view-all-link {
-        display: block;
-        margin-top: 15px;
-        text-align: center;
-        font-weight: bold;
-        color: #007bff;
-        text-decoration: none;
-    }
-
-    .view-all-link:hover {
-        text-decoration: underline;
-    }
-</style>
 

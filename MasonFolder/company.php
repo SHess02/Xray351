@@ -1,30 +1,27 @@
 <?php
-	$db = new mysqli('localhost','root','','alumniconnectdb');
-	$db->set_charset("utf8");
+	include '../includes/includes.php';
 
-	if ($db->connect_errno) {
-		echo '<h3>Database Access Error!</h3>';
+
+	$db = new Database();
+	
+	$select = 'select * from company';
+	if (@$_GET['companyid'] != "") {
+		$select .= ' where companyid = "'.$_GET['companyid'].'"';
+	}
+	
+	$result = $db->query( $select );
+	$rows   = $result->num_rows;
+	
+	if ($rows == 0){
+		echo "Company not found";
 	}
 	else {
-		$select = 'select * from company';
-		if (@$_GET['companyid'] != "") {
-			$select .= ' where companyid = "'.$_GET['companyid'].'"';
-		}
-		
-		$result = $db->query( $select );
-		$rows   = $result->num_rows;
-		
-		if ($rows == 0){
-			echo "Company not found";
-		}
-		else {
-			$job = $result->fetch_assoc();
-			echo "<p>".$job['name']."</p>";
-			echo "<p>".$job['description']."</p>";
-			echo "<p>".$job['activelistings']."</p>";
-		}
-		
+		$job = $result->fetch_assoc();
+		echo "<p>".$job['name']."</p>";
+		echo "<p>".$job['description']."</p>";
+		echo "<p>".$job['activelistings']."</p>";
 	}
+		
 	
 	
 	// Return to browsing tab

@@ -1,4 +1,3 @@
-
 <?php
 	if( isset($_GET['type'])){
 		include '../includes/includes.php';

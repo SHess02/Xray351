@@ -1,4 +1,3 @@
-
 <?php
 	// Every File 
 	include '../includes/includes.php';
@@ -6,30 +5,30 @@
 	$db = new Database();
 	
 	// Running Query to Retrieve Event Information
-	$select = 'select * from company';
-	if (@$_GET['companyid'] != "") {
-		$select .= ' where companyid = "'.$_GET['companyid'].'"';
+	$select = 'select * from job';
+	if (@$_GET['jobid'] != "") {
+		$select .= ' where jobid = "'.$_GET['jobid'].'"';
 	}
 	
 	$result = $db->query( $select );
 	$rows   = $result->num_rows;
 	
-	// Displaying Company Information
+	// Displaying Job Information
 	if ($rows == 0){
-		echo "Company not found";
+		echo "Job not found";
 	}
 	else {
-		$company = $result->fetch_assoc();
+		$job = $result->fetch_assoc();
 		echo "<table border='1'>
 			  <tr>
-              <th> Company Name </th>
-              <th> Company Description </th>
-              <th> Number of Active Listings </th>
+              <th> Title </th>
+              <th> Description </th>
+              <th> Open Date </th>
               </tr>";
 		echo "<tr>
-              <td>" . $company["name"] . "</td>
-              <td>" . $company["description"] . "</td>
-              <td>" . $company["activelistings"] . "</td>
+              <td>" . $job["title"] . "</td>
+              <td>" . $job["description"] . "</td>
+              <td>" . $job["opendate"] . "</td>
               </tr>";
 			}
 		echo "</table>";
@@ -37,7 +36,7 @@
 	
 	// Editing tab
 	echo "<br>";
-	echo "<button onclick=\"window.location.href='companyedit.php?companyid=" . htmlspecialchars($company['companyid']) . "'\" 
+	echo "<button onclick=\"window.location.href='jobedit.php?jobid=" . htmlspecialchars($job['jobid']) . "'\" 
         class='btn-style'>Edit</button>";
 ?>
 

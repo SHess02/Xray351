@@ -1,18 +1,14 @@
+
 <?php
-$servername = "localhost";
-$userName = "root";
-$passWord = "";
-$dbname = "alumniconnectdb";
 
-// Create connection
-$conn = new mysqli($servername, $userName, $passWord, $dbname);
-// Check connection
-if ($conn->connect_error) {
-  die("Connection failed: " . $conn->connect_error);
-}
-$query = "SELECT * FROM company";
+// Making sure database & includes are in file
+include '../includes/includes.php';
 
-$result = mysqli_query($conn, $query);
+$db = new Database();
+
+$query = "SELECT * FROM event";
+
+$result = mysqli_query($db, $query);
 
 if ($result->num_rows > 0) {
     echo "<table border='1'>

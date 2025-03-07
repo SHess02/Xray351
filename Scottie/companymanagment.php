@@ -1,16 +1,10 @@
 
-<!DOCTYPE html>
-<html lang="en">
-<link rel="stylesheet" href="styles.css">
-<html><body>
-</body></html>
-
 <?php
 
+// Making sure database & includes are in file
 include '../includes/includes.php';
 
-
-	$db = new Database();
+$db = new Database();
 	
 $servername = "localhost";
 $userName = "root";
@@ -24,7 +18,6 @@ $conn = new mysqli($servername, $userName, $passWord, $dbname);
 if ($conn->connect_error) {
   die("Connection failed: " . $conn->connect_error);
 }
-
 
 // Fetch the 3 most recent companies
 	$query_companies = "SELECT companyid, name FROM company ORDER BY name ASC LIMIT 3";

@@ -27,3 +27,4 @@
 	// Return to browsing tab
 	echo "<button onclick='history.back()'>Go Back</button>";
 ?>
+

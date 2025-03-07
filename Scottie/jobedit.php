@@ -38,10 +38,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $description = $conn->real_escape_string($_POST['description']);
         $update_fields[] = "description='$description'";
     }
-    if (isset($_POST['opendate']) && $_POST['opendate'] !== '') {
-        $opendate = intval($_POST['opendate']);
-        $update_fields[] = "opendate=$opendate";
-    }
     if (!empty($update_fields)) {
         $update_sql = "UPDATE job SET " . implode(", ", $update_fields) . " WHERE jobid=$jobid";
         if ($conn->query($update_sql) === TRUE) {
@@ -57,7 +53,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 <!DOCTYPE html>
 <html lang="en">
 <nav class="navbar">
-    <button class="nav-btn back-btn" onclick="window.location.href='companymanagment.php'">&#8592;</button>
+    <button class="nav-btn back-btn" onclick="window.location.href='browsingtab.php'">&#8592;</button>
     <a href="browsingtab.php" class="nav-btn">Recent</a>
 	<a href="browsingtab.php" class="nav-btn">Jobs</a>
 	<a href="browsingtab.php" class="nav-btn">Companies</a>

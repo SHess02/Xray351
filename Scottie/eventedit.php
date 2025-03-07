@@ -38,10 +38,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $location = $conn->real_escape_string($_POST['location']);
         $update_fields[] = "location='$location'";
     }
-    if (isset($_POST['datetime']) && $_POST['datetime'] !== '') {
-        $datetime = intval($_POST['datetime']);
-        $update_fields[] = "datetime=$datetime";
-    }
     if (!empty($update_fields)) {
         $update_sql = "UPDATE event SET " . implode(", ", $update_fields) . " WHERE eventid=$eventid";
         if ($conn->query($update_sql) === TRUE) {

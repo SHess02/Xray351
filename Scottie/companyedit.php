@@ -62,7 +62,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 <!DOCTYPE html>
 <html lang="en">
 <nav class="navbar">
-    <button class="nav-btn back-btn" onclick="window.location.href='companymanagment.php'">&#8592;</button>
+    <button class="nav-btn back-btn" onclick="window.location.href='browsingtab.php'">&#8592;</button>
     <a href="browsingtab.php" class="nav-btn">Recent</a>
 	<a href="browsingtab.php" class="nav-btn">Jobs</a>
 	<a href="browsingtab.php" class="nav-btn">Companies</a>

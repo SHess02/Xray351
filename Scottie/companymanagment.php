@@ -3,14 +3,14 @@
 <html lang="en">
 <link rel="stylesheet" href="styles.css">
 <html><body>
-<form action="companymanagment.php" method="post">
-<input type="text" name="newcompanyname" id="newcompanyname">
-<br>
-<br><input type="submit" name="submit" id="submit"></br>
-</form></body>
-</html>
+</body></html>
 
 <?php
+
+include '../includes/includes.php';
+
+
+	$db = new Database();
 	
 $servername = "localhost";
 $userName = "root";
@@ -43,7 +43,7 @@ if ($conn->connect_error) {
 		} else {
 			echo "<p>No hiring companies found.</p>";
 		}
-		echo "<a href='view_all.php?type=companies' class='view-all-link'>View All Companies</a>";
+		echo "<a href='view_all.php? type=companies' class='view-all-link'>View All Companies</a>";
 		echo "</div>";
 
 // Displays Table

@@ -1,4 +1,8 @@
 <?php
+include '../includes/includes.php';
+
+
+$db = new Database();
 
 // Database connection settings
 $servername = "localhost";
@@ -46,9 +50,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if (!empty($update_fields)) {
         $update_sql = "UPDATE company SET " . implode(", ", $update_fields) . " WHERE companyid=$companyid";
         if ($conn->query($update_sql) === TRUE) {
-            // Redirect back to the previous page
-            header("Location: " . $_SERVER['HTTP_REFERER']);
-            exit();
         } else {
             echo "Error updating record: " . $conn->error;
         }
@@ -56,28 +57,98 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         echo "No fields provided for update.";
     }
 }
-echo "<li><a href=\"company.php?companyid=" . htmlspecialchars($company['companyid']) . "\">" . htmlspecialchars($company['name']) . "</a></li>";
 ?>
 
 <!DOCTYPE html>
-<html>
-<link rel="stylesheet" href="styles.css">
+<html lang="en">
+<nav class="navbar">
+    <button class="nav-btn back-btn" onclick="window.location.href='companymanagment.php'">&#8592;</button>
+    <a href="browsingtab.php" class="nav-btn">Recent</a>
+	<a href="browsingtab.php" class="nav-btn">Jobs</a>
+	<a href="browsingtab.php" class="nav-btn">Companies</a>
+	<a href="browsingtab.php" class="nav-btn">Events</a>
+
+    
+    <div class="search-container">
+        <input type="text" class="search-bar" placeholder="Search...">
+    </div>
+	
+	<a href="browsingtab.php" class="nav-btn">Recent</a>
+
+    <div class="nav-right">
+        <button class="nav-btn">🔔</button>
+        <button class="nav-btn profile-btn">👤</button>
+    </div>
+</nav>
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Edit Company</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            background: white;
+            width: 50%;
+            margin: 50px auto;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        h2 {
+            color: #007bff;
+        }
+        label {
+            display: block;
+            margin-top: 10px;
+            font-weight: bold;
+            color: #555;
+        }
+        input, textarea {
+			font-family: Arial,sans-serif;
+            width: 90%;
+            padding: 10px;
+            margin-top: 5px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        input[type="submit"] {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px;
+            cursor: pointer;
+            margin-top: 15px;
+        }
+        input[type="submit"]:hover {
+            background-color: #c2185b;
+        }
+    </style>
 </head>
 <body>
-    <h2>Edit Company Details</h2>
-    <form method="post">
-        <input type="hidden" name="companyid" value="<?php echo $company['companyid']; ?>">
-        <label>Name:</label>
-        <input type="text" name="name" value="<?php echo htmlspecialchars($company['name']); ?>"><br>
-        <label>Description:</label>
-        <textarea name="description"><?php echo htmlspecialchars($company['description']); ?></textarea><br>
-        <label>Active Listings:</label>
-        <input type="number" name="activelistings" value="<?php echo $company['activelistings']; ?>"><br>
-        <label>Admin Email:</label>
-        <input type="email" name="admin_email" value="<?php echo htmlspecialchars($company['Admin_email']); ?>"><br>
-        <input type="submit" value="Update">
-    <br>
+    <div class="container">
+        <h2>Edit Company Details</h2>
+        <form method="post">
+            <input type="hidden" name="companyid" value="<?php echo $company['companyid']; ?>">
+            <label>Name:</label>
+            <input type="text" name="name" value="<?php echo htmlspecialchars($company['name']); ?>">
+            
+            <label>Description:</label>
+            <textarea name="description"><?php echo htmlspecialchars($company['description']); ?></textarea>
+            
+            <label>Active Listings:</label>
+            <input type="number" name="activelistings" value="<?php echo $company['activelistings']; ?>">
+            
+            <label>Admin Email:</label>
+            <input type="email" name="admin_email" value="<?php echo htmlspecialchars($company['Admin_email']); ?>">
+            
+            <input type="submit" value="Update">
+        </form>
+    </div>
 </body>
 </html>

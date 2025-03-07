@@ -25,5 +25,5 @@
 	
 	
 	// Return to browsing tab
-	echo "<button onclick='history.back()'>Go Back</button>";
+	//echo "<button onclick='history.back()'>Go Back</button>";
 ?>

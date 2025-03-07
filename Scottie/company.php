@@ -1,13 +1,29 @@
 
 	<!DOCTYPE html>
 	<html lang="en">
-	<link rel="stylesheet" href="styles.css">
+	<style>
+	.btn-style {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 5px;
+}
+.btn-style:hover {
+    background-color: #0056b3;
+}
+	</style>
 	<html><body>
 	<br>
 	</body>
 	</html>	
 <?php
+	include '../includes/includes.php';
 
+
+	$db = new Database();
 	$db = new mysqli('localhost','root','','alumniconnectdb');
 	$db->set_charset("utf8");
 
@@ -43,8 +59,8 @@
 			echo "</table>";
 		}
 	// Editing tab
-	echo "<li><a href=\"companyedit.php?companyid=" . htmlspecialchars($company['companyid']) . "\">" . htmlspecialchars($company['name']) . "</a></li>";
-	// Return to companymanagment tab
 	echo "<br>";
-	echo "<a href=\"companymanagment.php" style="display: inline-block; padding: 10px 20px; background-color: blue; color: white; text-decoration: none; border-radius: 5px;">Go to Back to Company Managment</a>";
+	echo "<button onclick=\"window.location.href='companyedit.php?companyid=" . htmlspecialchars($company['companyid']) . "'\" 
+        class='btn-style'>Edit</button>";
+
 ?>

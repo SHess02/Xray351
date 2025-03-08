@@ -26,37 +26,64 @@ if (isset($_GET['companyid'])) {
 }
 
 // Handle form submission to update only specified fields
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $companyid = intval($_POST['companyid']);
-    $update_fields = [];
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $fields = [];
+    $params = [];
+    $types = "";
     
-    if (!empty($_POST['name'])) {
-        $name = $conn->real_escape_string($_POST['name']);
-        $update_fields[] = "name='$name'";
+    if (isset($_POST['name']) && $_POST['name'] !== "") {
+        $fields[] = "name = ?";
+        $params[] = $_POST['name'];
+        $types .= "s";
     }
-    if (!empty($_POST['description'])) {
-        $description = $conn->real_escape_string($_POST['description']);
-        $update_fields[] = "description='$description'";
+    if (isset($_POST['description']) && $_POST['description'] !== "") {
+        $fields[] = "description = ?";
+        $params[] = $_POST['description'];
+        $types .= "s";
     }
-    if (isset($_POST['activelistings']) && $_POST['activelistings'] !== '') {
-        $activelistings = intval($_POST['activelistings']);
-        $update_fields[] = "activelistings=$activelistings";
+    if (isset($_POST['activelistings']) && $_POST['activelistings'] !== "") {
+        $fields[] = "activelistings = ?";
+        $params[] = (int)$_POST['activelistings'];
+        $types .= "i";
     }
-    if (!empty($_POST['admin_email'])) {
-        $admin_email = $conn->real_escape_string($_POST['admin_email']);
-        $update_fields[] = "Admin_email='$admin_email'";
+    if (isset($_POST['admin_email']) && $_POST['admin_email'] !== "") {
+        $fields[] = "admin_email = ?";
+        $params[] = $_POST['admin_email'];
+        $types .= "s";
     }
     
-    if (!empty($update_fields)) {
-        $update_sql = "UPDATE company SET " . implode(", ", $update_fields) . " WHERE companyid=$companyid";
-        if ($conn->query($update_sql) === TRUE) {
+    if (!empty($fields)) {
+        $update_sql = "UPDATE company SET " . implode(", ", $fields) . " WHERE companyid = ?";
+        $params[] = $companyid;
+        $types .= "i";
+        
+        $update_stmt = $conn->prepare($update_sql);
+        if ($update_stmt) {
+            $update_stmt->bind_param($types, ...$params);
+            if ($update_stmt->execute()) {
+                echo "<p>Company details updated successfully!</p>";
+            if ($update_stmt->execute()) {
+				echo "<p>Company details updated successfully!</p>";
+    // Refresh company data after update
+    $sql = "SELECT * FROM company WHERE companyid = ?";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("i", $companyid);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $company = $result->fetch_assoc();
+} else {
+    echo "<p>Error updating company details.</p>";
+}
+            } else {
+                echo "<p>Error updating company details.</p>";
+            }
         } else {
-            echo "Error updating record: " . $conn->error;
+            echo "<p>Failed to prepare update statement.</p>";
         }
-    } else {
-        echo "No fields provided for update.";
     }
 }
+
+$conn->close();
 ?>
 
 <!DOCTYPE html>

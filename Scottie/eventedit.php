@@ -17,7 +17,7 @@ if ($conn->connect_error) {
   die("Connection failed: " . $conn->connect_error);
 }
 
-// Fetch company details if ID is provided
+// Fetch event details if ID is provided
 if (isset($_GET['eventid'])) {
     $eventid = intval($_GET['eventid']);
     $sql = "SELECT * FROM event WHERE eventid= $eventid";
@@ -26,28 +26,54 @@ if (isset($_GET['eventid'])) {
 }
 
 // Handle form submission to update only specified fields
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $eventid = intval($_POST['eventid']);
-    $update_fields = [];
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $fields = [];
+    $params = [];
+    $types = "";
     
-    if (!empty($_POST['name'])) {
-        $name = $conn->real_escape_string($_POST['name']);
-        $update_fields[] = "name='$name'";
+    if (isset($_POST['name']) && $_POST['name'] !== "") {
+        $fields[] = "name = ?";
+        $params[] = $_POST['name'];
+        $types .= "s";
     }
-    if (!empty($_POST['location'])) {
-        $location = $conn->real_escape_string($_POST['location']);
-        $update_fields[] = "location='$location'";
+    if (isset($_POST['location']) && $_POST['location'] !== "") {
+        $fields[] = "location = ?";
+        $params[] = $_POST['location'];
+        $types .= "s";
     }
-    if (!empty($update_fields)) {
-        $update_sql = "UPDATE event SET " . implode(", ", $update_fields) . " WHERE eventid=$eventid";
-        if ($conn->query($update_sql) === TRUE) {
+    
+    if (!empty($fields)) {
+        $update_sql = "UPDATE event SET " . implode(", ", $fields) . " WHERE eventid = ?";
+        $params[] = $eventid;
+        $types .= "i";
+        
+        $update_stmt = $conn->prepare($update_sql);
+        if ($update_stmt) {
+            $update_stmt->bind_param($types, ...$params);
+            if ($update_stmt->execute()) {
+                echo "<p>Event details updated successfully!</p>";
+            if ($update_stmt->execute()) {
+				echo "<p>Event details updated successfully!</p>";
+    // Refresh event data after update
+    $sql = "SELECT * FROM event WHERE eventid = ?";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("i", $eventid);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $event = $result->fetch_assoc();
+} else {
+    echo "<p>Error updating event details.</p>";
+}
+            } else {
+                echo "<p>Error updating event details.</p>";
+            }
         } else {
-            echo "Error updating record: " . $conn->error;
+            echo "<p>Failed to prepare update statement.</p>";
         }
-    } else {
-        echo "No fields provided for update.";
     }
 }
+
+$conn->close();
 ?>
 
 <!DOCTYPE html>
@@ -131,9 +157,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             
             <label> Location: </label>
             <textarea name="location"><?php echo htmlspecialchars($event['location']); ?></textarea>
-            
-            <label> Date & Time: </label>
-            <input type="datetime" name="datetime" value="<?php echo $event['datetime']; ?>">
             
             <input type="submit" value="Update">
         </form>

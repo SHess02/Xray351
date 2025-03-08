@@ -26,28 +26,54 @@ if (isset($_GET['jobid'])) {
 }
 
 // Handle form submission to update only specified fields
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $jobid = intval($_POST['jobid']);
-    $update_fields = [];
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $fields = [];
+    $params = [];
+    $types = "";
     
-    if (!empty($_POST['title'])) {
-        $title = $conn->real_escape_string($_POST['title']);
-        $update_fields[] = "title='$title'";
+    if (isset($_POST['title']) && $_POST['title'] !== "") {
+        $fields[] = "title = ?";
+        $params[] = $_POST['title'];
+        $types .= "s";
     }
-    if (!empty($_POST['description'])) {
-        $description = $conn->real_escape_string($_POST['description']);
-        $update_fields[] = "description='$description'";
+    if (isset($_POST['description']) && $_POST['description'] !== "") {
+        $fields[] = "description = ?";
+        $params[] = $_POST['description'];
+        $types .= "s";
     }
-    if (!empty($update_fields)) {
-        $update_sql = "UPDATE job SET " . implode(", ", $update_fields) . " WHERE jobid=$jobid";
-        if ($conn->query($update_sql) === TRUE) {
+    
+    if (!empty($fields)) {
+        $update_sql = "UPDATE job SET " . implode(", ", $fields) . " WHERE jobid = ?";
+        $params[] = $jobid;
+        $types .= "i";
+        
+        $update_stmt = $conn->prepare($update_sql);
+        if ($update_stmt) {
+            $update_stmt->bind_param($types, ...$params);
+            if ($update_stmt->execute()) {
+                echo "<p>Job details updated successfully!</p>";
+            if ($update_stmt->execute()) {
+				echo "<p>Job details updated successfully!</p>";
+    // Refresh job data after update
+    $sql = "SELECT * FROM job WHERE jobid = ?";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("i", $jobid);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $job = $result->fetch_assoc();
+} else {
+    echo "<p>Error updating job details.</p>";
+}
+            } else {
+                echo "<p>Error updating job details.</p>";
+            }
         } else {
-            echo "Error updating record: " . $conn->error;
+            echo "<p>Failed to prepare update statement.</p>";
         }
-    } else {
-        echo "No fields provided for update.";
     }
 }
+
+$conn->close();
 ?>
 
 <!DOCTYPE html>
@@ -131,9 +157,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             
             <label> Description: </label>
             <textarea name="description"><?php echo htmlspecialchars($job['description']); ?></textarea>
-            
-            <label> Open Date: </label>
-            <input type="datetime" name="opendate" value="<?php echo $job['opendate']; ?>">
             
             <input type="submit" value="Update">
         </form>

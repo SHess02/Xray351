@@ -1,7 +1,6 @@
 <?php
 include '../includes/includes.php';
 
-
 $db = new Database();
 
 // Database connection settings
@@ -31,14 +30,30 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $params = [];
     $types = "";
     
-    if (isset($_POST['name']) && $_POST['name'] !== "") {
+    if (!empty($_POST['name'])) {
         $fields[] = "name = ?";
         $params[] = $_POST['name'];
         $types .= "s";
     }
-    if (isset($_POST['location']) && $_POST['location'] !== "") {
+    if (!empty($_POST['location'])) {
         $fields[] = "location = ?";
         $params[] = $_POST['location'];
+        $types .= "s";
+    }
+    if (!empty($_POST['Admin_email'])) {
+        $fields[] = "Admin_email = ?";
+        $params[] = $_POST['Admin_email'];
+        $types .= "s";
+    }
+    if (!empty($_POST['Alumni_email'])) {
+        $fields[] = "Alumni_email = ?";
+        $params[] = $_POST['Alumni_email'];
+        $types .= "s";
+    }
+    if (!empty($_POST['datetime'])) {
+        $datetime = date("Y-m-d H:i:s", strtotime($_POST['datetime']));
+        $fields[] = "datetime = ?";
+        $params[] = $datetime;
         $types .= "s";
     }
     
@@ -52,18 +67,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $update_stmt->bind_param($types, ...$params);
             if ($update_stmt->execute()) {
                 echo "<p>Event details updated successfully!</p>";
-            if ($update_stmt->execute()) {
-				echo "<p>Event details updated successfully!</p>";
-    // Refresh event data after update
-    $sql = "SELECT * FROM event WHERE eventid = ?";
-    $stmt = $conn->prepare($sql);
-    $stmt->bind_param("i", $eventid);
-    $stmt->execute();
-    $result = $stmt->get_result();
-    $event = $result->fetch_assoc();
-} else {
-    echo "<p>Error updating event details.</p>";
-}
+                // Refresh event data after update
+                $sql = "SELECT * FROM event WHERE eventid = ?";
+                $stmt = $conn->prepare($sql);
+                $stmt->bind_param("i", $eventid);
+                $stmt->execute();
+                $result = $stmt->get_result();
+                $event = $result->fetch_assoc();
             } else {
                 echo "<p>Error updating event details.</p>";
             }
@@ -78,25 +88,6 @@ $conn->close();
 
 <!DOCTYPE html>
 <html lang="en">
-<nav class="navbar">
-    <button class="nav-btn back-btn" onclick="window.location.href='browsingtab.php'">&#8592;</button>
-    <a href="browsingtab.php" class="nav-btn">Recent</a>
-	<a href="browsingtab.php" class="nav-btn">Jobs</a>
-	<a href="browsingtab.php" class="nav-btn">Companies</a>
-	<a href="browsingtab.php" class="nav-btn">Events</a>
-
-    
-    <div class="search-container">
-        <input type="text" class="search-bar" placeholder="Search...">
-    </div>
-	
-	<a href="browsingtab.php" class="nav-btn">Recent</a>
-
-    <div class="nav-right">
-        <button class="nav-btn">🔔</button>
-        <button class="nav-btn profile-btn">👤</button>
-    </div>
-</nav>
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -127,7 +118,6 @@ $conn->close();
             color: #555;
         }
         input, textarea {
-			font-family: Arial,sans-serif;
             width: 90%;
             padding: 10px;
             margin-top: 5px;
@@ -157,6 +147,15 @@ $conn->close();
             
             <label> Location: </label>
             <textarea name="location"><?php echo htmlspecialchars($event['location']); ?></textarea>
+            
+            <label> Admin Email: </label>
+            <input type="text" name="Admin_email" value="<?php echo htmlspecialchars($event['Admin_email']); ?>">
+            
+            <label> Alumni Email: </label>
+            <input type="text" name="Alumni_email" value="<?php echo htmlspecialchars($event['Alumni_email']); ?>">
+            
+            <label> Event Date & Time: </label>
+            <input type="datetime-local" name="datetime" value="<?php echo isset($event['datetime']) ? date('Y-m-d\TH:i', strtotime($event['datetime'])) : ''; ?>">
             
             <input type="submit" value="Update">
         </form>

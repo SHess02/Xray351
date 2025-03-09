@@ -1,3 +1,4 @@
+
 <?php
 	if( isset($_GET['type'])){
 		include '../includes/includes.php';
@@ -107,5 +108,35 @@
 				$result_event->free();
 				break;
 		}
+	// Add Event Tab	
+	echo "<br>";
+	echo "<button onclick=\"window.location.href='addevent.php'\" 
+        class='btn-style'>Add</button>";
+	echo "</div>";
 	}
 ?>
+
+<!DOCTYPE html>
+<html lang="en">
+	<style>
+		.btn-style {
+		background-color: #007bff;
+		color: white;
+		border: none;
+		padding: 10px 15px;
+		font-size: 16px;
+		cursor: pointer;
+		border-radius: 5px;
+		}
+		.btn-style:hover {
+			background-color: #0056b3;
+		}
+		.button-container {
+		display: flex;
+		justify-content: center;
+		gap: 40px; /* Increased space between buttons */
+		margin-top: 20px;
+	}
+	</style>
+</html>
+	

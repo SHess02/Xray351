@@ -16,28 +16,30 @@
 	// Displaying Event Information
 	if ($rows == 0){
 		echo "Event not found";
-	}
-	else {
+	} else {
 		$event = $result->fetch_assoc();
 		echo "<table border='1'>
 			  <tr>
               <th> Name </th>
               <th> Location </th>
               <th> Date & Time</th>
+			  <th> Admin Email </th>
+			  <th> Alumni Email </th>
               </tr>";
 		echo "<tr>
               <td>" . $event["name"] . "</td>
               <td>" . $event["location"] . "</td>
               <td>" . $event["datetime"] . "</td>
+			  <td>" . $event["Admin_email"] . "</td>
+			  <td>" . $event["Alumni_email"] . "</td>
               </tr>";
-			}
-		echo "</table>";
-		
+	}
+	echo "</table>";
 	
-	// Editing tab
-	echo "<br>";
-	echo "<button onclick=\"window.location.href='eventedit.php?eventid=" . htmlspecialchars($event['eventid']) . "'\" 
-        class='btn-style'>Edit</button>";
+	// Editing Event Tab
+	echo "<div class='button-container'>";
+	echo "<button onclick=\"window.location.href='eventedit.php?eventid=" . htmlspecialchars($event['eventid']) . "'\" class='btn-style'>Edit</button>";
+
 ?>
 
 <!DOCTYPE html>
@@ -55,6 +57,12 @@
 		.btn-style:hover {
 			background-color: #0056b3;
 		}
+		.button-container {
+		display: flex;
+		justify-content: center;
+		gap: 40px; /* Increased space between buttons */
+		margin-top: 20px;
+	}
 	</style>
-<html><body>
-</body></html>	
+</html>
+	

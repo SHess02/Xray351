@@ -28,7 +28,7 @@
 						$row = $result_job->fetch_assoc();
 						echo "<tr class=\"highlight\">";
 						echo "<td>".($i+1)."</td>";
-						echo "<td><a href=\"job.php?title=".$row['jobid']."\" />".$row['title']."</a></td>";
+						echo "<td><a href=\"job.php?jobid=".$row['jobid']."\" />".$row['title']."</a></td>";
 						echo"<td>".$row['description']."</td>";
 						echo"<td>".$row['opendate']."</td>";
 						echo "</tr>\n";
@@ -64,7 +64,7 @@
 						$row = $result_company->fetch_assoc();
 						echo "<tr class=\"highlight\">";
 						echo "<td>".($i+1)."</td>";
-						echo "<td><a href=\"company.php?name=".$row['companyid']."\" />".$row['name']."</a></td>";
+						echo "<td><a href=\"company.php?companyid=".$row['companyid']."\" />".$row['name']."</a></td>";
 						echo"<td>".$row['description']."</td>";
 						echo"<td>".$row['activelistings']."</td>";
 						echo "</tr>\n";
@@ -97,7 +97,7 @@
 						$row = $result_event->fetch_assoc();
 						echo "<tr class=\"highlight\">";
 						echo "<td>".($i+1)."</td>";
-						echo "<td><a href=\"event.php?name=".$row['eventid']."\" />".$row['name']."</a></td>";
+						echo "<td><a href=\"event.php?eventid=".$row['eventid']."\" />".$row['name']."</a></td>";
 						echo"<td>".$row['location']."</td>";
 						echo"<td>".$row['datetime']."</td>";
 						echo "</tr>\n";

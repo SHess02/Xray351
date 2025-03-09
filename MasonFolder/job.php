@@ -5,6 +5,8 @@
 
 	$db = new Database();
 
+
+	
 	$select = 'select * from job';
 	if (@$_GET['jobid'] != "") {
 		$select .= ' where jobid = "'.$_GET['jobid'].'"';

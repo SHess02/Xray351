@@ -1,0 +1,87 @@
+USE `alumniconnectdb`;
+
+-- Insert Students
+INSERT INTO `Student` (`email`, `password`, `name`, `graduationyear`, `major`, `aboutme`) VALUES
+('alice.smith@email.com', 'pass123', 'Alice Smith', 2025, 'Computer Science', 'Aspiring software developer.'),
+('bob.jones@email.com', 'secure456', 'Bob Jones', 2024, 'Mechanical Engineering', 'Passionate about robotics.'),
+('charlie.davis@email.com', 'mypassword', 'Charlie Davis', 2026, 'Business Administration', 'Interested in entrepreneurship.'),
+('diana.miller@email.com', 'diana2024', 'Diana Miller', 2025, 'Biotechnology', 'Exploring the future of genetics.'),
+('edward.wilson@email.com', 'edwardpass', 'Edward Wilson', 2023, 'Finance', 'Eager to break into investment banking.');
+
+-- Insert Alumni
+INSERT INTO `Alumni` (`email`, `password`, `name`, `graduationyear`, `major`, `aboutme`) VALUES
+('frank.thomas@email.com', 'frankpass', 'Frank Thomas', 2018, 'Computer Science', 'Working as a senior software engineer.'),
+('grace.lee@email.com', 'grace123', 'Grace Lee', 2019, 'Mechanical Engineering', 'Currently designing renewable energy solutions.'),
+('henry.moore@email.com', 'henrypass', 'Henry Moore', 2020, 'Business Administration', 'Leading a startup in fintech.'),
+('isabel.adams@email.com', 'isabel456', 'Isabel Adams', 2017, 'Biotechnology', 'Researcher in genetic engineering.'),
+('jack.taylor@email.com', 'jack789', 'Jack Taylor', 2021, 'Finance', 'Financial analyst at a major bank.');
+
+-- Insert Admins
+INSERT INTO `Admin` (`email`, `password`, `name`, `jobtitle`) VALUES
+('admin1@email.com', 'adminpass1', 'Admin One', 'University Relations Manager'),
+('admin2@email.com', 'adminpass2', 'Admin Two', 'Alumni Network Coordinator'),
+('admin3@email.com', 'adminpass3', 'Admin Three', 'Career Services Director');
+
+-- Insert Jobs
+INSERT INTO `Job` (`title`, `description`, `opendate`, `Alumni_email`, `Admin_email`) VALUES
+('Software Engineer', 'Develop web applications.', '2025-03-01', 'frank.thomas@email.com', 'admin1@email.com'),
+('Mechanical Engineer', 'Work on designing energy solutions.', '2025-02-20', 'grace.lee@email.com', 'admin1@email.com'),
+('Financial Analyst', 'Analyze market trends.', '2025-01-15', 'jack.taylor@email.com', 'admin2@email.com'),
+('Biotech Researcher', 'Develop new genetic solutions.', '2025-02-10', 'isabel.adams@email.com', 'admin3@email.com'),
+('Business Consultant', 'Assist startups in financial planning.', '2025-03-05', 'henry.moore@email.com', 'admin2@email.com');
+
+-- Insert Events
+INSERT INTO `Event` (`name`, `location`, `datetime`, `Alumni_email`, `Admin_email`) VALUES
+('Tech Networking Night', 'University Hall', '2025-04-15 18:00:00', 'frank.thomas@email.com', 'admin1@email.com'),
+('Engineering Expo', 'Main Auditorium', '2025-05-10 09:00:00', 'grace.lee@email.com', 'admin1@email.com'),
+('Finance Forum', 'Business Center', '2025-06-20 14:00:00', 'jack.taylor@email.com', 'admin2@email.com'),
+('Biotech Symposium', 'Science Lab', '2025-07-05 10:30:00', 'isabel.adams@email.com', 'admin3@email.com'),
+('Startup Meet & Greet', 'Innovation Hub', '2025-08-12 16:00:00', 'henry.moore@email.com', 'admin2@email.com');
+
+-- Insert Companies
+INSERT INTO `Company` (`name`, `description`, `activelistings`, `Admin_email`) VALUES
+('TechCorp', 'Leading software company.', 10, 'admin1@email.com'),
+('GreenEnergy Inc.', 'Innovating in renewable energy.', 5, 'admin1@email.com'),
+('WealthFinance', 'Providing financial consulting.', 8, 'admin2@email.com'),
+('BioGenetics', 'Advancing genetic research.', 6, 'admin3@email.com'),
+('Startup Advisors', 'Helping startups grow.', 4, 'admin2@email.com');
+
+-- Insert Messages
+INSERT INTO `Message` (`Student_email`, `Alumni_email`, `datetime`, `contents`, `to`, `from`) VALUES
+('alice.smith@email.com', 'frank.thomas@email.com', '2025-03-10 12:30:00', 'Hi Frank, I am interested in software development. Can you share some advice?', 'frank.thomas@email.com', 'alice.smith@email.com'),
+('bob.jones@email.com', 'grace.lee@email.com', '2025-03-11 14:00:00', 'Hi Grace, I love renewable energy solutions. How did you get into this field?', 'grace.lee@email.com', 'bob.jones@email.com'),
+('charlie.davis@email.com', 'henry.moore@email.com', '2025-03-09 16:45:00', 'Hi Henry, I want to start a fintech company. Any tips?', 'henry.moore@email.com', 'charlie.davis@email.com'),
+('diana.miller@email.com', 'isabel.adams@email.com', '2025-03-08 10:15:00', 'Hi Isabel, I am studying biotech. What do you think the future holds for genetics?', 'isabel.adams@email.com', 'diana.miller@email.com'),
+('edward.wilson@email.com', 'jack.taylor@email.com', '2025-03-07 11:20:00', 'Hi Jack, I am interested in finance. What skills should I focus on?', 'jack.taylor@email.com', 'edward.wilson@email.com');
+
+-- Insert Applications
+INSERT INTO `Application` (`Student_email`, `Job_jobid`, `datecreated`, `resume`) VALUES
+('alice.smith@email.com', 1, '2025-03-05', NULL),
+('bob.jones@email.com', 2, '2025-03-04', NULL),
+('charlie.davis@email.com', 5, '2025-03-03', NULL),
+('diana.miller@email.com', 4, '2025-03-02', NULL),
+('edward.wilson@email.com', 3, '2025-03-01', NULL);
+
+-- Insert Favorite Lists
+INSERT INTO `Favorite_List` (`Student_email`) VALUES
+('alice.smith@email.com'),
+('bob.jones@email.com'),
+('charlie.davis@email.com'),
+('diana.miller@email.com'),
+('edward.wilson@email.com');
+
+-- Insert Favorite Companies
+INSERT INTO `Favorite_Company` (`Company_companyid`, `Favorite_List_listid`) VALUES
+(1, 1),
+(2, 2),
+(3, 3),
+(4, 4),
+(5, 5);
+
+-- Insert Favorite Jobs
+INSERT INTO `Favorite_Job` (`Job_jobid`, `Favorite_List_listid`) VALUES
+(1, 1),
+(2, 2),
+(3, 3),
+(4, 4),
+(5, 5);

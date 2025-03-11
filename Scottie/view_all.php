@@ -36,7 +36,10 @@
 					}
 				}
 				echo "</table>\n";
-
+				// Add Job Tab	
+				echo "<br>";
+				echo "<button onclick=\"window.location.href='addjob.php'\" class='btn-style'>Add Job</button>";
+				echo "</div>";
 				$result_job->free();
 			
 				break;
@@ -74,6 +77,10 @@
 				echo "</table>\n";
 				
 				$result_company->free();
+				// Add Company Tab	
+				echo "<br>";
+				echo "<button onclick=\"window.location.href='addcompany.php'\" class='btn-style'>Add Company</button>";
+				echo "</div>";
 				break;
 				
 			case 'events':
@@ -105,15 +112,15 @@
 					}
 				}
 				echo "</table>\n";
+				// Add Event Tab	
+				echo "<br>";
+				echo "<button onclick=\"window.location.href='addevent.php'\" class='btn-style'>Add Event</button>";
+				echo "</div>";
 				$result_event->free();
 				break;
-		}
-	// Add Event Tab	
-	echo "<br>";
-	echo "<button onclick=\"window.location.href='addevent.php'\" 
-        class='btn-style'>Add</button>";
-	echo "</div>";
+
 	}
+		}
 ?>
 
 <!DOCTYPE html>

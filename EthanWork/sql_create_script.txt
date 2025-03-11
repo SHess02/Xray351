@@ -92,19 +92,3 @@ CREATE TABLE IF NOT EXISTS `alumniconnectdb`.`Favorite_List` (
   PRIMARY KEY (`listid`, `Student_email`),
   FOREIGN KEY (`Student_email`) REFERENCES `alumniconnectdb`.`Student` (`email`)
 );
-
-CREATE TABLE IF NOT EXISTS `alumniconnectdb`.`Favorite_Company` (
-  `Company_companyid` INT NOT NULL,
-  `Favorite_List_listid` INT NOT NULL,
-  PRIMARY KEY (`Company_companyid`, `Favorite_List_listid`),
-  FOREIGN KEY (`Company_companyid`) REFERENCES `alumniconnectdb`.`Company` (`companyid`),
-  FOREIGN KEY (`Favorite_List_listid`) REFERENCES `alumniconnectdb`.`Favorite_List` (`listid`)
-);
-
-CREATE TABLE IF NOT EXISTS `alumniconnectdb`.`Favorite_Job` (
-  `Job_jobid` INT NOT NULL,
-  `Favorite_List_listid` INT NOT NULL,
-  PRIMARY KEY (`Job_jobid`, `Favorite_List_listid`),
-  FOREIGN KEY (`Job_jobid`) REFERENCES `alumniconnectdb`.`Job` (`jobid`),
-  FOREIGN KEY (`Favorite_List_listid`) REFERENCES `alumniconnectdb`.`Favorite_List` (`listid`)
-);

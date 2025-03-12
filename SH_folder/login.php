@@ -40,15 +40,12 @@ if (isset($_POST['submit'])) {
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title> AlumniConnect </title>
 		<link rel="stylesheet" href="styles.css">
-		<style>
+
 			<style>
 				body {
 					background: linear-gradient(135deg, #6a11cb, #2575fc);
 					color: #fff;
-					min-height: 100vh;
-					display: flex;
-					justify-content: center;
-					align-items: center;
+				
 					}
 				.registration-form {
 					background: #ffffff;
@@ -78,7 +75,7 @@ if (isset($_POST['submit'])) {
 				.username {
 					font-weight: bold;
 					font-size: 60px;
-					color: darkblue;
+					color: 	#c2c2a3;
 					text-align: center;
 					}
 

@@ -17,7 +17,7 @@
             <div class="dropdown-content">
                 <a href="profile.php">View Profile</a>
                 <a href="settings.php">Settings</a>
-                <a href="logout.php">Logout</a>
+                <a href="../SH_folder/logout.php">Logout</a>
             </div>
         </div>
     </div>

@@ -1,5 +1,8 @@
 USE alumniconnectdb;
 
+-- Insert into Favorite_List
+INSERT INTO Favorite_List () VALUES (), (), (), (), ();
+
 -- Insert into Admin
 INSERT INTO Admin (email, name, jobtitle) VALUES
 ('admin1@example.com', 'Alice Johnson', 'Career Advisor'),
@@ -64,3 +67,10 @@ INSERT INTO Message (Student_email, Alumni_email, datetime, contents, `to`, `fro
 ('student4@example.com', 'alumni4@example.com', '2024-02-08 17:00:00', 'What skills are needed in EdTech?', 'alumni4@example.com', 'student4@example.com'),
 ('student5@example.com', 'alumni5@example.com', '2024-02-09 18:30:00', 'How can I contribute to sustainability efforts?', 'alumni5@example.com', 'student5@example.com');
 
+-- Insert into Favorite_Company
+INSERT INTO Favorite_Company (Company_companyid, Favorite_List_listid) VALUES
+(1, 1), (2, 2), (3, 3), (4, 4), (5, 5);
+
+-- Insert into Favorite_Job
+INSERT INTO Favorite_Job (Job_jobid, Favorite_List_listid) VALUES
+(1, 1), (2, 2), (3, 3), (4, 4), (5, 5);

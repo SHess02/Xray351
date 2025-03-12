@@ -1,9 +1,9 @@
 <nav class="navbar">
     <button class="nav-btn back-btn" onclick="history.back()">&#8592;</button>
     <a href="browsingtab.php" class="nav-btn">Recent</a>
-	<a href="browsingtab.php" class="nav-btn">Jobs</a>
-	<a href="browsingtab.php" class="nav-btn">Companies</a>
-	<a href="browsingtab.php" class="nav-btn">Events</a>
+	<a href='view_all.php?type=jobs' class="nav-btn">Jobs</a>
+	<a href='view_all.php?type=companies' class="nav-btn">Companies</a>
+	<a href='view_all.php?type=events' class="nav-btn">Events</a>
 
     
     <div class="search-container">

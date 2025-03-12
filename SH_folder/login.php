@@ -4,16 +4,8 @@
 session_start();
 
 
-require_once '../database.php';
-$dbname = new Database();
-
-// Create connection
-$conn = new mysqli($servername, $username, $password, $dbname);
-
-// Check connection
-if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
-}
+require_once 'C:/xampp/htdocs/Xray351/includes/functional/database.php';
+$conn = new Database();
 
 if (isset($_POST['submit'])) {
     
@@ -21,19 +13,17 @@ if (isset($_POST['submit'])) {
     $passwordinput = $_POST['passinput'];
 	
 
-    // Corrected query to check both username and password
+
     $checkQuery = "SELECT * FROM student WHERE email = '$usernameinput' AND password = '$passwordinput'";
     
-    // Query the database
     $result = $conn->query($checkQuery);
 
-    // Check if any row was returned (user found)
     if ($result->num_rows > 0) {
-        // Set the session variable to keep the user logged in
+
         $_SESSION['usernameinput'] = $usernameinput;
 
-        // Redirect to dashboard.php after successful login
-        header("Location: dashboard.php");
+
+        header("Location: ../MasonFolder/browsingtab.php");
         exit();
     } else {
         echo "Username or password is incorrect<br>";
@@ -53,9 +43,22 @@ if (isset($_POST['submit'])) {
 		<style>
 			<style>
 				body {
-					background-color: #b8b894;
-					background-size: cover;
+					background: linear-gradient(135deg, #6a11cb, #2575fc);
+					color: #fff;
+					min-height: 100vh;
+					display: flex;
+					justify-content: center;
+					align-items: center;
 					}
+				.registration-form {
+					background: #ffffff;
+					color: #000;
+					padding: 2rem;
+					border-radius: 10px;
+					box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+					max-width: 400px;
+					width: 100%;
+			}
 
 				header {
 					text-align: center;

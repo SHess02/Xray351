@@ -147,12 +147,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 <label for="confirm-password" class="form-label">Confirm Password</label>
                 <input type="password" class="form-control" id="confirm-password" name="confirm_password" placeholder="Confirm your password" required>           
 			</div>
-            <label><b>Security Question #1:</b><br>What was the year, make, and model of your first car?</label><br>
-			<input type="text" name="security_a1" required><br><br>
-
-			<label><b>Security Question #2:</b><br>What was your childhood nickname?</label><br>
-			<input type="text" name="security_a2" required><br><br>
-			
+            <div class="mb-3">
+				<label for="password" class="form-label">Security Question #1: What was the year, make, and model of your first car?</label>
+				<input type="text" name="security_a1" required><br><br>
+			</div>
+			<div>
+				<label for="password" class="form-label">Security Question #2: What was your childhood nickname?</label>
+				<input type="text" name="security_a2" required><br><br>
+			</div>
 			<button type="submit" name="register" class="btn btn-custom">Register</button>
         
 		</form>

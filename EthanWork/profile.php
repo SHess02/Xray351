@@ -1,18 +1,12 @@
 <?php
 session_start();
-include 'db_connect.php';
+include '../SH_folder/db_connect_temp.php';
 
-if (!isset($_SESSION['user_id'])) {
-    header("Location: login.php");
-    exit();
-}
-
-$user_id = $_SESSION['user_id'];
+$userid = $_SESSION['userid'];
 $message = "";
 
-// Fetch user details including role
 $stmt = $conn->prepare("SELECT role, name, email, major, graduationyear, aboutme FROM user WHERE userid = ?");
-$stmt->bind_param("i", $user_id);
+$stmt->bind_param("i", $userid);
 $stmt->execute();
 $result = $stmt->get_result();
 $user = $result->fetch_assoc();
@@ -120,7 +114,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         </form>
 
         <br>
-        <a href='home.php' class="btn btn-secondary">Home</a>
+        <a href='../MasonFolder/browsingtab.php' class="btn btn-secondary">Home</a>
     </div>
 </body>
 </html>

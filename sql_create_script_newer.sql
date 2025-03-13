@@ -33,6 +33,7 @@ CREATE TABLE IF NOT EXISTS alumniconnectdb.event (
   location VARCHAR(45) NULL,
   datetime DATETIME NULL,
   creatorid INT NOT NULL,
+  description LONGTEXT NULL,
   PRIMARY KEY (eventid),
   FOREIGN KEY (creatorid) REFERENCES alumniconnectdb.user (userid)
 );

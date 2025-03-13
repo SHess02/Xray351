@@ -30,7 +30,8 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    background-color: #007bff;
+	background: linear-gradient(135deg, #6a11cb, #2575fc);
+    color: #fff;
     padding: 10px 20px;
     box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
     position: fixed;

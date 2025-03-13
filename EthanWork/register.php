@@ -125,13 +125,20 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         </div>
         <form method="POST">
             <div class="mb-3">
-                <label for="name" class="form-label">Username</label>
+                <label for="name" class="form-label">Name</label>
                 <input type="text" class="form-control" id="name" name="name" placeholder="Enter your name" required>
             </div>
             <div class="mb-3">
                 <label for="email" class="form-label">Email Address</label>
                 <input type="email" class="form-control" id="email" name="email" placeholder="Enter your email" required>
             </div>
+			<div>
+			<label for="student">Student</label>
+			<input type="radio" id="student" name="toggle" value="student">
+
+			<label for="alumni">Alumni</label>
+			<input type="radio" id="alumni" name="toggle" value="alumni">
+			</div> <br>
             <div class="mb-3">
                 <label for="password" class="form-label">Password</label>
                 <input type="password" class="form-control" id="password" name="password" placeholder="Create a password" required>

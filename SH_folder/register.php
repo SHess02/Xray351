@@ -12,40 +12,60 @@ if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
 
-if (isset($_POST['register'])) {
-    $name = $_POST['name'];
-    $email = $_POST['email'];
-    $password = $_POST['password'];
-    $graduationyear = $_POST['graduationyear'];
-    $major = $_POST['major'];
-    $confirm_password = $_POST['confirm_password'];
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    $name = trim($_POST['name']);
+    $email = trim(strtolower($_POST['email']));
+    $password = trim($_POST['password']);
+    $confirm_password = trim($_POST['confirm_password']);
+    $security_a1 = trim(strtolower($_POST['security_a1']));
+    $security_a2 = trim(strtolower($_POST['security_a2']));
 
-    if ($password !== $confirm_password) {
-        $error_message = "Passwords do not match.";
-    } else {
-        $checkQuery = "SELECT * FROM student WHERE name = ? OR email = ?";
-        $stmt = $conn->prepare($checkQuery);
-        $stmt->bind_param("ss", $name, $email);
-        $stmt->execute();
-        $result = $stmt->get_result();
 
-        if ($result->num_rows > 0) {
-            $error_message = "Email already taken.";
+
+    if (!preg_match("/^[a-zA-Z0-9._%+-]+@cnu\.edu$/", $email)) {
+        echo "Invalid email. You must use a @cnu.edu email address.";
+        exit();
+    }
+
+    if (
+        strlen($name) > 0 && strlen($name) <= 45 &&
+        strlen($email) > 0 && strlen($email) <= 45 &&
+        strlen($confirm_password) >= 8 && strlen($confirm_password) <= 255 &&
+        strlen($security_a1) > 0 && strlen($security_a1) <= 100 &&
+        strlen($security_a2) > 0 && strlen($security_a2) <= 100) {
+        
+		if ($password !== $confirm_password) {
+            echo "Passwords do not match";
         } else {
-            $insertQuery = "INSERT INTO student (name, email, password, graduationyear, major) VALUES (?, ?, ?, ?, ?)";
-            $stmt = $conn->prepare($insertQuery);
-            $stmt->bind_param("sssss", $name, $email, $password, $graduationyear, $major);
-            if ($stmt->execute()) {
-                // Registration successful
-                $success_message = "Registration successful!";
+            $stmt = $conn->prepare("SELECT userid FROM user WHERE email = ?");
+            $stmt->bind_param("s", $email);
+            $stmt->execute();
+            $stmt->store_result();
+
+            if ($stmt->num_rows > 0) {
+                echo "Email already exists";
             } else {
-                $error_message = "Error: " . $stmt->error;
+                $stmt->close();
+
+                $hashed_password = password_hash($password, PASSWORD_DEFAULT);
+
+                $stmt = $conn->prepare("INSERT INTO user (email, role, name, password, securityans1, securityans2) VALUES (?, ?, ?, ?, ?, ?)");
+                $stmt->bind_param("ssssss", $email, $role, $name, $hashed_password, $security_a1, $security_a2);
+
+                if ($stmt->execute()) {
+                    header("Location: login.php"); // Fixed redirect
+                    exit();
+                } else {
+                    echo "Error: " . $conn->error;
+                }
             }
+            $stmt->close();
         }
+    } else {
+        echo "Invalid input. Ensure all fields are within the required length.";
     }
 }
 ?>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -118,21 +138,21 @@ if (isset($_POST['register'])) {
         </div>
         <form method="POST">
             <div class="mb-3">
-                <label for="name" class="form-label">Username</label>
+                <label for="name" class="form-label">Name</label>
                 <input type="text" class="form-control" id="name" name="name" placeholder="Enter your name" required>
             </div>
             <div class="mb-3">
                 <label for="email" class="form-label">Email Address</label>
                 <input type="email" class="form-control" id="email" name="email" placeholder="Enter your email" required>
             </div>
-            <div class="mb-3">
-                <label for="graduationyear" class="form-label">Graduation Year</label>
-                <input type="text" class="form-control" id="graduationyear" name="graduationyear" placeholder="Enter your Graduation Year" required>
-            </div>
-            <div class="mb-3">
-                <label for="major" class="form-label">Major</label>
-                <input type="text" class="form-control" id="major" name="major" placeholder="Enter your Major" required>
-            </div>
+			<div>
+			<label for="student">Student</label>
+			<input type="radio" id="student" name="toggle" value="student">
+
+			<label for="alumni">Alumni</label>
+			<input type="radio" id="alumni" name="toggle" value="alumni">
+			</div> <br>
+
             <div class="mb-3">
                 <label for="password" class="form-label">Password</label>
                 <input type="password" class="form-control" id="password" name="password" placeholder="Create a password" required>

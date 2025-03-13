@@ -14,7 +14,7 @@ if (isset($_POST['submit'])) {
 	
 
 
-    $checkQuery = "SELECT * FROM student WHERE email = '$usernameinput' AND password = '$passwordinput'";
+    $checkQuery = "SELECT * FROM user WHERE email = '$usernameinput' AND password = '$passwordinput'";
     
     $result = $conn->query($checkQuery);
 
@@ -109,6 +109,7 @@ if (isset($_POST['submit'])) {
 				<input type="submit" name="submit" value="Login"><br><br>
 				<a href="register.php"><button type="button">Register</button></a>
             </p>
+			<br><a href="C:\xampp\htdocs\Xray351\EthanWork\forgot_password.php">Forgot password?</a>
 		
         
 		

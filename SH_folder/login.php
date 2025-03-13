@@ -109,7 +109,7 @@ if (isset($_POST['submit'])) {
 				<input type="submit" name="submit" value="Login"><br><br>
 				<a href="register.php"><button type="button">Register</button></a>
             </p>
-			<br><a href="C:\xampp\htdocs\Xray351\EthanWork\forgot_password.php">Forgot password?</a>
+			<br><a href="forgot_password.php">Forgot password?</a>
 		
         
 		

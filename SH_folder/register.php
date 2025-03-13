@@ -146,10 +146,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 <input type="email" class="form-control" id="email" name="email" placeholder="Enter your email" required>
             </div>
 			<div>
-			<label for="student">Student</label>
+			<label for="role">Student</label>
 			<input type="radio" id="student" name="toggle" value="student">
 
-			<label for="alumni">Alumni</label>
+			<label for="role">Alumni</label>
 			<input type="radio" id="alumni" name="toggle" value="alumni">
 			</div> <br>
 

@@ -1,21 +1,34 @@
 <?php
-include 'db_connect_temp.php';
+session_start();
+
+$servername = "localhost"; 
+$username = "root";
+$password = ""; 
+$dbname = "alumniconnectdb"; 
+
+$conn = new mysqli($servername, $username, $password, $dbname);
+
+if ($conn->connect_error) {
+    die("Connection failed: " . $conn->connect_error);
+}
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $name = trim($_POST['name']);
     $email = trim(strtolower($_POST['email']));
-    $role = trim($_POST['role']);
-	$password = trim($_POST['password']);
+    $password = trim($_POST['password']);
     $confirm_password = trim($_POST['confirm_password']);
     $security_a1 = trim(strtolower($_POST['security_a1']));
     $security_a2 = trim(strtolower($_POST['security_a2']));
+
+
 
     if (!preg_match("/^[a-zA-Z0-9._%+-]+@cnu\.edu$/", $email)) {
         echo "Invalid email. You must use a @cnu.edu email address.";
         exit();
     }
 
-    if (strlen($name) > 0 && strlen($name) <= 45 &&
+    if (
+        strlen($name) > 0 && strlen($name) <= 45 &&
         strlen($email) > 0 && strlen($email) <= 45 &&
         strlen($confirm_password) >= 8 && strlen($confirm_password) <= 255 &&
         strlen($security_a1) > 0 && strlen($security_a1) <= 100 &&
@@ -40,7 +53,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 $stmt->bind_param("ssssss", $email, $role, $name, $hashed_password, $security_a1, $security_a2);
 
                 if ($stmt->execute()) {
-                    header("Location: login.php");
+                    header("Location: login.php"); // Fixed redirect
                     exit();
                 } else {
                     echo "Error: " . $conn->error;
@@ -53,16 +66,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 }
 ?>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="utf-8" name="viewport" content="width=device-width, initial-scale=1">
-    <title>User Registration | AlumniConnect</title>
-    <link rel="stylesheet" type="text/css" href="styles.css">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-	<style>
-		body {
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Registration Form</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
             background: linear-gradient(135deg, #6a11cb, #2575fc);
             color: #fff;
             min-height: 100vh;
@@ -116,10 +128,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             font-size: 2rem;
             text-align: center;
         }
-	</style>
+    </style>
 </head>
+
 <body>
-   <div class="registration-form">
+    <div class="registration-form">
         <div class="form-header">
             <h2>Register Your Account</h2>
         </div>
@@ -133,35 +146,40 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 <input type="email" class="form-control" id="email" name="email" placeholder="Enter your email" required>
             </div>
 			<div>
-			<label for="student">Student</label>
+			<label for="role">Student</label>
 			<input type="radio" id="student" name="toggle" value="student">
 
-			<label for="alumni">Alumni</label>
+			<label for="role">Alumni</label>
 			<input type="radio" id="alumni" name="toggle" value="alumni">
 			</div> <br>
+
             <div class="mb-3">
                 <label for="password" class="form-label">Password</label>
                 <input type="password" class="form-control" id="password" name="password" placeholder="Create a password" required>
             </div>
             <div class="mb-3">
                 <label for="confirm-password" class="form-label">Confirm Password</label>
-                <input type="password" class="form-control" id="confirm-password" name="confirm_password" placeholder="Confirm your password" required>           
-			</div>
-            <div class="mb-3">
-				<label for="password" class="form-label">Security Question #1: What was the year, make, and model of your first car?</label>
-				<input type="text" name="security_a1" required><br><br>
-			</div>
-			<div>
-				<label for="password" class="form-label">Security Question #2: What was your childhood nickname?</label>
-				<input type="text" name="security_a2" required><br><br>
-			</div>
-			<button type="submit" name="register" class="btn btn-custom">Register</button>
-        
-		</form>
+                <input type="password" class="form-control" id="confirm-password" name="confirm_password" placeholder="Confirm your password" required>
+            </div>
+            <button type="submit" name="register" class="btn btn-custom">Register</button>
+        </form>
         <div class="text-muted">
             Already have an account? <a href="login.php" class="text-primary">Sign In</a>
         </div>
+    </div>
+
+    <?php if (!empty($error_message)) : ?>
+        <p class="error"><?php echo $error_message; ?></p>
+    <?php endif; ?>
+
+    <?php if (!empty($success_message)) : ?>
+        <p class="success"><?php echo $success_message; ?></p>
+    <?php endif; ?>
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-	</div>
 </body>
 </html>
+
+
+
+

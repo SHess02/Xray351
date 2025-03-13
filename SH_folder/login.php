@@ -68,6 +68,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             text-align: center;
             margin-bottom: 1.5rem;
         }
+		.rectangle {
+		  height: 50px;
+		  width: 100px;
+		  background-color: white;
+		}
 
         .form-label {
             font-weight: bold;
@@ -105,6 +110,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <h1>Alumni Connect</h1>
 	<br>
     <div class="text-center">
+		
         <img src="cnu_logo.jpg" class="center-image" alt="Logo">
     </div>
 

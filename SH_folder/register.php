@@ -5,6 +5,7 @@ include 'db_connect_temp.php';
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $name = trim($_POST['name']);
     $email = trim(strtolower($_POST['email']));
+	$role = ($_POST['role']);
     $password = trim($_POST['password']);
     $confirm_password = trim($_POST['confirm_password']);
     $security_a1 = trim(strtolower($_POST['security_a1']));
@@ -141,11 +142,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 <label class="form-label">Role</label>
                 <div class="d-flex">
                     <div class="form-check me-3">
-                        <input type="radio" id="student" name="toggle" value="student" class="form-check-input">
+                        <input type="radio" id="student" name="role" value="student" class="form-check-input">
                         <label for="student" class="form-check-label">Student</label>
                     </div>
+					<div class="form-check me-3">
+                        <input type="radio" id="faculty" name="role" value="faculty" class="form-check-input">
+                        <label for="faculty" class="form-check-label">Faculty</label>
+                    </div>
                     <div class="form-check">
-                        <input type="radio" id="alumni" name="toggle" value="alumni" class="form-check-input">
+                        <input type="radio" id="alumni" name="role" value="alumni" class="form-check-input">
                         <label for="alumni" class="form-check-label">Alumni</label>
                     </div>
                 </div>

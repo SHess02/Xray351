@@ -35,21 +35,83 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 <head>
     <meta charset="utf-8" name="viewport" content="width=device-width, initial-scale=1">
 	<title>User Login : QuickServe Reservations</title>
-	<link rel="stylesheet" type="text/css" href="styles.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+		<style>
+				body {
+					background: linear-gradient(135deg, #6a11cb, #2575fc);
+					color: #fff;
+				
+					}
+				.registration-form {
+					background: #ffffff;
+					color: #000;
+					padding: 2rem;
+					border-radius: 10px;
+					box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+					max-width: 400px;
+					width: 100%;
+			}
+
+				header {
+					text-align: center;
+					}
+
+				.center-container {
+					display: flex;
+					justify-content: center;
+					align-items: center; 
+					}
+
+				.center-image {
+					max-width: 60%; 
+					height: auto;
+					}
+
+				.username {
+					font-weight: bold;
+					font-size: 60px;
+					color: 	#c2c2a3;
+					text-align: center;
+					}
+
+				.login {
+					color: #3d3d29;
+					font-style: italic;
+					font-size: 20px;
+					font-family: Helvetica;
+					text-align: center;
+					}
+				.h2 {
+					text-align: center;
+				}
+		</style>
 </head>
 <body>
-    <h2>Login</h2><br>
-    <form action="login.php" method="post">
-        <label><b>Email:</b></label><br>
-        <input type="email" name="email" required><br>
-        <br>
-        <label><b>Password:</b></label><br>
-        <input type="password" name="password" required><br>
-        <br>
-        <button class="btn btn-primary">Login</button>
-    </form>
-	<br><a href="forgot_password.php">Forgot password?</a>
-	<br><a href="registration.php">New user?</a>
+    <h1 class="username">Alumni Connect</h1>
+		
+	<div class ="center-container">
+		<img src="cnu_logo.jpg" class ="center-image" alt="none">
+	</div> <br>
+
+	<div>
+		<form action="login.php" method="post">
+
+			<p class = "login">
+
+			<label><b>Email:</b></label><br>
+			<input type="email" name="email" required><br>
+			<br>
+			<label><b>Password:</b></label><br>
+			<input type="password" name="password" required><br>
+			<br>
+			<button class="btn btn-primary">Login</button>
+			</p>
+
+		</form>
+
+	</div>
+		<br><a href="forgot_password.php" class="btn btn-primary">Forgot password?</a> <br>
+		<br><a href="register.php" class="btn btn-primary">New user?</a>
+
 </body>
 </html>

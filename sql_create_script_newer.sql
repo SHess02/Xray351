@@ -8,7 +8,6 @@ CREATE TABLE IF NOT EXISTS alumniconnectdb.user (
   email VARCHAR(45) UNIQUE NOT NULL,
   graduationyear YEAR NULL,
   major VARCHAR(45) NULL,
-  jobtitle VARCHAR(45) NULL,
   aboutme LONGTEXT NULL,
   password VARCHAR(255) NOT NULL,
   securityans1 VARCHAR(100) NOT NULL,

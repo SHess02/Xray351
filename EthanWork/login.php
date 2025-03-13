@@ -17,7 +17,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         if (password_verify($password, $hashed_password)) {
             $_SESSION['userid'] = $user_id;
-            header("Location: home.php");
+            header("Location: ../MasonFolder/browsingtab.php");
             exit();
         } else {
             echo "Password does not match!";
@@ -31,87 +31,112 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <meta charset="utf-8" name="viewport" content="width=device-width, initial-scale=1">
-	<title>User Login : QuickServe Reservations</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-		<style>
-				body {
-					background: linear-gradient(135deg, #6a11cb, #2575fc);
-					color: #fff;
-				
-					}
-				.registration-form {
-					background: #ffffff;
-					color: #000;
-					padding: 2rem;
-					border-radius: 10px;
-					box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-					max-width: 400px;
-					width: 100%;
-			}
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>User Login : QuickServe Reservations</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 
-				header {
-					text-align: center;
-					}
+    <style>
+        body {
+            background: linear-gradient(135deg, #6a11cb, #2575fc);
+            color: #fff;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
 
-				.center-container {
-					display: flex;
-					justify-content: center;
-					align-items: center; 
-					}
+        .login-container {
+            background: #ffffff;
+            color: #000;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            max-width: 400px;
+            width: 100%;
+        }
 
-				.center-image {
-					max-width: 60%; 
-					height: auto;
-					}
+        .form-control:focus {
+            box-shadow: 0 0 10px rgba(38, 143, 255, 0.5);
+            border-color: #268fff;
+        }
 
-				.username {
-					font-weight: bold;
-					font-size: 60px;
-					color: 	#c2c2a3;
-					text-align: center;
-					}
+        .form-header {
+            text-align: center;
+            margin-bottom: 1.5rem;
+        }
 
-				.login {
-					color: #3d3d29;
-					font-style: italic;
-					font-size: 20px;
-					font-family: Helvetica;
-					text-align: center;
-					}
-				.h2 {
-					text-align: center;
-				}
-		</style>
+        .form-label {
+            font-weight: bold;
+        }
+
+        .btn-custom {
+            background: linear-gradient(135deg, #6a11cb, #2575fc);
+            color: #fff;
+            border: none;
+            transition: background 0.3s ease;
+            width: 100%;
+        }
+
+        .btn-container {
+            display: flex;
+            justify-content: center;
+            margin-top: 1rem;
+        }
+
+        .text-muted {
+            font-size: 0.8rem;
+            text-align: center;
+            margin-top: 1rem;
+        }
+
+        .center-image {
+            max-width: 60%;
+            height: auto;
+        }
+    </style>
 </head>
+
 <body>
-    <h1 class="username">Alumni Connect</h1>
-		
-	<div class ="center-container">
-		<img src="cnu_logo.jpg" class ="center-image" alt="none">
-	</div> <br>
 
-	<div>
-		<form action="login.php" method="post">
+    <h1>Alumni Connect</h1>
+	<br>
+    <div class="text-center">
+        <img src="cnu_logo.jpg" class="center-image" alt="Logo">
+    </div>
 
-			<p class = "login">
+    <br>
 
-			<label><b>Email:</b></label><br>
-			<input type="email" name="email" required><br>
-			<br>
-			<label><b>Password:</b></label><br>
-			<input type="password" name="password" required><br>
-			<br>
-			<button class="btn btn-primary">Login</button>
-			</p>
+    <div class="login-container">
+        <div class="form-header">
+            <h2>Login</h2>
+        </div>
 
-		</form>
+        <form action="login.php" method="post">
+            <div class="mb-3">
+                <label for="email" class="form-label"><b>Email:</b></label>
+                <input type="email" class="form-control" id="email" name="email" required>
+            </div>
 
-	</div>
-		<br><a href="forgot_password.php" class="btn btn-primary">Forgot password?</a> <br>
-		<br><a href="register.php" class="btn btn-primary">New user?</a>
+            <div class="mb-3">
+                <label for="password" class="form-label"><b>Password:</b></label>
+                <input type="password" class="form-control" id="password" name="password" required>
+            </div>
 
+            <div class="btn-container">
+                <button type="submit" class="btn btn-custom">Login</button>
+            </div>
+        </form>
+
+        <div class="text-muted">
+            <a href="forgot_password.php" class="text-primary">Forgot password?</a> <br>
+            <a href="register.php" class="text-primary">New user? Register here</a>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

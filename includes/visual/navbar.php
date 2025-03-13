@@ -16,7 +16,7 @@
         <div class="profile-dropdown">
             <button class="nav-btn profile-btn">👤</button>
             <div class="dropdown-content">
-                <a href="profile.php">View Profile</a>
+                <a href="../EthanWork/profile.php">View Profile</a>
                 <a href="settings.php">Settings</a>
                 <a href="../SH_folder/logout.php">Logout</a>
             </div>

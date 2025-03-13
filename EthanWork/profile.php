@@ -21,7 +21,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $major = trim($_POST['major'] ?? '');
     $graduationyear = trim($_POST['graduationyear'] ?? null);
 
-    // Build the SQL query dynamically based on role
     $query = "UPDATE user SET name = ?, email = ?, aboutme = ?";
     $params = [$name, $email, $aboutme];
     $types = "sss";

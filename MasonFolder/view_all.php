@@ -1,5 +1,7 @@
 <?php
 	if( isset($_GET['type'])){
+		session_start();
+		include '../includes/session_check.php';
 		include '../includes/includes.php';
 		$db = new Database();
 		

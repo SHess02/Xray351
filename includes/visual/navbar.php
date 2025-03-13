@@ -1,9 +1,11 @@
 <nav class="navbar">
-    <button class="nav-btn back-btn" onclick="history.back()">&#8592;</button>
-    <a href="browsingtab.php" class="nav-btn">Recent</a>
-    <a href='view_all.php?type=jobs' class="nav-btn">Jobs</a>
-    <a href='view_all.php?type=companies' class="nav-btn">Companies</a>
-    <a href='view_all.php?type=events' class="nav-btn">Events</a>
+    <div class="nav-left">
+        <button class="nav-btn back-btn" onclick="history.back()">&#8592;</button>
+        <a href="browsingtab.php" class="nav-btn">Recent</a>
+        <a href='view_all.php?type=jobs' class="nav-btn">Jobs</a>
+        <a href='view_all.php?type=companies' class="nav-btn">Companies</a>
+        <a href='view_all.php?type=events' class="nav-btn">Events</a>
+    </div>
 
     <div class="search-container">
         <input type="text" class="search-bar" placeholder="Search...">
@@ -11,7 +13,6 @@
 
     <div class="nav-right">
         <button class="nav-btn">🔔</button>
-
         <div class="profile-dropdown">
             <button class="nav-btn profile-btn">👤</button>
             <div class="dropdown-content">
@@ -37,6 +38,18 @@
     left: 0;
     width: 100%;
     z-index: 1000;
+}
+
+/* Left and Right Sections */
+.nav-left, .nav-right {
+    display: flex;
+    align-items: center;
+}
+
+/* Add spacing to prevent profile button from getting cut off */
+.nav-right {
+    margin-right: 15px; /* Ensures profile button is not off-screen */
+    padding-right: 10px; /* Extra padding for safety */
 }
 
 /* Buttons */
@@ -66,40 +79,29 @@
     flex-grow: 1;
     display: flex;
     justify-content: center;
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100%;
+    max-width: 400px;
 }
 
 /* Centered Search Bar */
 .search-bar {
     width: 100%;
-    max-width: 400px;
     padding: 8px;
     border: none;
     border-radius: 5px;
     font-size: 16px;
 }
 
-/* Right-side container for Profile & Notifications */
-.nav-right {
-    display: flex;
-    align-items: center;
-    gap: 15px;
-    margin-right: 10px;
-}
-
 /* Profile Dropdown */
 .profile-dropdown {
     position: relative;
     display: inline-block;
-    margin-right: 10px; /* Adds space from the edge of the screen */
-    padding-right: 5px; /* Extra padding to prevent cutoff */
 }
 
-/* Profile Button */
-.profile-btn {
-    font-size: 20px;
-    padding: 8px 15px; /* Adds more clickable area and prevents cutoff */
-}
-
+/* Profile Dropdown Content */
 .dropdown-content {
     display: none;
     position: absolute;
@@ -131,7 +133,7 @@
 
 /* Responsive Design */
 @media (max-width: 600px) {
-    .search-bar {
+    .search-container {
         max-width: 200px;
     }
 }

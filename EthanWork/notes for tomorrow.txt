@@ -1,4 +1,0 @@
-****Notes****
-Fix files post-db_update
-Add links to appropriate redirect pages
-Build slides for presentation

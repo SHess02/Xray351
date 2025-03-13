@@ -1,6 +1,6 @@
 <?php
 session_start();
-include 'db_connect.php';
+include 'db_connect_temp.php';
 
 if (!isset($_SESSION['reset_token']) || !isset($_SESSION['reset_user_id']) || $_GET['token'] !== $_SESSION['reset_token']) {
     die("Invalid or expired reset link.");

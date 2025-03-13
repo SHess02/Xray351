@@ -1,10 +1,10 @@
 <?php
 include '../includes/includes.php';
+$conn = new Database();
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $name = trim($_POST['name']);
     $email = trim(strtolower($_POST['email']));
-    $graduation_year = trim($_POST['graduation_year']);
     $password = trim($_POST['password']);
     $confirm_password = trim($_POST['confirm_password']);
     $security_a1 = trim(strtolower($_POST['security_a1']));
@@ -45,7 +45,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 $stmt->bind_param("sssssss", $email, $role, $name, $graduation_year, $hashed_password, $security_a1, $security_a2);
 
                 if ($stmt->execute()) {
-                    header("Location: login.php"); // Fixed redirect
+                    header("Location: login.php");
                     exit();
                 } else {
                     echo "Error: " . $conn->error;

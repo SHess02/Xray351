@@ -40,22 +40,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $params[] = $_POST['location'];
         $types .= "s";
     }
-    if (!empty($_POST['Admin_email'])) {
-        $fields[] = "Admin_email = ?";
-        $params[] = $_POST['Admin_email'];
-        $types .= "s";
-    }
-    if (!empty($_POST['Alumni_email'])) {
-        $fields[] = "Alumni_email = ?";
-        $params[] = $_POST['Alumni_email'];
-        $types .= "s";
-    }
     if (!empty($_POST['datetime'])) {
         $datetime = date("Y-m-d H:i:s", strtotime($_POST['datetime']));
         $fields[] = "datetime = ?";
         $params[] = $datetime;
         $types .= "s";
     }
+    if (!empty($_POST['description'])) {
+        $fields[] = "description = ?";
+        $params[] = $_POST['description'];
+        $types .= "s";
+    }
+	
     
     if (!empty($fields)) {
         $update_sql = "UPDATE event SET " . implode(", ", $fields) . " WHERE eventid = ?";
@@ -148,15 +144,12 @@ $conn->close();
             <label> Location: </label>
             <textarea name="location"><?php echo htmlspecialchars($event['location']); ?></textarea>
             
-            <label> Admin Email: </label>
-            <input type="text" name="Admin_email" value="<?php echo htmlspecialchars($event['Admin_email']); ?>">
-            
-            <label> Alumni Email: </label>
-            <input type="text" name="Alumni_email" value="<?php echo htmlspecialchars($event['Alumni_email']); ?>">
-            
             <label> Event Date & Time: </label>
             <input type="datetime-local" name="datetime" value="<?php echo isset($event['datetime']) ? date('Y-m-d\TH:i', strtotime($event['datetime'])) : ''; ?>">
             
+            <label> Description: </label>
+            <input type="text" name="description" value="<?php echo htmlspecialchars($event['description']); ?>">
+			
             <input type="submit" value="Update">
         </form>
     </div>

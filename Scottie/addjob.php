@@ -18,26 +18,18 @@ if ($conn->connect_error) {
 
 // Handle form submission to add a new event
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $name = $_POST['title'] ?? '';
-    $location = $_POST['description'] ?? 
+    $title = $_POST['title'] ?? '';
+    $description = $_POST['description'] ?? 
 	$opendate = $_POST['opendate'] ?? '';
-    $admin_email = $_POST['Admin_email'] ?? '';
-    $alumni_email = $_POST['Alumni_email'] ?? '';
+    $closedate = $_POST['closedate'] ?? '';
+    $contactemail = $_POST['contactemail'] ?? '';
+	$alumniid = $_POST['alumniid'] ?? '';
 
-
-    // Validate that the provided Alumni_email exists in the alumni table
-    $check_alumni_sql = "SELECT email FROM alumni WHERE email = ?";
-    $check_stmt = $conn->prepare($check_alumni_sql);
-    if ($check_stmt) {
-        $check_stmt->bind_param("s", $alumni_email);
-        $check_stmt->execute();
-        $check_stmt->store_result();
-        if ($check_stmt->num_rows > 0) {
-            // Proceed with insertion if alumni email exists
-            $insert_sql = "INSERT INTO job (title, description, opendate, Admin_email, Alumni_email) VALUES (?, ?, ?, ?, ?)";
+// Insert information into table
+            $insert_sql = "INSERT INTO job (title, description, opendate, closedate, contactemail, alumniid) VALUES (?, ?, ?, ?, ?, ?)";
             $stmt = $conn->prepare($insert_sql);
             if ($stmt) {
-                $stmt->bind_param("sssss", $title, $description, $opendate, $admin_email, $alumni_email);
+                $stmt->bind_param("ssssss", $title, $description, $opendate, $closedate, $contactemail, $alumniid);
                 if ($stmt->execute()) {
                     echo "<p>Event added successfully!</p>";
                 } else {
@@ -46,13 +38,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             } else {
                 echo "<p>Failed to prepare insert statement.</p>";
             }
-        } else {
-            echo "<p>Error: The provided Alumni Email does not exist in the system.</p>";
-        }
-    } else {
-        echo "<p>Failed to prepare alumni validation statement.</p>";
-    }
-}
+        } 
 
 $conn->close();
 ?>
@@ -117,10 +103,10 @@ $conn->close();
 </head>
 <body>
     <div class="container">
-        <h2>Add New Event</h2>
+        <h2>Add New Job</h2>
         <form method="post">
             <label>Title:</label>
-            <input type="text" name="name" required>
+            <input type="text" name="title" required>
             
             <label>Description:</label>
             <textarea name="location" required></textarea>
@@ -128,11 +114,14 @@ $conn->close();
 			<label>Open Date:</label>
             <input type="datetime-local" name="opendate" required>
             
-            <label>Admin Email:</label>
-            <textarea name="Admin_email" required></textarea>
+			<label>Close Date:</label>
+            <input type="datetime-local" name="closedate" required>
             
-            <label>Alumni Email:</label>
-            <textarea name="Alumni_email" required></textarea>
+            <label>Contact Email:</label>
+            <input type="text" name="contactemail" required>
+			
+		    <label>Alumni ID:</label>
+            <textarea name="alumniid" required></textarea>
             
             <input type="submit" value="Add Event">
         </form>

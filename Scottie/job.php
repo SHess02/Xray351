@@ -24,11 +24,15 @@
               <th> Title </th>
               <th> Description </th>
               <th> Open Date </th>
+			  <th> Close Date </th>
+			  <th> Contact Email </th>
               </tr>";
 		echo "<tr>
               <td>" . $job["title"] . "</td>
               <td>" . $job["description"] . "</td>
               <td>" . $job["opendate"] . "</td>
+			  <td>" . $job["closedate"] . "</td>
+			  <td>" . $job["contactemail"] . "</td>
               </tr>";
 			}
 		echo "</table>";

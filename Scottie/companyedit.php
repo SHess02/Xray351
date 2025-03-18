@@ -46,11 +46,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $params[] = (int)$_POST['activelistings'];
         $types .= "i";
     }
-    if (isset($_POST['admin_email']) && $_POST['admin_email'] !== "") {
-        $fields[] = "admin_email = ?";
-        $params[] = $_POST['admin_email'];
-        $types .= "s";
-    }
     
     if (!empty($fields)) {
         $update_sql = "UPDATE company SET " . implode(", ", $fields) . " WHERE companyid = ?";
@@ -170,9 +165,6 @@ $conn->close();
             
             <label>Active Listings:</label>
             <input type="number" name="activelistings" value="<?php echo $company['activelistings']; ?>">
-            
-            <label>Admin Email:</label>
-            <input type="email" name="admin_email" value="<?php echo htmlspecialchars($company['Admin_email']); ?>">
             
             <input type="submit" value="Update">
         </form>

@@ -41,7 +41,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $params[] = $_POST['description'];
         $types .= "s";
     }
-    
+    if (isset($_POST['opendate']) && $_POST['opendate'] !== "") {
+        $fields[] = "opendate = ?";
+        $params[] = $_POST['opendate'];
+        $types .= "s";
+    }
+    if (isset($_POST['closedate']) && $_POST['closedate'] !== "") {
+        $fields[] = "closedate = ?";
+        $params[] = $_POST['closedate'];
+        $types .= "s";
+    }  
+    if (isset($_POST['contactemail']) && $_POST['contactemail'] !== "") {
+        $fields[] = "contactemail = ?";
+        $params[] = $_POST['contactemail'];
+        $types .= "s";
+    }  
     if (!empty($fields)) {
         $update_sql = "UPDATE job SET " . implode(", ", $fields) . " WHERE jobid = ?";
         $params[] = $jobid;
@@ -157,6 +171,15 @@ $conn->close();
             
             <label> Description: </label>
             <textarea name="description"><?php echo htmlspecialchars($job['description']); ?></textarea>
+			
+            <label> Open Date: </label>
+            <textarea name="opendate"><?php echo htmlspecialchars($job['opendate']); ?></textarea>
+			
+            <label> Close Date: </label>
+            <textarea name="closedate"><?php echo htmlspecialchars($job['closedate']); ?></textarea>
+			
+			<label> Contact Email: </label>
+            <textarea name="contactemail"><?php echo htmlspecialchars($job['contactemail']); ?></textarea>
             
             <input type="submit" value="Update">
         </form>

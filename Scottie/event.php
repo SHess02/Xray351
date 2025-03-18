@@ -23,15 +23,13 @@
               <th> Name </th>
               <th> Location </th>
               <th> Date & Time</th>
-			  <th> Admin Email </th>
-			  <th> Alumni Email </th>
+			  <th> Descirption </th>
               </tr>";
 		echo "<tr>
               <td>" . $event["name"] . "</td>
               <td>" . $event["location"] . "</td>
               <td>" . $event["datetime"] . "</td>
-			  <td>" . $event["Admin_email"] . "</td>
-			  <td>" . $event["Alumni_email"] . "</td>
+			  <td>" . $event["description"] . "</td>
               </tr>";
 	}
 	echo "</table>";

@@ -19,30 +19,24 @@ if ($conn->connect_error) {
 // Handle form submission to add a new event
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $name = $_POST['name'] ?? '';
-    $location = $_POST['location'] ?? '';
-    $datetime = $_POST['datetime'] ?? '';
+    $description = $_POST['description'] ?? ''; 
+	$activelistings = $_POST['activelistings'] ?? '';
     $creatorid = $_POST['creatorid'] ?? '';
-    $description = $_POST['description'] ?? '';
-	
-    // Convert datetime to proper format for MySQL
-    $formatted_datetime = date("Y-m-d H:i:s", strtotime($datetime));
 
-	// Inserts data into the table
-        $insert_sql = "INSERT INTO event (name, location, datetime, creatorid, description) VALUES (?, ?, ?, ?, ?)";
+// Insert information into table
+            $insert_sql = "INSERT INTO company (name, description, activelistings, creatorid) VALUES (?, ?, ?, ?)";
             $stmt = $conn->prepare($insert_sql);
             if ($stmt) {
-                $stmt->bind_param("sssss", $name, $location, $formatted_datetime, $creatorid, $description);
+                $stmt->bind_param("ssss", $name, $description, $activelistings, $creatorid);
                 if ($stmt->execute()) {
-                    echo "<p>Event added successfully!</p>";
+                    echo "<p>Company added successfully!</p>";
                 } else {
-                    echo "<p>Error adding event: " . $stmt->error . "</p>";
+                    echo "<p>Error adding company: " . $stmt->error . "</p>";
                 }
             } else {
                 echo "<p>Failed to prepare insert statement.</p>";
             }
-        } else {
-            echo "<p>Error: The provided Alumni Email does not exist in the system.</p>";
-        }
+        } 
 
 $conn->close();
 ?>
@@ -107,26 +101,22 @@ $conn->close();
 </head>
 <body>
     <div class="container">
-        <h2>Add New Event</h2>
+        <h2>Add New Company</h2>
         <form method="post">
-            <label>Event Name:</label>
+            <label>Name:</label>
             <input type="text" name="name" required>
             
-            <label>Location:</label>
-            <textarea name="location" required></textarea>
+            <label>Description:</label>
+            <textarea name="description" required></textarea>
             
-            <label>Event Date & Time:</label>
-            <input type="datetime-local" name="datetime" required>
-            
-            <label>Creator ID:</label>
+            <label>Active Listings:</label>
+            <input type="number" name="activelistings">
+			
+		    <label>Creator ID:</label>
             <textarea name="creatorid" required></textarea>
             
-            <label>Description</label>
-            <textarea name="description" required></textarea>
-
             <input type="submit" value="Add Event">
         </form>
     </div>
 </body>
 </html>
-

@@ -8,8 +8,12 @@
     </div>
 
     <div class="search-container">
-        <input type="text" class="search-bar" placeholder="Search...">
-    </div>
+    <form action="../includes/functional/search_results.php" method="GET" style="display: flex; width: 100%;">
+        <input type="text" class="search-bar" name="query" placeholder="Search for companies, jobs, or events..." required>
+        <button type="submit" class="nav-btn">🔍</button>
+    </form>
+	</div>
+
 
     <div class="nav-right">
         <button class="nav-btn">🔔</button>

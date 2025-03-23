@@ -1,46 +1,71 @@
 USE alumniconnectdb;
 
--- Insert Users
+-- Insert Users (Students, Alumni, Faculty, Admins)
 INSERT INTO user (role, name, email, graduationyear, major, aboutme, password, securityans1, securityans2) VALUES
-('student', 'Alice Johnson', 'alice@example.com', 2025, 'Computer Science', 'Aspiring software engineer.', 'hashedpassword1', 'Blue', 'Pizza'),
-('alumni', 'Bob Smith', 'bob@example.com', 2018, 'Mechanical Engineering', 'Working at Tesla.', 'hashedpassword2', 'Green', 'Burger'),
-('faculty', 'Dr. Emily White', 'emily@example.com', NULL, 'Physics', 'Professor in Quantum Mechanics.', 'hashedpassword3', 'Yellow', 'Pasta'),
-('admin', 'John Admin', 'admin@example.com', NULL, NULL, 'System administrator.', 'hashedpassword4', 'Red', 'Sushi'),
-('student', 'Charlie Brown', 'charlie@example.com', 2026, 'Business', 'Finance enthusiast.', 'hashedpassword5', 'Orange', 'Steak');
+('student', 'Alice Johnson', 'alice@student.com', 2025, 'Computer Science', 'Aspiring software engineer.', 'pass123', 'Blue', 'Dog'),
+('student', 'Bob Smith', 'bob@student.com', 2024, 'Mechanical Engineering', 'Interested in robotics.', 'pass234', 'Red', 'Cat'),
+('alumni', 'Mike Anderson', 'mike@alumni.com', 2018, 'Computer Science', 'Software engineer at Google.', 'alum123', 'Green', 'Bird'),
+('alumni', 'Nina Thompson', 'nina@alumni.com', 2017, 'Business', 'Marketing specialist at Amazon.', 'alum234', 'Yellow', 'Fish'),
+('faculty', 'Dr. Robert Lee', 'robert@faculty.com', NULL, 'Physics', 'Physics professor.', 'facpass1', 'Black', 'Turtle'),
+('admin', 'Laura Hill', 'admin1@uni.com', NULL, NULL, 'System administrator.', 'adminpass1', 'White', 'Rabbit');
 
--- Insert Jobs (by alumni)
+-- Insert Jobs (Posted by Alumni)
 INSERT INTO job (title, description, opendate, closedate, contactemail, alumniid) VALUES
-('Software Engineer', 'Looking for a backend developer.', '2025-03-01', '2025-06-01', 'hr@techcorp.com', 2),
-('Mechanical Engineer', 'Entry-level role for fresh grads.', '2025-02-15', '2025-05-30', 'recruit@mechcorp.com', 2);
+('Software Engineer', 'Backend developer role.', '2025-03-01', '2025-04-01', 'mike@google.com', 3),
+('Marketing Analyst', 'Entry-level marketing role.', '2025-02-15', '2025-03-15', 'nina@amazon.com', 4),
+('Data Scientist', 'Analyzing big data.', '2025-04-10', '2025-05-10', 'mike@google.com', 3),
+('Product Manager', 'Managing software products.', '2025-05-01', '2025-06-01', 'nina@amazon.com', 4),
+('Business Consultant', 'Helping startups grow.', '2025-06-01', '2025-07-01', 'nina@consulting.com', 4);
 
--- Insert Events (created by users)
+-- Insert Events (Created by Users)
 INSERT INTO event (name, location, datetime, creatorid, description) VALUES
-('Alumni Networking Night', 'New York', '2025-04-20 18:00:00', 2, 'Connect with alumni in various industries.'),
-('Tech Conference', 'San Francisco', '2025-05-10 09:00:00', 3, 'Latest trends in technology and innovation.');
+('Tech Networking Night', 'New York', '2025-04-20 18:00:00', 3, 'Networking event for tech enthusiasts.'),
+('Marketing Workshop', 'Chicago', '2025-05-15 14:00:00', 4, 'Workshop on digital marketing strategies.'),
+('Physics Seminar', 'Houston', '2025-06-10 10:00:00', 5, 'Latest advancements in quantum physics.'),
+('Career Fair', 'San Francisco', '2025-07-05 09:00:00', 6, 'Meet potential employers from various industries.'),
+('Startup Pitch Night', 'Boston', '2025-08-01 12:00:00', 4, 'Pitch your business idea to investors.');
 
--- Insert Companies (created by users)
+-- Insert Companies (Created by Users)
 INSERT INTO company (name, description, activelistings, creatorid) VALUES
-('TechCorp', 'A leading tech company.', 5, 2),
-('MechCorp', 'Innovative mechanical engineering solutions.', 3, 2);
+('TechCorp', 'Leading software company.', 5, 3),
+('MarketingPro', 'Marketing consulting firm.', 3, 4),
+('Quantum Research', 'Advanced physics research lab.', 2, 5),
+('StartupHub', 'Incubator for new businesses.', 4, 4),
+('FinTech Solutions', 'Financial technology innovations.', 3, 3);
 
--- Insert Messages (between users)
+-- Insert Messages (Between Users)
 INSERT INTO message (datetime, contents, senderid, receiverid) VALUES
-('2025-03-05 12:30:00', 'Hey, are you attending the networking event?', 1, 2),
-('2025-03-05 13:00:00', 'Yes! Looking forward to it.', 2, 1);
+('2025-03-05 12:30:00', 'Hey, how did you get into Google?', 1, 3),
+('2025-03-06 13:00:00', 'Any marketing tips for fresh grads?', 2, 4),
+('2025-03-07 14:15:00', 'I am interested in research. Any advice?', 1, 5),
+('2025-03-08 10:45:00', 'What skills are needed at Tesla?', 2, 3),
+('2025-03-09 15:30:00', 'How do I start in investment banking?', 1, 4);
 
--- Insert Job Applications (by students)
+-- Insert Applications (Students Applying for Jobs)
 INSERT INTO application (studentid, jobid, datecreated, resume) VALUES
 (1, 1, '2025-03-06', NULL),
-(5, 2, '2025-03-07', NULL);
+(2, 2, '2025-03-07', NULL),
+(1, 3, '2025-03-08', NULL),
+(2, 4, '2025-03-09', NULL),
+(1, 5, '2025-03-10', NULL);
 
--- Insert Favorite Lists for students
+-- Insert Favorite Lists (Created by Students)
 INSERT INTO favorite_list (studentid) VALUES
-(1), (5);
+(1),
+(2);
 
--- Insert Favorite Companies (linked to favorite lists)
+-- Insert Favorite Companies (Linked to Favorite Lists)
 INSERT INTO favorite_company (companyid, listid) VALUES
-(1, 1), (2, 2);
+(1, 1),
+(2, 1),
+(3, 2),
+(4, 2),
+(5, 1);
 
--- Insert Favorite Jobs (linked to favorite lists)
+-- Insert Favorite Jobs (Linked to Favorite Lists)
 INSERT INTO favorite_job (jobid, listid) VALUES
-(1, 1), (2, 2);
+(1, 1),
+(2, 1),
+(3, 2),
+(4, 2),
+(5, 1);

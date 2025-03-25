@@ -35,9 +35,12 @@
 	echo "</table>";
 	
 	// Editing Event Tab
-	echo "<div class='button-container'>";
-	echo "<button onclick=\"window.location.href='eventedit.php?eventid=" . htmlspecialchars($event['eventid']) . "'\" class='btn-style'>Edit</button>";
-
+		echo "<div class='button-container'>";
+		echo "<button onclick=\"window.location.href='eventedit.php?eventid=" . htmlspecialchars($event['eventid']) . "'\" class='btn-style'>Edit Event</button>";
+	// Delete Event Tab	
+		echo "<br>";
+		echo "<button onclick=\"window.location.href='deleteevent.php?eventid=" . htmlspecialchars($event['eventid']) . "'\" class='btn-style'>Delete Event</button>";
+		echo "</div>";
 ?>
 
 <!DOCTYPE html>

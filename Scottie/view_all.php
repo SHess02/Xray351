@@ -117,7 +117,8 @@
 				echo "<button onclick=\"window.location.href='addevent.php'\" class='btn-style'>Add Event</button>";
 				echo "</div>";
 				$result_event->free();
-				break;
+				break;	
+
 
 	}
 		}

@@ -1,9 +1,6 @@
 <?php
 include '../includes/includes.php';
 
-$db = new Database();
-
-// Database connection settings
 $servername = "localhost";
 $userName = "root";
 $passWord = "";
@@ -11,27 +8,38 @@ $dbname = "alumniconnectdb";
 
 // Create connection
 $conn = new mysqli($servername, $userName, $passWord, $dbname);
+
 // Check connection
 if ($conn->connect_error) {
-  die("Connection failed: " . $conn->connect_error);
+    die("Connection failed: " . $conn->connect_error);
 }
 
-// Handle event deletion
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['eventid'])) {
-    $eventid = intval($_POST['eventid']);
-    $delete_sql = "DELETE FROM event WHERE eventid = ?";
-    $delete_stmt = $conn->prepare($delete_sql);
-    
-    if ($delete_stmt) {
-        $delete_stmt->bind_param("i", $eventid);
-        if ($delete_stmt->execute()) {
-            echo "<p>Event deleted successfully!</p>";
+// Initialize message variable
+$message = "";
+
+if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['eventid'])) {
+    $eventid = filter_input(INPUT_GET, 'eventid', FILTER_VALIDATE_INT);
+
+    if ($eventid && $eventid > 0) {
+        $delete_sql = "DELETE FROM event WHERE eventid = ?";
+        $delete_stmt = $conn->prepare($delete_sql);
+        
+        if ($delete_stmt) {
+            $delete_stmt->bind_param("i", $eventid);
+            if ($delete_stmt->execute()) {
+                $message = "<p style='color: green;'>Event deleted successfully!</p>";
+            } else {
+                $message = "<p style='color: red;'>Error deleting event: " . $delete_stmt->error . "</p>";
+            }
+            $delete_stmt->close();
         } else {
-            echo "<p>Error deleting event.</p>";
+            $message = "<p style='color: red;'>Failed to prepare delete statement.</p>";
         }
     } else {
-        echo "<p>Failed to prepare delete statement.</p>";
+        $message = "<p style='color: red;'>Invalid Event ID.</p>";
     }
+} else {
+    $message = "<p style='color: red;'>No Event ID provided.</p>";
 }
 
 $conn->close();
@@ -62,40 +70,12 @@ $conn->close();
         h2 {
             color: #d9534f;
         }
-        label {
-            display: block;
-            margin-top: 10px;
-            font-weight: bold;
-            color: #555;
-        }
-        input {
-            width: 90%;
-            padding: 10px;
-            margin-top: 5px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-        }
-        input[type="submit"] {
-            background-color: #d9534f;
-            color: white;
-            border: none;
-            padding: 10px;
-            cursor: pointer;
-            margin-top: 15px;
-        }
-        input[type="submit"]:hover {
-            background-color: #c9302c;
-        }
     </style>
 </head>
 <body>
     <div class="container">
-        <h2> Delete Event </h2>
-        <form method="post">
-            <label> Event ID: </label>
-            <input type="number" name="eventid" required>
-            <input type="submit" value="Delete Event">
-        </form>
+        <h2>Delete Event</h2>
+        <?= $message; ?>
     </div>
 </body>
 </html>

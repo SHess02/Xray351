@@ -5,7 +5,7 @@
 	$db = new Database();
 	
 	// Get listid
-	$select_fav_list = 'SELECT listid FROM favorite_list WHERE studentid = 1';
+	$select_fav_list = 'SELECT listid FROM favorite_list WHERE studentid = '.$_SESSION['userid'].'';
 	$listid_result = $db->query($select_fav_list);
 
 	if ($listid_result->num_rows > 0) {

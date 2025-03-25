@@ -24,6 +24,7 @@
             <button class="nav-btn profile-btn">👤</button>
             <div class="dropdown-content">
                 <a href="../EthanWork/profile.php">View Profile</a>
+				<a href="../MasonFolder/favorites.php">Favorites</a>
                 <a href="settings.php">Settings</a>
                 <a href="../SH_folder/logout.php">Logout</a>
             </div>

@@ -16,6 +16,9 @@
 
 
     <div class="nav-right">
+		<a href="../SH_folder/inbox.php">
+			<button class="nav-btn">📧</button>
+		</a>
         <button class="nav-btn">🔔</button>
         <div class="profile-dropdown">
             <button class="nav-btn profile-btn">👤</button>

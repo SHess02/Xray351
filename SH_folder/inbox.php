@@ -1,6 +1,7 @@
 <?php
 	session_start();
 	include '../includes/session_check.php';
+	include '../includes/includes.php';
 	include 'db_connect_temp.php';
 
 
@@ -62,7 +63,7 @@ if ($result->num_rows > 0) {
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Inbox</title>
 	<style>
-	  /* Apply blue gradient background */
+
 	  body {
 		background: linear-gradient(135deg, #6a11cb, #2575fc);
 		color: #fff;
@@ -85,10 +86,11 @@ if ($result->num_rows > 0) {
 		gap: 30px;
 	  }
 
-	  /* Style the Inbox section */
+
 	  .inbox {
 		background: rgba(255, 255, 255, 0.1);
 		padding: 30px;
+		margin-top: 50px;
 		border-radius: 10px;
 		box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 		margin-bottom: 30px;
@@ -127,10 +129,11 @@ if ($result->num_rows > 0) {
 		background-color: #e0e0e0;
 	  }
 
-	  /* Style the Send a Message section */
+
 	  .message-view {
 		background: rgba(255, 255, 255, 0.1);
 		padding: 30px;
+		margin-top: 50px;
 		border-radius: 10px;
 		box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 		width: 100%;
@@ -145,7 +148,6 @@ if ($result->num_rows > 0) {
 		color: #fff;
 	  }
 
-	  /* Form styling */
 	  label {
 		font-size: 1.1rem;
 		font-weight: bold;

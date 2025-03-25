@@ -1,10 +1,10 @@
 <nav class="navbar">
     <div class="nav-left">
         <button class="nav-btn back-btn" onclick="history.back()">&#8592;</button>
-        <a href="browsingtab.php" class="nav-btn">Recent</a>
-        <a href='view_all.php?type=jobs' class="nav-btn">Jobs</a>
-        <a href='view_all.php?type=companies' class="nav-btn">Companies</a>
-        <a href='view_all.php?type=events' class="nav-btn">Events</a>
+        <a href="../MasonFolder/browsingtab.php" class="nav-btn">Recent</a>
+        <a href='../MasonFolder/view_all.php?type=jobs' class="nav-btn">Jobs</a>
+        <a href='../MasonFolder/view_all.php?type=companies' class="nav-btn">Companies</a>
+        <a href='../MasonFolder/view_all.php?type=events' class="nav-btn">Events</a>
     </div>
 
     <div class="search-container">

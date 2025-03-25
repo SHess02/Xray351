@@ -61,147 +61,149 @@ if ($result->num_rows > 0) {
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Inbox</title>
-  <style>
-    /* Apply blue gradient background */
-    body {
-        background: linear-gradient(135deg, #6a11cb, #2575fc);
-        color: #fff;
-        min-height: 100vh;
-        display: flex;
-        flex-direction: column;
-        justify-content: flex-start;
-        align-items: center;
-        font-family: 'Arial', sans-serif;
-        margin: 0;
-        padding: 0;
-    }
+	<style>
+	  /* Apply blue gradient background */
+	  body {
+		background: linear-gradient(135deg, #6a11cb, #2575fc);
+		color: #fff;
+		min-height: 100vh;
+		display: flex;
+		flex-direction: column;
+		justify-content: flex-start;
+		align-items: center;
+		font-family: 'Arial', sans-serif;
+		margin: 0;
+		padding: 0;
+	  }
 
-    .container {
-        width: 90%;
-        max-width: 1200px;
-        margin-top: 50px;
-    }
+	  .container {
+		width: 90%;
+		max-width: 1200px;
+		margin-top: 50px;
+		display: flex;
+		justify-content: space-between;
+		gap: 30px;
+	  }
 
-    /* Style the Inbox section */
-    .inbox {
-        background: rgba(255, 255, 255, 0.1);
-        padding: 30px;
-        border-radius: 10px;
-        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-        margin-bottom: 30px;
-        width: 100%;
-    }
+	  /* Style the Inbox section */
+	  .inbox {
+		background: rgba(255, 255, 255, 0.1);
+		padding: 30px;
+		border-radius: 10px;
+		box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+		margin-bottom: 30px;
+		flex: 1;
+		max-width: 600px;
+	  }
 
-    .inbox h2 {
-        font-size: 2rem;
-        margin-bottom: 20px;
-        text-align: center;
-        color: #fff;
-    }
+	  .inbox h2 {
+		font-size: 2rem;
+		margin-bottom: 20px;
+		text-align: center;
+		color: #fff;
+	  }
 
-    #conversation-list {
-        list-style: none;
-        padding: 0;
-        margin: 0;
-    }
+	  #conversation-list {
+		list-style: none;
+		padding: 0;
+		margin: 0;
+	  }
 
-    .conversation-item {
-        background: #ffffff;
-        padding: 15px;
-        margin-bottom: 10px;
-        border-radius: 8px;
-        transition: background 0.3s;
-    }
+	  .conversation-item {
+		background: #ffffff;
+		padding: 15px;
+		margin-bottom: 10px;
+		border-radius: 8px;
+		transition: background 0.3s;
+	  }
 
-    .conversation-item a {
-        text-decoration: none;
-        color: #333;
-        font-weight: bold;
-    }
+	  .conversation-item a {
+		text-decoration: none;
+		color: #333;
+		font-weight: bold;
+	  }
 
-    .conversation-item:hover {
-        background-color: #e0e0e0;
-    }
+	  .conversation-item:hover {
+		background-color: #e0e0e0;
+	  }
 
-    /* Style the message form section */
-    .message-view {
-        background: rgba(255, 255, 255, 0.1);
-        padding: 30px;
-        border-radius: 10px;
-        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-        width: 100%;
-    }
+	  /* Style the Send a Message section */
+	  .message-view {
+		background: rgba(255, 255, 255, 0.1);
+		padding: 30px;
+		border-radius: 10px;
+		box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+		width: 100%;
+		flex: 1;
+		max-width: 600px;
+	  }
 
-    .message-view h2 {
-        font-size: 2rem;
-        margin-bottom: 20px;
-        text-align: center;
-        color: #fff;
-    }
+	  .message-view h2 {
+		font-size: 2rem;
+		margin-bottom: 20px;
+		text-align: center;
+		color: #fff;
+	  }
 
-    /* Form elements styling */
-    label {
-        font-size: 1.1rem;
-        font-weight: bold;
-        display: block;
-        margin-bottom: 8px;
-        color: #fff;
-    }
+	  /* Form styling */
+	  label {
+		font-size: 1.1rem;
+		font-weight: bold;
+		display: block;
+		margin-bottom: 8px;
+		color: #fff;
+	  }
 
-    input[type="email"], textarea {
-        width: 100%;
-        padding: 12px;
-        font-size: 1rem;
-        margin-bottom: 15px;
-        border: 1px solid #ccc;
-        border-radius: 8px;
-        background: #fff;
-        color: #333;
-        transition: border 0.3s ease;
-    }
+	  input[type="email"], textarea {
+		width: 100%;
+		padding: 12px;
+		font-size: 1rem;
+		margin-bottom: 15px;
+		border: 1px solid #ccc;
+		border-radius: 8px;
+		background: #fff;
+		color: #333;
+		transition: border 0.3s ease;
+	  }
 
-    input[type="email"]:focus, textarea:focus {
-        border-color: #268fff;
-        box-shadow: 0 0 8px rgba(38, 143, 255, 0.5);
-    }
+	  input[type="email"]:focus, textarea:focus {
+		border-color: #268fff;
+		box-shadow: 0 0 8px rgba(38, 143, 255, 0.5);
+	  }
 
-    button {
-        background: linear-gradient(135deg, #6a11cb, #2575fc);
-        color: white;
-        font-size: 1.1rem;
-        padding: 12px 25px;
-        border: none;
-        border-radius: 8px;
-        cursor: pointer;
-        width: 100%;
-        transition: background 0.3s;
-    }
+	  button {
+		background: linear-gradient(135deg, #6a11cb, #2575fc);
+		color: white;
+		font-size: 1.1rem;
+		padding: 12px 25px;
+		border: none;
+		border-radius: 8px;
+		cursor: pointer;
+		width: 100%;
+		transition: background 0.3s;
+	  }
 
-    button:hover {
-        background: linear-gradient(135deg, #2575fc, #6a11cb);
-    }
+	  button:hover {
+		background: linear-gradient(135deg, #2575fc, #6a11cb);
+	  }
 
-    /* Footer styling */
-    .text-muted {
-        font-size: 0.9rem;
-        text-align: center;
-        color: #ddd;
-        margin-top: 30px;
-    }
+	  /* Small device (mobile) adjustments */
+	  @media (max-width: 768px) {
+		.container {
+		  flex-direction: column;
+		  gap: 20px;
+		}
 
-    /* Small device (mobile) adjustments */
-    @media (max-width: 768px) {
-        .container {
-            width: 95%;
-            margin-top: 30px;
-        }
+		.inbox, .message-view {
+		  max-width: 100%;
+		}
 
-        .message-view {
-            padding: 20px;
-        }
-    }
+		.message-view {
+		  padding: 20px;
+		}
+	  }
+	</style>
 
-  </style>
 </head>
 <body>
   <div class="container">

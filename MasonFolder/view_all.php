@@ -1,7 +1,6 @@
+
 <?php
 	if( isset($_GET['type'])){
-		session_start();
-		include '../includes/session_check.php';
 		include '../includes/includes.php';
 		$db = new Database();
 		
@@ -37,7 +36,10 @@
 					}
 				}
 				echo "</table>\n";
-
+				// Add Job Tab	
+				echo "<br>";
+				echo "<button onclick=\"window.location.href='addjob.php'\" class='btn-style'>Add Job</button>";
+				echo "</div>";
 				$result_job->free();
 			
 				break;
@@ -75,6 +77,10 @@
 				echo "</table>\n";
 				
 				$result_company->free();
+				// Add Company Tab	
+				echo "<br>";
+				echo "<button onclick=\"window.location.href='addcompany.php'\" class='btn-style'>Add Company</button>";
+				echo "</div>";
 				break;
 				
 			case 'events':
@@ -106,8 +112,38 @@
 					}
 				}
 				echo "</table>\n";
+				// Add Event Tab	
+				echo "<br>";
+				echo "<button onclick=\"window.location.href='addevent.php'\" class='btn-style'>Add Event</button>";
+				echo "</div>";
 				$result_event->free();
-				break;
-		}
+				break;	
+
+
 	}
+		}
 ?>
+
+<!DOCTYPE html>
+<html lang="en">
+	<style>
+		.btn-style {
+		background-color: #007bff;
+		color: white;
+		border: none;
+		padding: 10px 15px;
+		font-size: 16px;
+		cursor: pointer;
+		border-radius: 5px;
+		}
+		.btn-style:hover {
+			background-color: #0056b3;
+		}
+		.button-container {
+		display: flex;
+		justify-content: center;
+		gap: 40px; /* Increased space between buttons */
+		margin-top: 20px;
+	}
+	</style>
+</html>

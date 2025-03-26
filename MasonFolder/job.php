@@ -61,6 +61,8 @@
         echo "<p class='job-description'>" . nl2br(htmlspecialchars($job['description'])) . "</p>";
         echo "<p class='job-date'>Posted on: " . htmlspecialchars($job['opendate']) . "</p>";
         echo "<button class='back-button' onclick='history.back()'>Go Back</button>";
+		echo "<button class='back-button' onclick=\"window.location.href='jobedit.php?jobid=" . htmlspecialchars($job['jobid']) . "'\" class='btn-style'>Edit Job</button>";
+		echo "<button class='back-button' onclick=\"window.location.href='deletejob.php?jobid=" . htmlspecialchars($job['jobid']) . "'\" class='btn-style'>Delete Job</button>";
         echo "</div>";
     }
 ?>

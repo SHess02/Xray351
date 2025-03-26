@@ -38,20 +38,26 @@
             color: #666;
             margin-bottom: 10px;
         }
-        .back-button {
-            display: inline-block;
-            margin-top: 15px;
-            padding: 10px 15px;
-            background-color: #007bff;
-            color: white;
-            text-decoration: none;
-            border-radius: 5px;
-            border: none;
-            cursor: pointer;
-        }
-        .back-button:hover {
-            background-color: #0056b3;
-        }
+		.button-container {
+			margin-top: 20px;
+			display: flex;
+			justify-content: center; /* Center buttons horizontally */
+			gap: 20px; /* Adds space between buttons */
+		}
+		.back-button {
+			padding: 12px 20px;
+			background-color: #007bff;
+			color: white;
+			text-decoration: none;
+			border-radius: 5px;
+			border: none;
+			cursor: pointer;
+			min-width: 150px; /* Ensures buttons have a uniform width */
+			text-align: center;
+		}
+		.back-button:hover {
+			background-color: #0056b3;
+		}
     </style>";
 
     if ($rows == 0) {
@@ -63,6 +69,8 @@
         echo "<p class='event-location'>Location: " . htmlspecialchars($event['location']) . "</p>";
         echo "<p class='event-datetime'>Date & Time: " . htmlspecialchars($event['datetime']) . "</p>";
         echo "<button class='back-button' onclick='history.back()'>Go Back</button>";
+		echo "<button class='back-button' onclick=\"window.location.href='eventedit.php?eventid=" . htmlspecialchars($event['eventid']) . "'\" class='btn-style'>Edit Event</button>";
+		echo "<button class='back-button' onclick=\"window.location.href='deleteevent.php?eventid=" . htmlspecialchars($event['eventid']) . "'\" class='btn-style'>Delete Event</button>";
         echo "</div>";
     }
 ?>

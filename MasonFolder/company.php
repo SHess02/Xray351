@@ -92,6 +92,8 @@
         }
 
         echo "<button class='back-button' onclick='history.back()'>Go Back</button>";
+		echo "<button class='back-button' onclick=\"window.location.href='companyedit.php?companyid=" . htmlspecialchars($company['companyid']) . "'\" class='btn-style'>Edit Company</button>";
+		echo "<button class='back-button' onclick=\"window.location.href='deletecompany.php?companyid=" . htmlspecialchars($company['companyid']) . "'\" class='btn-style'>Delete Company</button>";
         echo "</div>";
     }
 ?>

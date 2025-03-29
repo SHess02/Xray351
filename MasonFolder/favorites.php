@@ -1,11 +1,12 @@
 <?php
+	ob_start(); // Start output buffering
 	session_start();
 	include '../includes/session_check.php';
 	include '../includes/includes.php';
 	$db = new Database();
-	
+
 	// Get listid
-	$select_fav_list = 'SELECT listid FROM favorite_list WHERE studentid = '.$_SESSION['userid'].'';
+	$select_fav_list = "SELECT listid FROM favorite_list WHERE userid = ".$_SESSION['userid'];
 	$listid_result = $db->query($select_fav_list);
 
 	if ($listid_result->num_rows > 0) {
@@ -27,6 +28,14 @@
 			JOIN job j ON fj.jobid = j.jobid
 			WHERE fj.listid = $listid";
 		$fav_job_result = $db->query($select_fav_job);
+
+		// Fetch favorite events with details
+		$select_fav_event = "
+			SELECT e.eventid, e.name, e.location, e.datetime
+			FROM favorite_event fe
+			JOIN event e ON fe.eventid = e.eventid
+			WHERE fe.listid = $listid";
+		$fav_event_result = $db->query($select_fav_event);
 
 		// Display favorite companies
 		echo "<h3>Favorite Companies</h3>";
@@ -55,10 +64,36 @@
 				  </tr>";
 		}
 		echo "</table>";
+
+		// Display favorite events
+		echo "<h3>Favorite Events</h3>";
+		echo "<table border='1'>";
+		echo "<tr><th>Name</th><th>Location</th><th>Date & Time</th></tr>";
+		while ($event_row = $fav_event_result->fetch_assoc()) {
+			echo "<tr>
+					<td>{$event_row['name']}</td>
+					<td>{$event_row['location']}</td>
+					<td>{$event_row['datetime']}</td>
+				  </tr>";
+		}
+		echo "</table>";
+
 	} else {
-		echo "No favorite list found for this student.";
+		$userid = $_SESSION['userid'];
+
+		// Insert favorite list for the user if it doesn't exist
+		$query = "INSERT INTO favorite_list (userid)  
+				  SELECT $userid FROM DUAL  
+				  WHERE NOT EXISTS (  
+					  SELECT 1 FROM favorite_list WHERE userid = $userid  
+				  )";
+		
+		$db->query($query);
+		
+		// Reload the page after insertion
+		header("Location: favorites.php"); // Use Location instead of Refresh
+		exit();
 	}
 
-
-
+	ob_end_flush(); // Flush output buffer
 ?>

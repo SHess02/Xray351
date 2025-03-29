@@ -71,9 +71,9 @@ CREATE TABLE IF NOT EXISTS alumniconnectdb.application (
 
 CREATE TABLE IF NOT EXISTS alumniconnectdb.favorite_list (
   listid INT NOT NULL AUTO_INCREMENT,
-  studentid INT NOT NULL,
+  userid INT NOT NULL,
   PRIMARY KEY (listid),
-  FOREIGN KEY (studentid) REFERENCES alumniconnectdb.user (userid)
+  FOREIGN KEY (userid) REFERENCES alumniconnectdb.user (userid)
 );
 
 CREATE TABLE IF NOT EXISTS alumniconnectdb.favorite_company (
@@ -89,5 +89,13 @@ CREATE TABLE IF NOT EXISTS alumniconnectdb.favorite_job (
   listid INT NOT NULL,
   PRIMARY KEY (jobid, listid),
   FOREIGN KEY (jobid) REFERENCES alumniconnectdb.job (jobid),
+  FOREIGN KEY (listid) REFERENCES alumniconnectdb.favorite_list (listid)
+);
+
+CREATE TABLE IF NOT EXISTS alumniconnectdb.favorite_event (
+  eventid INT NOT NULL,
+  listid INT NOT NULL,
+  PRIMARY KEY (eventid, listid),
+  FOREIGN KEY (eventid) REFERENCES alumniconnectdb.event (eventid),
   FOREIGN KEY (listid) REFERENCES alumniconnectdb.favorite_list (listid)
 );

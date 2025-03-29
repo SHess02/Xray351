@@ -1,19 +1,51 @@
 <?php
-    session_start();
-    include '../includes/session_check.php';
-    include '../includes/includes.php';
+session_start();
+include '../includes/session_check.php';
+include '../includes/includes.php';
+$db = new Database();
 
-    $db = new Database();
+// Ensure the user has a favorite list
+$userid = $_SESSION['userid'];
 
-    $select = 'SELECT * FROM job';
-    if (!empty($_GET['jobid'])) {
-        $select .= ' WHERE jobid = "'.$_GET['jobid'].'"';
-    }
+$query = "INSERT INTO favorite_list (userid)  
+          SELECT $userid FROM DUAL  
+          WHERE NOT EXISTS (  
+              SELECT 1 FROM favorite_list WHERE userid = $userid  
+          )";
+$db->query($query);
 
-    $result = $db->query($select);
-    $rows = $result->num_rows;
+// Get listid
+$select_fav_list = "SELECT listid FROM favorite_list WHERE userid = $userid";
+$listid_result = $db->query($select_fav_list);
+$listid_row = $listid_result->fetch_assoc();
+$listid = $listid_row['listid'];
 
-    echo "<style>
+// Get job details
+$jobid = $_GET['jobid'] ?? null;
+if (!$jobid) {
+    die("Job ID is required.");
+}
+
+$select_job = "SELECT * FROM job WHERE jobid = $jobid";
+$job_result = $db->query($select_job);
+
+if ($job_result->num_rows == 0) {
+    die("Job not found.");
+}
+$job = $job_result->fetch_assoc();
+
+// Check if the job is already favorited
+$check_fav = "SELECT * FROM favorite_job WHERE jobid = $jobid AND listid = $listid";
+$check_result = $db->query($check_fav);
+$isFavorited = $check_result->num_rows > 0;
+?>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Job Details</title>
+    <style>
         .job-container {
             max-width: 600px;
             margin: 20px auto;
@@ -22,6 +54,7 @@
             border-radius: 8px;
             box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
             background-color: #f9f9f9;
+            position: relative;
         }
         .job-title {
             font-size: 24px;
@@ -35,6 +68,16 @@
         .job-date {
             font-size: 14px;
             color: #666;
+        }
+        .favorite-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            border: none;
+            background: none;
+            cursor: pointer;
+            font-size: 24px;
+            color: <?php echo $isFavorited ? 'gold' : 'gray'; ?>;
         }
         .back-button {
             display: inline-block;
@@ -50,19 +93,33 @@
         .back-button:hover {
             background-color: #0056b3;
         }
-    </style>";
+    </style>
+    <script>
+        function toggleFavorite(jobid) {
+            fetch('favorite_job.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: 'jobid=' + jobid
+            })
+            .then(response => response.text())
+            .then(() => location.reload());
+        }
+    </script>
+</head>
+<body>
 
-    if ($rows == 0) {
-        echo "<div class='job-container'><p>Job not found</p></div>";
-    } else {
-        $job = $result->fetch_assoc();
-        echo "<div class='job-container'>";
-        echo "<p class='job-title'>" . htmlspecialchars($job['title']) . "</p>";
-        echo "<p class='job-description'>" . nl2br(htmlspecialchars($job['description'])) . "</p>";
-        echo "<p class='job-date'>Posted on: " . htmlspecialchars($job['opendate']) . "</p>";
-        echo "<button class='back-button' onclick='history.back()'>Go Back</button>";
-		echo "<button class='back-button' onclick=\"window.location.href='jobedit.php?jobid=" . htmlspecialchars($job['jobid']) . "'\" class='btn-style'>Edit Job</button>";
-		echo "<button class='back-button' onclick=\"window.location.href='deletejob.php?jobid=" . htmlspecialchars($job['jobid']) . "'\" class='btn-style'>Delete Job</button>";
-        echo "</div>";
-    }
-?>
+<div class="job-container">
+    <button class="favorite-btn" onclick="toggleFavorite(<?php echo $jobid; ?>)">
+        ★
+    </button>
+    <p class="job-title"><?php echo htmlspecialchars($job['title']); ?></p>
+    <p class="job-description"><?php echo nl2br(htmlspecialchars($job['description'])); ?></p>
+    <p class="job-date">Posted on: <?php echo htmlspecialchars($job['opendate']); ?></p>
+    
+    <button class="back-button" onclick="history.back()">Go Back</button>
+    <button class="back-button" onclick="window.location.href='jobedit.php?jobid=<?php echo htmlspecialchars($job['jobid']); ?>'">Edit Job</button>
+    <button class="back-button" onclick="window.location.href='deletejob.php?jobid=<?php echo htmlspecialchars($job['jobid']); ?>'">Delete Job</button>
+</div>
+
+</body>
+</html>

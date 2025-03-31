@@ -5,19 +5,9 @@
 
     $db = new Database();
     echo "<h1>Browsing Tab</h1>";
-
-    $today = date('Y-m-d'); // Get today's date
+	
+	$today = date('Y-m-d'); // Get today's date
     $active_only = isset($_GET['active_only']) && $_GET['active_only'] == '1'; // Ensure it toggles properly
-
-    // Toggle button form
-    echo "<form method='GET' style='margin-bottom: 20px;'>";
-    if ($active_only) {
-        echo "<button type='submit'>Show All</button>"; // Clicking removes the filter
-    } else {
-        echo "<input type='hidden' name='active_only' value='1'>";
-        echo "<button type='submit'>Show Active Only</button>"; // Clicking enables the filter
-    }
-    echo "</form>";
 
     // Modify queries based on active_only toggle
     $job_filter = $active_only ? "WHERE closedate IS NULL OR closedate >= '$today'" : "";
@@ -85,6 +75,18 @@
     echo "</div>";
 
     echo "</div>"; // Close lists container
+	
+	echo "<h2>Looking for recent items?</h2>";
+	
+	// Toggle button form
+    echo "<form method='GET' style='margin-bottom: 20px;'>";
+    if ($active_only) {
+        echo "<button type='submit'>Show All</button>"; // Clicking removes the filter
+    } else {
+        echo "<input type='hidden' name='active_only' value='1'>";
+        echo "<button type='submit'>Show Active Only</button>"; // Clicking enables the filter
+    }
+    echo "</form>";
 
     $result_jobs->free();
     $result_companies->free();

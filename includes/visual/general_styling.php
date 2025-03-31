@@ -199,4 +199,36 @@
 		}
 	}
 
+	/* Centering the h2 text */
+	h2 {
+		text-align: center;
+		font-size: 1.5em;
+		font-weight: bold;
+		color: #333;
+		margin-top: 20px;
+	}
+
+	/* Centering the Active Button */
+	form {
+		display: flex;
+		justify-content: center;
+		margin-bottom: 20px;
+	}
+
+	button {
+		background-color: #007bff;
+		color: white;
+		font-size: 1.2em;
+		font-weight: bold;
+		padding: 10px 20px;
+		border: none;
+		border-radius: 8px;
+		cursor: pointer;
+		transition: background 0.3s ease;
+	}
+
+	button:hover {
+		background-color: #0056b3;
+	}
 </style>
+

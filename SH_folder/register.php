@@ -1,33 +1,31 @@
 <?php
 session_start();
-include 'db_connect_temp.php';
+include '../SH_folder/db_connect_temp.php';
+require '../EthanWork/mailer.php'; // Include the mailer for email verification
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $name = trim($_POST['name']);
     $email = trim(strtolower($_POST['email']));
-	$role = ($_POST['role']);
+    $role = $_POST['role'];
     $password = trim($_POST['password']);
     $confirm_password = trim($_POST['confirm_password']);
-    $security_a1 = trim(strtolower($_POST['security_a1']));
-    $security_a2 = trim(strtolower($_POST['security_a2']));
 
-
-
+    // Validate email format (must be @cnu.edu)
     if (!preg_match("/^[a-zA-Z0-9._%+-]+@cnu\.edu$/", $email)) {
         echo "Invalid email. You must use a @cnu.edu email address.";
         exit();
     }
 
+    // Validate input lengths
     if (
         strlen($name) > 0 && strlen($name) <= 45 &&
         strlen($email) > 0 && strlen($email) <= 45 &&
-        strlen($confirm_password) >= 8 && strlen($confirm_password) <= 255 &&
-        strlen($security_a1) > 0 && strlen($security_a1) <= 100 &&
-        strlen($security_a2) > 0 && strlen($security_a2) <= 100) {
-        
-		if ($password !== $confirm_password) {
+        strlen($confirm_password) >= 8 && strlen($confirm_password) <= 255
+    ) {
+        if ($password !== $confirm_password) {
             echo "Passwords do not match";
         } else {
+            // Check if the email already exists
             $stmt = $conn->prepare("SELECT userid FROM user WHERE email = ?");
             $stmt->bind_param("s", $email);
             $stmt->execute();
@@ -38,13 +36,22 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             } else {
                 $stmt->close();
 
+                // Hash the password for security
                 $hashed_password = password_hash($password, PASSWORD_DEFAULT);
 
-                $stmt = $conn->prepare("INSERT INTO user (email, role, name, password, securityans1, securityans2) VALUES (?, ?, ?, ?, ?, ?)");
-                $stmt->bind_param("ssssss", $email, $role, $name, $hashed_password, $security_a1, $security_a2);
+                // Generate a random verification token
+                $verification_token = bin2hex(random_bytes(32));
+
+                // Insert new user into the database
+                $stmt = $conn->prepare("INSERT INTO user (email, role, name, password, email_verified, verification_token) VALUES (?, ?, ?, ?, 0, ?)");
+                $stmt->bind_param("sssss", $email, $role, $name, $hashed_password, $verification_token);
 
                 if ($stmt->execute()) {
-                    header("Location: login.php");
+                    // Send verification email
+                    sendVerificationEmail($email, $verification_token);
+
+                    // Redirect to success page
+                    header("Location: registration_success.php");
                     exit();
                 } else {
                     echo "Error: " . $conn->error;
@@ -142,7 +149,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 <label class="form-label">Role</label>
                 <div class="d-flex">
                     <div class="form-check me-3">
-                        <input type="radio" id="student" name="role" value="student" class="form-check-input">
+                        <input type="radio" id="student" name="role" value="student" class="form-check-input" required>
                         <label for="student" class="form-check-label">Student</label>
                     </div>
 					<div class="form-check me-3">
@@ -166,16 +173,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 <input type="password" class="form-control" id="confirm-password" name="confirm_password" placeholder="Confirm your password" required>
             </div>
 
-            <div class="mb-3">
-                <label for="security_a1" class="form-label">Security Question #1: What was the year, make, and model of your first car?</label>
-                <input type="text" class="form-control" id="security_a1" name="security_a1" placeholder="Enter answer" required>
-            </div>
-
-            <div class="mb-3">
-                <label for="security_a2" class="form-label">Security Question #2: What was your childhood nickname?</label>
-                <input type="text" class="form-control" id="security_a2" name="security_a2" placeholder="Enter answer" required>
-            </div>
-
             <div class="btn-container">
                 <button type="submit" name="register" class="btn btn-custom">Register</button>
             </div>
@@ -189,7 +186,3 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
-
-
-
-

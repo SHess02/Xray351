@@ -10,8 +10,10 @@ CREATE TABLE IF NOT EXISTS alumniconnectdb.user (
   major VARCHAR(45) NULL,
   aboutme LONGTEXT NULL,
   password VARCHAR(255) NOT NULL,
-  securityans1 VARCHAR(100) NOT NULL,
-  securityans2 VARCHAR(100) NOT NULL,
+  email_verified TINYINT(1) DEFAULT 0,
+  verification_token VARCHAR(255) NULL,
+  password_reset_token VARCHAR(255) NULL,
+  reset_expires_at DATETIME NULL,
   PRIMARY KEY (userid)
 );
 

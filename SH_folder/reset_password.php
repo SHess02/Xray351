@@ -1,33 +1,39 @@
 <?php
-session_start();
-include 'db_connect_temp.php';
-
-if (!isset($_SESSION['reset_token']) || !isset($_SESSION['reset_user_id']) || $_GET['token'] !== $_SESSION['reset_token']) {
-    die("Invalid or expired reset link.");
-}
+require 'db_connect_temp.php';
+require 'mailer.php'; // Include mailer for sending emails
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $new_password = trim($_POST['new_password']);
-    $confirm_password = trim($_POST['confirm_password']);
+    $email = trim(strtolower($_POST['email']));
 
-    if (!empty($new_password) && $new_password === $confirm_password) {
-        $hashed_password = password_hash($new_password, PASSWORD_BCRYPT);
+    // Check if email exists
+    $stmt = $conn->prepare("SELECT userid FROM user WHERE email = ?");
+    $stmt->bind_param("s", $email);
+    $stmt->execute();
+    $stmt->store_result();
 
-        $stmt = $conn->prepare("UPDATE user SET password = ? WHERE userid = ?");
-        $stmt->bind_param("si", $hashed_password, $_SESSION['reset_user_id']);
+    if ($stmt->num_rows > 0) {
+        $stmt->bind_result($userid);
+        $stmt->fetch();
+        $stmt->close();
 
-        if ($stmt->execute()) {
-            $stmt->close();
+        // Generate password reset token (64 characters) and set expiration (1 hour)
+        $reset_token = bin2hex(random_bytes(32));
+        $expires_at = date("Y-m-d H:i:s", strtotime("+1 hour"));
 
-            session_destroy();
+        // Store the token and expiration in the database
+        $stmt = $conn->prepare("UPDATE user SET password_reset_token = ?, reset_expires_at = ? WHERE userid = ?");
+        $stmt->bind_param("ssi", $reset_token, $expires_at, $userid);
+        $stmt->execute();
+        $stmt->close();
 
-            header("Location: login.php?reset=success");
-            exit();
-        } else {
-            echo "Error updating password.";
-        }
+        // Send password reset email
+        sendPasswordResetEmail($email, $reset_token);
+
+        // Success message (same for all cases to avoid email enumeration attacks)
+        $message = "<p style='color: green;'>If this email is registered, a reset link has been sent.</p>";
     } else {
-        echo "Passwords do not match.";
+        // Generic success message (security measure)
+        $message = "<p style='color: green;'>If this email is registered, a reset link has been sent.</p>";
     }
 }
 ?>
@@ -37,8 +43,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Password Reset : QuickServe Reservations</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <title>Forgot Password</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 
     <style>
         body {
@@ -50,7 +56,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             align-items: center;
         }
 
-        .reset-password-form {
+        .forgot-password-form {
             background: #ffffff;
             color: #000;
             padding: 2rem;
@@ -60,8 +66,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             width: 100%;
         }
 
-        .form-label {
-            font-weight: bold;
+        .form-header {
+            text-align: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .form-control:focus {
+            box-shadow: 0 0 10px rgba(38, 143, 255, 0.5);
+            border-color: #268fff;
         }
 
         .btn-custom {
@@ -81,28 +93,24 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 </head>
 
 <body>
-
-    <div class="reset-password-form">
-        <div class="text-center">
-            <h2>Reset Password</h2>
+    <div class="forgot-password-form">
+        <div class="form-header">
+            <h2>Reset Your Password</h2>
         </div>
-		<br>
-        <form action="reset_password.php?token=<?= htmlspecialchars($_GET['token']) ?>" method="post">
-            <div class="mb-3">
-                <label for="new_password" class="form-label">New Password:</label>
-                <input type="password" class="form-control" id="new_password" name="new_password" required>
-            </div>
+        
+        <?php if (isset($message)) echo $message; ?>
 
+        <form method="POST">
             <div class="mb-3">
-                <label for="confirm_password" class="form-label">Confirm Password:</label>
-                <input type="password" class="form-control" id="confirm_password" name="confirm_password" required>
+                <label for="email" class="form-label">Enter Your CNU Email</label>
+                <input type="email" class="form-control" id="email" name="email" placeholder="yourname@cnu.edu" required>
             </div>
-
             <div class="btn-container">
-                <button type="submit" class="btn btn-custom">Reset</button>
+                <button type="submit" class="btn btn-custom">Send Reset Link</button>
             </div>
         </form>
     </div>
 
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

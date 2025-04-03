@@ -1,19 +1,30 @@
+<?php
+$baseURL = "http://" . $_SERVER['HTTP_HOST'] . "/Xray351";
+?>
+
 <nav class="navbar">
     <div class="nav-left">
         <button class="nav-btn back-btn" onclick="history.back()">&#8592;</button>
-        <a href="../MasonFolder/browsingtab.php" class="nav-btn">Recent</a>
-        <a href='../MasonFolder/view_all.php?type=jobs' class="nav-btn">Jobs</a>
-        <a href='../MasonFolder/view_all.php?type=companies' class="nav-btn">Companies</a>
-        <a href='../MasonFolder/view_all.php?type=events' class="nav-btn">Events</a>
+
+		<a href="<?= $baseURL ?>/MasonFolder/browsingtab.php" class="nav-btn">Recent</a>
+		<a href="<?= $baseURL ?>/MasonFolder/view_all.php?type=jobs" class="nav-btn">Jobs</a>
+		<a href="<?= $baseURL ?>/MasonFolder/view_all.php?type=companies" class="nav-btn">Companies</a>
+		<a href="<?= $baseURL ?>/MasonFolder/view_all.php?type=events" class="nav-btn">Events</a>
     </div>
 
     <div class="search-container">
-    <form action="../includes/functional/search_results.php" method="GET" style="display: flex; width: 100%;">
-        <input type="text" class="search-bar" name="query" placeholder="Search for companies, jobs, or events..." required>
-        <button type="submit" class="nav-btn">🔍</button>
-    </form>
+	<form action="<?= $baseURL ?>/includes/functional/search_results.php" method="GET">
+    <input type="text" name="query" placeholder="Search..." required>
+    <select name="category">
+        <option value="jobs">Jobs</option>
+        <option value="companies">Companies</option>
+        <option value="events">Events</option>
+        <option value="users">Users</option>
+    </select>
+    <button type="submit">🔍</button>
+	</form>
 	</div>
-
+	
 
     <div class="nav-right">
 		<a href="../SH_folder/inbox.php">
@@ -38,7 +49,7 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-	background: linear-gradient(135deg, #6a11cb, #2575fc);
+    background: linear-gradient(135deg, #6a11cb, #2575fc);
     color: #fff;
     padding: 10px 20px;
     box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
@@ -47,62 +58,74 @@
     left: 0;
     width: 100%;
     z-index: 1000;
-}
-
-/* Left and Right Sections */
-.nav-left, .nav-right {
-    display: flex;
-    align-items: center;
-}
-
-/* Add spacing to prevent profile button from getting cut off */
-.nav-right {
-    margin-right: 15px; /* Ensures profile button is not off-screen */
-    padding-right: 10px; /* Extra padding for safety */
-}
-
-/* Buttons */
-.nav-btn {
-    background: none;
-    border: none;
-    color: white;
-    font-size: 18px;
-    font-weight: bold;
-    padding: 8px 12px;
-    cursor: pointer;
-    transition: background 0.3s;
-}
-
-.nav-btn:hover {
-    background: rgba(255, 255, 255, 0.2);
-    border-radius: 5px;
-}
-
-/* Back button styling */
-.back-btn {
-    font-size: 20px;
+    height: 60px; /* Explicitly set navbar height */
 }
 
 /* Search Bar Container */
 .search-container {
-    flex-grow: 1;
     display: flex;
     justify-content: center;
+    align-items: center;
     position: absolute;
+    top: 50%;
     left: 50%;
-    transform: translateX(-50%);
+    transform: translate(-50%, -50%);
     width: 100%;
-    max-width: 400px;
+    max-width: 600px;
+    background-color: rgba(255, 255, 255, 0.2);
+    border-radius: 25px;
+    padding: 5px 10px;
+    box-sizing: border-box;
+}
+
+/* Search Bar Form Styling */
+.search-container form {
+    display: flex;
+    width: 100%;
+    background-color: transparent;
+    border-radius: 25px;
+    padding: 0; /* Remove padding around the form */
+    box-sizing: border-box;
+    justify-content: space-between;
 }
 
 /* Centered Search Bar */
-.search-bar {
-    width: 100%;
-    padding: 8px;
+.search-container input[type="text"] {
+    width: 70%;
+    padding: 6px 12px;
     border: none;
-    border-radius: 5px;
-    font-size: 16px;
+    border-radius: 25px;
+    font-size: 14px;
+    color: #333;
+    margin: 0; /* Remove margin to prevent extra space */
+    height: 30px; /* Explicit height to ensure vertical centering */
+    box-sizing: border-box; /* Ensure padding is included in width */
 }
+
+.search-container select {
+    background-color: #fff;
+    border: none;
+    color: #333;
+    font-size: 14px;
+    margin-left: 10px;
+    padding: 6px 12px;
+    border-radius: 25px;
+    height: 30px; /* Make the select input the same height as the search bar */
+    box-sizing: border-box;
+}
+
+.search-container button {
+    background-color: transparent;
+    border: none;
+    color: white;
+    cursor: pointer;
+    font-size: 20px;
+    margin-left: 10px;
+    padding: 6px 12px;
+    border-radius: 25px;
+    height: 30px; /* Match the button height with the inputs */
+}
+
 
 /* Profile Dropdown */
 .profile-dropdown {
@@ -143,7 +166,13 @@
 /* Responsive Design */
 @media (max-width: 600px) {
     .search-container {
-        max-width: 200px;
+        max-width: 300px; /* Reduced max-width for small screens */
+    }
+
+    .nav-btn {
+        font-size: 16px;
     }
 }
+
+
 </style>

@@ -66,16 +66,15 @@ $baseURL = "http://" . $_SERVER['HTTP_HOST'] . "/Xray351";
     display: flex;
     justify-content: center;
     align-items: center;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
     width: 100%;
     max-width: 600px;
     background-color: rgba(255, 255, 255, 0.2);
-    border-radius: 25px;
+    border-radius: 35px;
     padding: 5px 10px;
     box-sizing: border-box;
+	margin: 0 auto;
+	height: 50px;
+	padding-top: 25px;
 }
 
 /* Search Bar Form Styling */
@@ -87,6 +86,7 @@ $baseURL = "http://" . $_SERVER['HTTP_HOST'] . "/Xray351";
     padding: 0; /* Remove padding around the form */
     box-sizing: border-box;
     justify-content: space-between;
+	align-items: center;
 }
 
 /* Centered Search Bar */

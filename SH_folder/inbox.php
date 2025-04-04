@@ -173,7 +173,7 @@ if ($result->num_rows > 0) {
 		box-shadow: 0 0 8px rgba(38, 143, 255, 0.5);
 	  }
 
-	  button {
+	  .button {
 		background: linear-gradient(135deg, #6a11cb, #2575fc);
 		color: white;
 		font-size: 1.1rem;

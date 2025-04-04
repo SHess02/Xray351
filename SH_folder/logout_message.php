@@ -11,6 +11,7 @@
             color: #fff;
             min-height: 100vh;
             align-items: center;
+			text-align: center;
         }
 	</style>
     <h1>You have been logged out</h1>

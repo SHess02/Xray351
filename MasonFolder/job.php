@@ -116,9 +116,22 @@ $isFavorited = $check_result->num_rows > 0;
     <p class="job-description"><?php echo nl2br(htmlspecialchars($job['description'])); ?></p>
     <p class="job-date">Posted on: <?php echo htmlspecialchars($job['opendate']); ?></p>
     
-    <button class="back-button" onclick="history.back()">Go Back</button>
-    <button class="back-button" onclick="window.location.href='jobedit.php?jobid=<?php echo htmlspecialchars($job['jobid']); ?>'">Edit Job</button>
-    <button class="back-button" onclick="window.location.href='deletejob.php?jobid=<?php echo htmlspecialchars($job['jobid']); ?>'">Delete Job</button>
+	<button class="back-button" onclick="history.back()">Go Back</button>
+	<?php
+	
+	$userid = intval($_SESSION['userid']); // Sanitize the session value as an integer
+	$sql = "SELECT role FROM user WHERE userid = $userid";
+	$result = $db->query($sql);
+	
+	if ($result && $result->num_rows > 0) {
+		$row = $result->fetch_assoc();
+		$role = $row['role'];
+		if ($role === "alumni" || $role === "admin"){
+			echo "<button class='back-button' onclick=\"window.location.href='jobedit.php?jobid=" . htmlspecialchars($job['jobid']) . "'\">Edit Job</button>";
+			echo "<button class='back-button' onclick=\"window.location.href='deletejob.php?jobid=" . htmlspecialchars($job['jobid']) . "'\">Delete Job</button>";
+		}
+	}
+	?>
 </div>
 
 </body>

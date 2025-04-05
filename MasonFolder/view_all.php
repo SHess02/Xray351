@@ -1,5 +1,7 @@
 <?php
     if (isset($_GET['type'])) {
+		session_start();
+		include '../includes/session_check.php';
         include '../includes/includes.php';
         $db = new Database();
 
@@ -32,11 +34,22 @@
                 }
                 echo "</table>\n";
                 echo "</div>"; // Close .table-container
-
-                // Button wrapper for bottom-left alignment
-                echo "<div class='button-container-left'>";
-                echo "<button onclick=\"window.location.href='addjob.php'\" class='btn-style'>Add Job</button>";
-                echo "</div>";
+					
+					
+					
+				$userid = intval($_SESSION['userid']); // Sanitize the session value as an integer
+				$sql = "SELECT role FROM user WHERE userid = $userid";
+				$result = $db->query($sql);
+				
+				if ($result && $result->num_rows > 0) {
+					$row = $result->fetch_assoc();
+					$role = $row['role'];
+					if ($role === "faculty" || $role === "alumni" || $role === "admin"){
+						echo "<div class='button-container-left'>";
+						echo "<button onclick=\"window.location.href='addjob.php'\" class='btn-style'>Add Job</button>";
+						echo "</div>";
+					}
+				}                
 
                 echo "</div>"; // Close .table-wrapper
                 $result_job->free();
@@ -72,11 +85,21 @@
                 }
                 echo "</table>\n";
                 echo "</div>";
-
-                echo "<div class='button-container-left'>";
-                echo "<button onclick=\"window.location.href='addcompany.php'\" class='btn-style'>Add Company</button>";
-                echo "</div>";
-
+				
+				$userid = intval($_SESSION['userid']); // Sanitize the session value as an integer
+				$sql = "SELECT role FROM user WHERE userid = $userid";
+				$result = $db->query($sql);
+				
+				if ($result && $result->num_rows > 0) {
+					$row = $result->fetch_assoc();
+					$role = $row['role'];
+					if ($role === "faculty" || $role === "alumni" || $role === "admin"){
+						echo "<div class='button-container-left'>";
+						echo "<button onclick=\"window.location.href='addcompany.php'\" class='btn-style'>Add Company</button>";
+						echo "</div>";
+					}
+				}
+				
                 echo "</div>";
                 $result_company->free();
                 break;
@@ -108,10 +131,21 @@
                 }
                 echo "</table>\n";
                 echo "</div>";
-
-                echo "<div class='button-container-left'>";
-                echo "<button onclick=\"window.location.href='addevent.php'\" class='btn-style'>Add Event</button>";
-                echo "</div>";
+				
+				
+				$userid = intval($_SESSION['userid']); // Sanitize the session value as an integer
+				$sql = "SELECT role FROM user WHERE userid = $userid";
+				$result = $db->query($sql);
+				
+				if ($result && $result->num_rows > 0) {
+					$row = $result->fetch_assoc();
+					$role = $row['role'];
+					if ($role === "faculty" || $role === "alumni" || $role === "admin"){
+						echo "<div class='button-container-left'>";
+						echo "<button onclick=\"window.location.href='addevent.php'\" class='btn-style'>Add Event</button>";
+						echo "</div>";
+					}
+				}
 
                 echo "</div>";
                 $result_event->free();

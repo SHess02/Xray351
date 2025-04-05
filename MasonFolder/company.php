@@ -146,10 +146,23 @@ $isFavorited = $check_result->num_rows > 0;
         echo "<p>No active job postings at this time.</p>";
     }
     ?>
-
-    <button class="back-button" onclick="history.back()">Go Back</button>
-    <button class="back-button" onclick="window.location.href='companyedit.php?companyid=<?php echo htmlspecialchars($company['companyid']); ?>'">Edit Company</button>
-    <button class="back-button" onclick="window.location.href='deletecompany.php?companyid=<?php echo htmlspecialchars($company['companyid']); ?>'">Delete Company</button>
+	
+	<button class="back-button" onclick="history.back()">Go Back</button>
+	<?php
+	
+	$userid = intval($_SESSION['userid']); // Sanitize the session value as an integer
+	$sql = "SELECT role FROM user WHERE userid = $userid";
+	$result = $db->query($sql);
+	
+	if ($result && $result->num_rows > 0) {
+		$row = $result->fetch_assoc();
+		$role = $row['role'];
+		if ($role === "alumni" || $role === "admin"){
+			echo "<button class='back-button' onclick=\"window.location.href='companyedit.php?companyid=" . htmlspecialchars($company['companyid']) . "'\">Edit Company</button>";
+			echo "<button class='back-button' onclick=\"window.location.href='deletecompany.php?companyid=" . htmlspecialchars($company['companyid']) . "'\">Delete Company</button>";
+		}
+	}
+	?>
 </div>
 
 </body>

@@ -123,12 +123,24 @@ $isFavorited = $check_result->num_rows > 0;
     <p class="event-name"><?php echo htmlspecialchars($event['name']); ?></p>
     <p class="event-location">Location: <?php echo htmlspecialchars($event['location']); ?></p>
     <p class="event-datetime">Date & Time: <?php echo htmlspecialchars($event['datetime']); ?></p>
-
-    <div class="button-container">
-        <button class="back-button" onclick="history.back()">Go Back</button>
-        <button class="back-button" onclick="window.location.href='eventedit.php?eventid=<?php echo htmlspecialchars($event['eventid']); ?>'">Edit Event</button>
-        <button class="back-button" onclick="window.location.href='deleteevent.php?eventid=<?php echo htmlspecialchars($event['eventid']); ?>'">Delete Event</button>
-    </div>
+	
+	
+	<button class="back-button" onclick="history.back()">Go Back</button>
+	<?php
+	
+	$userid = intval($_SESSION['userid']); // Sanitize the session value as an integer
+	$sql = "SELECT role FROM user WHERE userid = $userid";
+	$result = $db->query($sql);
+	
+	if ($result && $result->num_rows > 0) {
+		$row = $result->fetch_assoc();
+		$role = $row['role'];
+		if ($role === "alumni" || $role === "admin"){
+			echo "<button class='back-button' onclick=\"window.location.href='eventedit.php?eventid=" . htmlspecialchars($event['eventid']) . "'\">Edit Event</button>";
+			echo "<button class='back-button' onclick=\"window.location.href='deleteevent.php?eventid=" . htmlspecialchars($event['eventid']) . "'\">Delete Event</button>";
+		}
+	}
+	?>
 </div>
 
 </body>

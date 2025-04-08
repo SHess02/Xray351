@@ -149,20 +149,37 @@ $isFavorited = $check_result->num_rows > 0;
 	
 	<button class="back-button" onclick="history.back()">Go Back</button>
 	<?php
+	function isCompanyCreator($db, $userid, $companyid) {
+		$userid = intval($userid);
+		$companyid = intval($companyid);
+
+		$query = "SELECT creatorid FROM company WHERE companyid = $companyid";
+		$result = $db->query($query);
+
+		if ($result && $result->num_rows > 0) {
+			$row = $result->fetch_assoc();
+			return $row['creatorid'] == $userid;
+		}
+
+		return false;
+	}
+
 	
-	$userid = intval($_SESSION['userid']); // Sanitize the session value as an integer
+	$userid = intval($_SESSION['userid']);
 	$sql = "SELECT role FROM user WHERE userid = $userid";
 	$result = $db->query($sql);
-	
+
 	if ($result && $result->num_rows > 0) {
 		$row = $result->fetch_assoc();
 		$role = $row['role'];
-		if ($role === "alumni" || $role === "admin"){
+
+		if (($role === "alumni" || $role === "admin") && isCompanyCreator($db, $userid, $company['companyid'])) {
 			echo "<button class='back-button' onclick=\"window.location.href='companyedit.php?companyid=" . htmlspecialchars($company['companyid']) . "'\">Edit Company</button>";
 			echo "<button class='back-button' onclick=\"window.location.href='deletecompany.php?companyid=" . htmlspecialchars($company['companyid']) . "'\">Delete Company</button>";
 		}
 	}
 	?>
+
 </div>
 
 </body>

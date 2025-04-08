@@ -128,19 +128,36 @@ $isFavorited = $check_result->num_rows > 0;
 	<button class="back-button" onclick="history.back()">Go Back</button>
 	<?php
 	
+	function isEventCreator($db, $userid, $eventid) {
+		$userid = intval($userid);
+		$eventid = intval($eventid);
+
+		$query = "SELECT creatorid FROM event WHERE eventid = $eventid";
+		$result = $db->query($query);
+
+		if ($result && $result->num_rows > 0) {
+			$row = $result->fetch_assoc();
+			return $row['creatorid'] == $userid;
+		}
+
+		return false;
+	}
+
 	$userid = intval($_SESSION['userid']); // Sanitize the session value as an integer
 	$sql = "SELECT role FROM user WHERE userid = $userid";
 	$result = $db->query($sql);
-	
+
 	if ($result && $result->num_rows > 0) {
 		$row = $result->fetch_assoc();
 		$role = $row['role'];
-		if ($role === "alumni" || $role === "admin"){
+
+		if (($role === "alumni" || $role === "admin") && isEventCreator($db, $userid, $event['eventid'])) {
 			echo "<button class='back-button' onclick=\"window.location.href='eventedit.php?eventid=" . htmlspecialchars($event['eventid']) . "'\">Edit Event</button>";
 			echo "<button class='back-button' onclick=\"window.location.href='deleteevent.php?eventid=" . htmlspecialchars($event['eventid']) . "'\">Delete Event</button>";
 		}
 	}
 	?>
+
 </div>
 
 </body>

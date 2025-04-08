@@ -119,6 +119,21 @@ $isFavorited = $check_result->num_rows > 0;
 	<button class="back-button" onclick="history.back()">Go Back</button>
 	<?php
 	
+	function isJobCreator($db, $userid, $jobid) {
+		$userid = intval($userid);
+		$jobid = intval($jobid);
+
+		$query = "SELECT alumniid FROM job WHERE jobid = $jobid";
+		$result = $db->query($query);
+
+		if ($result && $result->num_rows > 0) {
+			$row = $result->fetch_assoc();
+			return $row['alumniid'] == $userid;
+		}
+
+		return false;
+	}
+	
 	$userid = intval($_SESSION['userid']); // Sanitize the session value as an integer
 	$sql = "SELECT role FROM user WHERE userid = $userid";
 	$result = $db->query($sql);
@@ -126,9 +141,11 @@ $isFavorited = $check_result->num_rows > 0;
 	if ($result && $result->num_rows > 0) {
 		$row = $result->fetch_assoc();
 		$role = $row['role'];
-		if ($role === "alumni" || $role === "admin"){
-			echo "<button class='back-button' onclick=\"window.location.href='jobedit.php?jobid=" . htmlspecialchars($job['jobid']) . "'\">Edit Job</button>";
-			echo "<button class='back-button' onclick=\"window.location.href='deletejob.php?jobid=" . htmlspecialchars($job['jobid']) . "'\">Delete Job</button>";
+		if ($role === "alumni" || $role === "admin") {
+			if ($role === "admin" || isJobCreator($db, $_SESSION['userid'], $job['jobid'])) {
+				echo "<button class='back-button' onclick=\"window.location.href='jobedit.php?jobid=" . htmlspecialchars($job['jobid']) . "'\">Edit Job</button>";
+				echo "<button class='back-button' onclick=\"window.location.href='deletejob.php?jobid=" . htmlspecialchars($job['jobid']) . "'\">Delete Job</button>";
+			}
 		}
 	}
 	?>

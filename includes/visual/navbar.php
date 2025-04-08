@@ -27,17 +27,16 @@ $baseURL = "http://" . $_SERVER['HTTP_HOST'] . "/Xray351";
 	
 
     <div class="nav-right">
-		<a href="../SH_folder/inbox.php">
+		<a href="<?= $baseURL ?>/SH_folder/inbox.php">
 			<button class="nav-btn">📧</button>
 		</a>
         <button class="nav-btn">🔔</button>
         <div class="profile-dropdown">
             <button class="nav-btn profile-btn">👤</button>
             <div class="dropdown-content">
-                <a href="../EthanWork/profile.php">View Profile</a>
-				<a href="../MasonFolder/favorites.php">Favorites</a>
-                <a href="settings.php">Settings</a>
-                <a href="../SH_folder/logout.php">Logout</a>
+                <a href="<?= $baseURL ?>/EthanWork/profile.php">View Profile</a>
+				<a href="<?= $baseURL ?>/MasonFolder/favorites.php">Favorites</a>
+                <a href="<?= $baseURL ?>/SH_folder/logout.php">Logout</a>
             </div>
         </div>
     </div>

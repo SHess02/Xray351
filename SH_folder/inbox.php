@@ -181,11 +181,13 @@ if ($result->num_rows > 0) {
 			background: rgba(255, 255, 255, 0.1);
 			padding: 30px;
 			margin-top: 50px;
+			margin-bottom: 500px;
 			border-radius: 10px;
 			box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 			width: 100%;
 			flex: 1;
 			max-width: 600px;
+
 		  }
 
 		  .message-view h2 {

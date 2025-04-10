@@ -22,7 +22,7 @@ if (isset($_GET['query']) && isset($_GET['category'])) {
             $sql = "SELECT eventid, name, location FROM event WHERE name LIKE '%$query%' OR location LIKE '%$query%'";
             break;
         case 'users':
-            $sql = "SELECT userid, name, email FROM user WHERE name LIKE '%$query%' OR email LIKE '%$query%'";
+            $sql = "SELECT userid, name, major, aboutme FROM user WHERE name LIKE '%$query%' OR email LIKE '%$query%'";
             break;
         default:
             echo "<div class='no-results'>Invalid category.</div>";
@@ -50,7 +50,7 @@ if (isset($_GET['query']) && isset($_GET['category'])) {
                 echo "<th>Event Name</th><th>Location</th>";
                 break;
             case 'users':
-                echo "<th>Name</th><th>Email</th>";
+                echo "<th>Name</th><th>Major</th><th>About Me</th>";
                 break;
         }
 
@@ -72,8 +72,9 @@ if (isset($_GET['query']) && isset($_GET['category'])) {
                     echo "<td>" . htmlspecialchars($row['location']) . "</td>";
                     break;
                 case 'users':
-                    echo "<td><a href='{$basePath}profile.php?userid=" . $row['userid'] . "'>" . htmlspecialchars($row['name']) . "</a></td>";
-                    echo "<td>" . htmlspecialchars($row['email']) . "</td>";
+                    echo "<td><a href='/Xray351/EthanWork/profile.php?userid=" . $row['userid'] . "'>" . htmlspecialchars($row['name']) . "</a></td>";
+                    echo "<td>" . htmlspecialchars($row['major']) . "</td>";
+					echo "<td>" . htmlspecialchars($row['aboutme']) . "</td>";
                     break;
             }
             echo "</tr>";

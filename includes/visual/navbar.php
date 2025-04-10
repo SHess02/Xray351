@@ -34,7 +34,7 @@ $baseURL = "http://" . $_SERVER['HTTP_HOST'] . "/Xray351";
         <div class="profile-dropdown">
             <button class="nav-btn profile-btn">👤</button>
             <div class="dropdown-content">
-                <a href="<?= $baseURL ?>/EthanWork/profile.php">View Profile</a>
+                <a href="<?= $baseURL ?>/EthanWork/profile.php?userid=<?= $_SESSION['userid'] ?>">View Profile</a>
 				<a href="<?= $baseURL ?>/MasonFolder/favorites.php">Favorites</a>
                 <a href="<?= $baseURL ?>/SH_folder/logout.php">Logout</a>
             </div>

@@ -1,132 +1,98 @@
 <?php
 session_start();
-include '../SH_folder/db_connect_temp.php';
+include '../includes/session_check.php';
+include '../includes/includes.php';
+$db = new Database();
 
-$userid = $_SESSION['userid'];
-$message = "";
-
-// Fetch current user data from the database
-$stmt = $conn->prepare("SELECT role, name, email, major, graduationyear, aboutme FROM user WHERE userid = ?");
-$stmt->bind_param("i", $userid);
-$stmt->execute();
-$result = $stmt->get_result();
-$user = $result->fetch_assoc();
-$stmt->close();
-
-$role = $user['role'];
-
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    // Get and sanitize the form inputs
-    $name = trim($_POST['name']);
-    $email = trim(strtolower($_POST['email']));
-    $aboutme = trim($_POST['aboutme'] ?? '');
-    $major = trim($_POST['major'] ?? '');
-    $graduationyear = trim($_POST['graduationyear'] ?? null);
-
-    // Prepare the update query
-    $query = "UPDATE user SET name = ?, email = ?, aboutme = ?";
-    $params = [$name, $email, $aboutme];
-    $types = "sss";
-
-    if ($role == 'student' || $role == 'alumni' || $role == 'faculty') {
-        $query .= ", major = ?";
-        $params[] = $major;
-        $types .= "s";
-    }
-
-    if ($role == 'student') {
-        $query .= ", graduationyear = ?";
-        $params[] = $graduationyear;
-        $types .= "s";
-    }
-
-    $query .= " WHERE userid = ?";
-    $params[] = $userid;
-    $types .= "i";
-
-    // Execute the query
-    $stmt = $conn->prepare($query);
-    $stmt->bind_param($types, ...$params);
-
-    if ($stmt->execute()) {
-        $message = "Profile updated successfully! Please refresh the page to view changes.";
-    } else {
-        $message = "Error updating profile: " . $conn->error;
-    }
-    $stmt->close();
+$userid = $_GET['userid'] ?? null;
+if (!$userid) {
+    die("User ID is required.");
 }
+
+$userid = intval($userid); // Sanitize input
+$select_user = "SELECT name, email, major, aboutme FROM user WHERE userid = $userid";
+$user_result = $db->query($select_user);
+
+if ($user_result->num_rows == 0) {
+    die("User not found.");
+}
+$user = $user_result->fetch_assoc();
 ?>
 
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="utf-8" name="viewport" content="width=device-width, initial-scale=1">
-    <title>Profile : AlumniConnect</title>
-    <link rel="stylesheet" type="text/css" href="styles.css">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <meta charset="UTF-8">
+    <title>User Profile</title>
+    <style>
+        .profile-container {
+            max-width: 600px;
+            margin: 20px auto;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+            background-color: #f9f9f9;
+        }
+        .profile-title {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        .profile-info {
+            font-size: 16px;
+            margin-bottom: 10px;
+        }
+        .back-button {
+            display: inline-block;
+            margin-top: 15px;
+            padding: 10px 15px;
+            background-color: #007bff;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            border: none;
+            cursor: pointer;
+        }
+        .back-button:hover {
+            background-color: #0056b3;
+        }
+    </style>
 </head>
 <body>
-    <div class="container">
-        <h2>Manage Profile</h2><br>
 
-        <!-- Display message if any -->
-        <?php if (!empty($message)): ?>
-            <div class="alert alert-info"><?= htmlspecialchars($message) ?></div>
-        <?php endif; ?>
+<div class="profile-container">
+    <p class="profile-title"><?php echo htmlspecialchars($user['name']); ?></p>
+    <p class="profile-info"><strong>Email:</strong> <?php echo htmlspecialchars($user['email']); ?></p>
+    <p class="profile-info"><strong>Major:</strong> <?php echo htmlspecialchars($user['major']); ?></p>
+    <p class="profile-info"><strong>About Me:</strong><br><?php echo nl2br(htmlspecialchars($user['aboutme'])); ?></p>
+    
+	<?php
+	$session_userid = intval($_SESSION['userid']);
+	$profile_userid = intval($_GET['userid']); // assuming this is already validated
 
-        <form action="profile.php" method="post">
-            <!-- Role field (display only) -->
-            <div class="mb-3">
-                <label><b>Role</b></label><br>
-                <input type="text" value="<?= htmlspecialchars($user['role']) ?>" disabled class="form-control"><br>
-            </div>
+	// Fetch user role
+	$role_query = "SELECT role FROM user WHERE userid = $session_userid";
+	$role_result = $db->query($role_query);
+	$role = "";
 
-            <!-- Name field -->
-            <div class="mb-3">
-                <label><b>Name</b></label><br>
-                <input type="text" name="name" value="<?= htmlspecialchars($user['name']) ?>" required class="form-control"><br>
-            </div>
+	if ($role_result && $role_result->num_rows > 0) {
+		$row = $role_result->fetch_assoc();
+		$role = $row['role'];
+	}
 
-            <!-- Email field -->
-            <div class="mb-3">
-                <label><b>Email</b></label><br>
-                <input type="email" name="email" value="<?= htmlspecialchars($user['email']) ?>" required class="form-control"><br>
-            </div>
+	// Show Edit Profile button if user is admin or viewing their own profile
+	if ($role === "admin" || $session_userid === $profile_userid) {
+		echo "<button class='back-button' onclick=\"window.location.href='/Xray351/MasonFolder/profile_edit.php?userid=$profile_userid'\">Edit Profile</button>";
+	}
+	
+	if ($session_userid !== $profile_userid) {
+    echo "<button class='back-button' onclick=\"window.location.href='/Xray351/SH_Folder/inbox.php'\">Message</button>";
+	}
 
-            <?php if ($role == 'student' || $role == 'alumni' || $role == 'faculty'): ?>
-                <!-- Major field -->
-                <div class="mb-3">
-                    <label><b>Major</b></label><br>
-                    <input type="text" name="major" value="<?= htmlspecialchars($user['major'] ?? '') ?>" class="form-control"><br>
-                </div>
-            <?php endif; ?>
+	?>
 
-            <?php if ($role == 'student'): ?>
-                <!-- Graduation Year field for student -->
-                <div class="mb-3">
-                    <label><b>Graduation Year</b></label><br>
-                    <input type="text" name="graduationyear" value="<?= htmlspecialchars($user['graduationyear'] ?? '') ?>" class="form-control"><br>
-                </div>
-            <?php elseif ($role == 'alumni'): ?>
-                <!-- Graduation Year field for alumni (read-only) -->
-                <div class="mb-3">
-                    <label><b>Graduation Year</b></label><br>
-                    <input type="text" value="<?= htmlspecialchars($user['graduationyear'] ?? '') ?>" disabled class="form-control"><br>
-                </div>
-            <?php endif; ?>
+</div>
 
-            <!-- About Me field -->
-            <div class="mb-3">
-                <label><b>About Me</b></label><br>
-                <textarea name="aboutme" class="form-control"><?= htmlspecialchars($user['aboutme'] ?? '') ?></textarea><br>
-            </div>
-
-            <!-- Submit button -->
-            <button class="btn btn-primary">Update Profile</button>
-        </form>
-
-        <br>
-        <a href='../MasonFolder/browsingtab.php' class="btn btn-secondary">Home</a>
-    </div>
 </body>
 </html>

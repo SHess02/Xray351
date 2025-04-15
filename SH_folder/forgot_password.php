@@ -1,6 +1,6 @@
 <?php
 require 'db_connect_temp.php';
-require 'mailer.php'; // Include mailer for sending emails
+require '../EthanWork/mailer.php'; // Include mailer for sending emails
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $email = trim(strtolower($_POST['email']));

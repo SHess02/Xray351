@@ -71,7 +71,7 @@ function sendPasswordResetEmail($email, $token) {
 
         // Generate password reset link dynamically
         $base_url = "http://" . $_SERVER['HTTP_HOST'];
-        $resetLink = "$base_url/reset_password.php?token=$token";
+        $resetLink = "$base_url/Xray351/SH_folder/reset_password.php?token=$token";
 
         // Email Content
         $mail->Body = "

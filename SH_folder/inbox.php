@@ -13,7 +13,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $receiver_email = $_POST['receiver_email']; 
     $message_content = $_POST['message']; 
 
-    // Use prepared statements to avoid SQL injection
+    # Use prepared statements to avoid SQL injection
     $stmt = $conn->prepare("SELECT userid FROM user WHERE email = ?");
     $stmt->bind_param("s", $receiver_email);
     $stmt->execute();

@@ -1,38 +1,41 @@
+
 <?php
-	session_start();
-	include '../includes/session_check.php';
-	include '../includes/includes.php';
-	include 'db_connect_temp.php';
-
-
-
+ob_start();
+session_start();
+include '../includes/session_check.php';
+include '../includes/includes.php';
+include 'db_connect_temp.php';
 
 $userid = $_SESSION['userid'];  
 
-# submission to send a message
+# Submission to send a message
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $receiver_email = $_POST['receiver_email']; 
     $message_content = $_POST['message']; 
 
-    $receiver_query = "SELECT userid FROM user WHERE email = '$receiver_email'";
-    $receiver_result = $conn->query($receiver_query);
+    // Use prepared statements to avoid SQL injection
+    $stmt = $conn->prepare("SELECT userid FROM user WHERE email = ?");
+    $stmt->bind_param("s", $receiver_email);
+    $stmt->execute();
+    $result = $stmt->get_result();
 
-    if ($receiver_result->num_rows > 0) {
-        $receiver_row = $receiver_result->fetch_assoc();
+    if ($result->num_rows > 0) {
+        $receiver_row = $result->fetch_assoc();
         $receiverid = $receiver_row['userid'];
 
-
         $datetime = date('Y-m-d H:i:s'); 
-        $insert_message_query = "INSERT INTO message (senderid, receiverid, contents, datetime) 
-                                 VALUES ($userid, $receiverid, '$message_content', '$datetime')";
+        $insert_stmt = $conn->prepare("INSERT INTO message (senderid, receiverid, contents, datetime) VALUES (?, ?, ?, ?)");
+        $insert_stmt->bind_param("iiss", $userid, $receiverid, $message_content, $datetime);
 
-        if ($conn->query($insert_message_query)) {
-            echo "Message sent successfully!";
+        if ($insert_stmt->execute()) {
+            // Redirect to prevent form resubmission
+            header("Location: inbox.php?sent=1");
+            exit();
         } else {
-            echo "Error sending message: " . $conn->error;
+            $error_message = "Error sending message.";
         }
     } else {
-        echo "Receiver with email $receiver_email not found!";
+        $error_message = "Receiver with email $receiver_email not found!";
     }
 }
 
@@ -47,293 +50,262 @@ $sql = "SELECT message.messageid,
         ORDER BY message.datetime DESC";
 
 $result = $conn->query($sql);
-
 $messages = [];
+
 if ($result->num_rows > 0) {
     while ($row = $result->fetch_assoc()) {
         $messages[] = $row;
     }
 }
+ob_end_flush();
 ?>
 
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	<script src="https://unpkg.com/htmx.org@1.8.4"></script>
+    <script src="https://unpkg.com/htmx.org@1.8.4"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inbox</title>
+	<style>
+	  * {
+		box-sizing: border-box;
+	  }
 
-	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>Inbox</title>
-		<style>
+	  body {
+		margin: 0;
+		font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+		background: #f6f8fa;
+		color: #333;
+	  }
 
-		  body {
-			background: linear-gradient(135deg, #6a11cb, #2575fc);
-			color: #fff;
-			min-height: 100vh;
-			display: flex;
-			flex-direction: column;
-			justify-content: flex-start;
-			align-items: center;
-			font-family: 'Arial', sans-serif;
-			margin: 0;
-			padding: 0;
-		  }
+	  .container {
+		display: flex;
+		justify-content: center;
+		gap: 40px;
+		padding: 60px 20px;
+		max-width: 1400px;
+		margin: 0 auto;
+	  }
 
-		  .container {
-			width: 90%;
-			max-width: 1200px;
-			margin-top: 50px;
-			display: flex;
-			justify-content: space-between;
-			gap: 30px;
-		  }
+	  .inbox, .message-view {
+		background: #ffffff;
+		border-radius: 12px;
+		padding: 30px;
+		box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
+		flex: 1;
+		max-width: 600px;
+	  }
 
+	  h2 {
+		margin-top: 0;
+		font-size: 28px;
+		color: #007bff;
+		text-align: center;
+	  }
 
-		  .inbox {
-			background: rgba(255, 255, 255, 0.1);
-			padding: 30px;
-			margin-top: 50px;
-			border-radius: 10px;
-			box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-			margin-bottom: 30px;
-			flex: 1;
-			max-width: 600px;
-		  }
-		  
-		  .dropdown-container {
-            position: absolute;
-            background-color: white;
-            width: 100%;
-            max-height: 200px;
-            overflow-y: auto;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-            z-index: 999;
-            display: none;
-        }
-			.search-results {
-				display: none; /* Hidden by default */
-				position: absolute; /* Absolute positioning */
-				background-color: white; /* White background for visibility */
-				width: 100%; /* Same width as the input field */
-				max-height: 150px; /* Reduced height */
-				overflow-y: auto; /* Enable scrolling if content exceeds max height */
-				box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-				z-index: 999; /* Ensure it appears above other elements */
-				border-radius: 5px;
-				margin-top: 5px; /* Space between input field and dropdown */
-			}
+	  ul#conversation-list {
+		list-style: none;
+		padding: 0;
+		margin: 0;
+	  }
 
-			.search-results-dropdown {
-				list-style: none;
-				margin: 0;
-				padding: 0;
-			}
+	  .conversation-item {
+		background: #f1f5f9;
+		padding: 15px 20px;
+		border-radius: 10px;
+		margin-bottom: 12px;
+		transition: background 0.3s;
+	  }
 
-			.search-result-item {
-				padding: 10px;
-				cursor: pointer;
-				font-size: 1rem;
-				color: #333; /* Set text color to dark */
-				border-bottom: 1px solid #ddd;
-			}
+	  .conversation-item a {
+		text-decoration: none;
+		color: #333;
+		font-weight: 500;
+		display: block;
+	  }
 
-			.search-result-item:hover {
-				background-color: #f1f1f1; /* Highlight on hover */
-			}
+	  .conversation-item:hover {
+		background: #e2e8f0;
+	  }
 
-			.search-result-item:focus {
-				background-color: #ddd; /* Highlight on focus */
-			}
+	  form label {
+		display: block;
+		margin-bottom: 8px;
+		font-weight: bold;
+		color: #555;
+	  }
 
-		  .inbox h2 {
-			font-size: 2rem;
-			margin-bottom: 20px;
-			text-align: center;
-			color: #fff;
-		  }
+	  input[type="email"], textarea {
+		width: 100%;
+		padding: 12px;
+		border-radius: 8px;
+		border: 1px solid #ccc;
+		margin-bottom: 20px;
+		font-size: 1rem;
+		background: #fff;
+		color: #333;
+	  }
 
-		  #conversation-list {
-			list-style: none;
-			padding: 0;
-			margin: 0;
-		  }
+	  input[type="email"]::placeholder,
+	  textarea::placeholder {
+		color: #aaa;
+	  }
 
-		  .conversation-item {
-			background: #ffffff;
-			padding: 15px;
-			margin-bottom: 10px;
-			border-radius: 8px;
-			transition: background 0.3s;
-		  }
+	  input:focus, textarea:focus {
+		outline: none;
+		border: 2px solid #007bff;
+		background: #f0f8ff;
+	  }
 
-		  .conversation-item a {
-			text-decoration: none;
-			color: #333;
-			font-weight: bold;
-		  }
+	  button[type="submit"] {
+		width: 100%;
+		padding: 12px;
+		background: #007bff;
+		color: #fff;
+		border: none;
+		border-radius: 8px;
+		font-weight: bold;
+		font-size: 1rem;
+		cursor: pointer;
+		transition: background 0.3s;
+	  }
 
-		  .conversation-item:hover {
-			background-color: #e0e0e0;
-		  }
+	  button:hover {
+		background: #005fcc;
+	  }
 
+	  .dropdown-container {
+		position: absolute;
+		background-color: #fff;
+		width: 100%;
+		max-height: 200px;
+		overflow-y: auto;
+		box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+		z-index: 999;
+		display: none;
+		border-radius: 8px;
+		border: 1px solid #ccc;
+	  }
 
-		  .message-view {
-			background: rgba(255, 255, 255, 0.1);
-			padding: 30px;
-			margin-top: 50px;
-			margin-bottom: 500px;
-			border-radius: 10px;
-			box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-			width: 100%;
-			flex: 1;
-			max-width: 600px;
+	  .search-result-item {
+		padding: 12px 16px;
+		cursor: pointer;
+		color: #333;
+		border-bottom: 1px solid #eee;
+	  }
 
-		  }
+	  .search-result-item:hover {
+		background: #f5f5f5;
+	  }
 
-		  .message-view h2 {
-			font-size: 2rem;
-			margin-bottom: 20px;
-			text-align: center;
-			color: #fff;
-		  }
+	  .status-message {
+		text-align: center;
+		margin-bottom: 20px;
+		font-size: 1rem;
+		padding: 10px 15px;
+		border-radius: 8px;
+	  }
 
-		  label {
-			font-size: 1.1rem;
-			font-weight: bold;
-			display: block;
-			margin-bottom: 8px;
-			color: #fff;
-		  }
+	  .status-success {
+		background-color: #d1f3dd;
+		color: #206f3d;
+		border: 1px solid #a4dfb9;
+	  }
 
-		  input[type="email"], textarea {
-			width: 100%;
-			padding: 12px;
-			font-size: 1rem;
-			margin-bottom: 15px;
-			border: 1px solid #ccc;
-			border-radius: 8px;
-			background: #fff;
-			color: #333;
-			transition: border 0.3s ease;
-		  }
+	  .status-error {
+		background-color: #fde2e2;
+		color: #a33131;
+		border: 1px solid #f5a7a7;
+	  }
 
-		  input[type="email"]:focus, textarea:focus {
-			border-color: #268fff;
-			box-shadow: 0 0 8px rgba(38, 143, 255, 0.5);
-		  }
-
-		  .button {
-			background: linear-gradient(135deg, #6a11cb, #2575fc);
-			color: white;
-			font-size: 1.1rem;
-			padding: 12px 25px;
-			border: none;
-			border-radius: 8px;
-			cursor: pointer;
-			width: 100%;
-			transition: background 0.3s;
-		  }
-
-		  button:hover {
-			background: linear-gradient(135deg, #2575fc, #6a11cb);
-		  }
-
-		  /* Small device (mobile) adjustments */
-		  @media (max-width: 768px) {
-			.container {
-			  flex-direction: column;
-			  gap: 20px;
-			}
-
-			.inbox, .message-view {
-			  max-width: 100%;
-			}
-
-			.message-view {
-			  padding: 20px;
-			}
-		  }
-		</style>
+	  @media (max-width: 900px) {
+		.container {
+		  flex-direction: column;
+		  padding: 20px;
+		}
+	  }
+	</style>
 
 </head>
 <body>
-  <div class="container">
+<div class="container">
     <div class="inbox">
-      <h2>Inbox</h2>
-      <ul id="conversation-list">
-        <?php foreach ($messages as $conversation): ?>
-          <li class="conversation-item">
-            <a href="conversation.php?id=<?= $conversation['messageid'] ?>">
-              <?= $conversation['sender'] ?>: <?= $conversation['preview'] ?>
-            </a>
-          </li>
-        <?php endforeach; ?>
-      </ul>
+        <h2>Inbox</h2>
+
+        <?php if (isset($_GET['sent']) && $_GET['sent'] == 1): ?>
+            <p style="color: lightgreen; text-align: center;">✅ Message sent successfully!</p>
+        <?php elseif (!empty($error_message)): ?>
+            <p style="color: pink; text-align: center;"><?= htmlspecialchars($error_message) ?></p>
+        <?php endif; ?>
+
+        <ul id="conversation-list">
+            <?php foreach ($messages as $conversation): ?>
+                <li class="conversation-item">
+                    <a href="conversation.php?id=<?= $conversation['messageid'] ?>">
+                        <?= htmlspecialchars($conversation['sender']) ?>: <?= htmlspecialchars($conversation['preview']) ?>
+                    </a>
+                </li>
+            <?php endforeach; ?>
+        </ul>
     </div>
-    
+
     <div class="message-view">
-      <h2>Send a Message</h2>
-      <form action="inbox.php" method="POST">
-        <label for="receiver_email">To:</label>
-		<input 
-		  type="email" 
-		  id="receiver_email" 
-		  name="receiver_email" 
-		  required 
-		  hx-get="search_user.php"  
-		  hx-target="#search-results"  
-		  hx-trigger="keyup delay:500ms"  
-		  hx-params="receiver_email">
-		  
-        <div id="search-results" class="dropdown-container"></div>
-		
-        <label for="message">Message:</label>
-        <textarea name="message" id="message" required></textarea>
-        
-        <button type="submit">Send</button>
-      </form>
+        <h2>Send a Message</h2>
+        <form action="inbox.php" method="POST">
+            <label for="receiver_email">To:</label>
+            <input 
+                type="email" 
+                id="receiver_email" 
+                name="receiver_email" 
+                required 
+                hx-get="search_user.php"  
+                hx-target="#search-results"  
+                hx-trigger="keyup delay:500ms"  
+                hx-params="receiver_email"
+            >
+            <div id="search-results" class="dropdown-container"></div>
+
+            <label for="message">Message:</label>
+            <textarea name="message" id="message" required></textarea>
+
+            <button type="submit">Send</button>
+        </form>
     </div>
-  </div>
-  
-  <script>
-	document.addEventListener('DOMContentLoaded', function() {
-		const searchResultsContainer = document.getElementById('search-results');
-		const receiverEmailInput = document.getElementById('receiver_email');
+</div>
 
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const searchResultsContainer = document.getElementById('search-results');
+        const receiverEmailInput = document.getElementById('receiver_email');
 
-		searchResultsContainer.addEventListener('click', function(event) {
-			if (event.target && event.target.classList.contains('search-result-item')) {
-				const selectedEmail = event.target.getAttribute('data-email');
-				receiverEmailInput.value = selectedEmail; 
-				searchResultsContainer.innerHTML = '';
-				searchResultsContainer.style.display = 'none'; 
-			}
-		});
+        searchResultsContainer.addEventListener('click', function(event) {
+            if (event.target && event.target.classList.contains('search-result-item')) {
+                const selectedEmail = event.target.getAttribute('data-email');
+                receiverEmailInput.value = selectedEmail; 
+                searchResultsContainer.innerHTML = '';
+                searchResultsContainer.style.display = 'none'; 
+            }
+        });
 
+        document.addEventListener('click', function(event) {
+            if (!searchResultsContainer.contains(event.target) && event.target !== receiverEmailInput) {
+                searchResultsContainer.innerHTML = ''; 
+                searchResultsContainer.style.display = 'none'; 
+            }
+        });
 
-		document.addEventListener('click', function(event) {
-			if (!searchResultsContainer.contains(event.target) && event.target !== receiverEmailInput) {
-				searchResultsContainer.innerHTML = ''; 
-				searchResultsContainer.style.display = 'none'; 
-			}
-		});
+        document.body.addEventListener('htmx:afterSwap', function(event) {
+            if (event.target.id === 'search-results') {
+                if (searchResultsContainer.children.length > 0) {
+                    searchResultsContainer.style.display = 'block';
+                } else {
+                    searchResultsContainer.style.display = 'none'; 
+                }
+            }
+        });
+    });
+</script>
 
-
-		document.body.addEventListener('htmx:afterSwap', function(event) {
-			if (event.target.id === 'search-results') {
-				if (searchResultsContainer.children.length > 0) {
-					searchResultsContainer.style.display = 'block';
-				} else {
-					searchResultsContainer.style.display = 'none'; 
-				}
-			}
-		});
-	});
-
-  </script>
-  
-</body> 
+</body>
 </html>
-
-
-

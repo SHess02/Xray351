@@ -1,37 +1,42 @@
-<?php
+<?php 
 session_start();
 include '../includes/session_check.php';
 include '../includes/includes.php';
 include 'db_connect_temp.php';
 
 $userid = $_SESSION['userid'];
-
+$messages = [];
 
 if (isset($_GET['id']) && is_numeric($_GET['id'])) {
-    $conversation_id = $_GET['id'];
+    $conversation_id = intval($_GET['id']);
 
-    $sql = "SELECT message.messageid, 
+    $sql = "SELECT message.messageid,
+				   message.senderid,
                    message.contents, 
                    message.datetime, 
-                   CASE WHEN message.senderid = $userid THEN 'You' ELSE user.email END AS sender
-            FROM message
-            LEFT JOIN user ON user.userid = message.senderid OR user.userid = message.receiverid
-            WHERE (message.senderid = $userid OR message.receiverid = $userid)
-            AND message.messageid = $conversation_id
+                   CASE 
+                       WHEN message.senderid = ? THEN 'You' 
+                       ELSE u.email 
+                   END AS sender
+            FROM message 
+            LEFT JOIN user u ON u.userid = message.senderid
+            WHERE (message.senderid = ? OR message.receiverid = ?)
+            AND message.messageid = ?
             ORDER BY message.datetime ASC";
 
-    $result = $conn->query($sql);
-    $messages = [];
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("iiii", $userid, $userid, $userid, $conversation_id);
+    $stmt->execute();
+    $result = $stmt->get_result();
 
-    if ($result->num_rows > 0) {
-        while ($row = $result->fetch_assoc()) {
-            $messages[] = $row;
-        }
-    } else {
-        echo "No messages found for this conversation.";
+    while ($row = $result->fetch_assoc()) {
+        $messages[] = $row;
     }
+
+    $stmt->close();
 } else {
     echo "Invalid conversation ID.";
+    exit;
 }
 ?>
 
@@ -100,7 +105,6 @@ if (isset($_GET['id']) && is_numeric($_GET['id'])) {
             color: #888;
         }
 
-        /* Sent by the user (you) */
         .message-item.sent {
             align-self: flex-end;
             background: #268fff;
@@ -109,49 +113,12 @@ if (isset($_GET['id']) && is_numeric($_GET['id'])) {
             max-width: 60%;
         }
 
-        .message-item.sent:before {
-            content: '';
-            position: absolute;
-            bottom: -10px;
-            right: -10px;
-            border-left: 10px solid #268fff;
-            border-top: 10px solid transparent;
-        }
-
-        /* Received message */
         .message-item.received {
             align-self: flex-start;
             background: #f1f1f1;
             color: #333;
             border-radius: 10px 10px 10px 0;
             max-width: 60%;
-        }
-
-        .message-item.received:before {
-            content: '';
-            position: absolute;
-            bottom: -10px;
-            left: -10px;
-            border-right: 10px solid #f1f1f1;
-            border-top: 10px solid transparent;
-        }
-
-        /* Scrollbar styles */
-        .conversation-messages::-webkit-scrollbar {
-            width: 8px;
-        }
-
-        .conversation-messages::-webkit-scrollbar-thumb {
-            background: #ddd;
-            border-radius: 4px;
-        }
-
-        .conversation-messages::-webkit-scrollbar-thumb:hover {
-            background: #ccc;
-        }
-
-        .conversation-messages::-webkit-scrollbar-track {
-            background: #f4f7fa;
         }
     </style>
 </head>
@@ -162,13 +129,13 @@ if (isset($_GET['id']) && is_numeric($_GET['id'])) {
 
             <?php if (count($messages) > 0): ?>
                 <div class="conversation-messages">
-                    <?php foreach ($messages as $message): ?>
-                        <div class="message-item <?= ($message['sender'] == 'You') ? 'sent' : 'received'; ?>">
-                            <strong><?= htmlspecialchars($message['sender']); ?>:</strong>
-                            <p><?= htmlspecialchars($message['contents']); ?></p>
-                            <small><?= $message['datetime']; ?></small>
-                        </div>
-                    <?php endforeach; ?>
+					<?php foreach ($messages as $message): ?>
+					  <div class="message-item <?= ($message['senderid'] == $userid) ? 'sent' : 'received'; ?>">
+						<strong><?= ($message['senderid'] == $userid) ? 'You' : htmlspecialchars($message['sender']); ?>:</strong>
+						<p><?= htmlspecialchars($message['contents']); ?></p>
+						<small><?= $message['datetime']; ?></small>
+					  </div>
+					<?php endforeach; ?>
                 </div>
             <?php else: ?>
                 <p>No messages to display.</p>

@@ -88,15 +88,16 @@ ob_end_flush();
 		margin: 0 auto;
 	  }
 
-	  .inbox, .message-view {
+	.inbox, .message-view {
 		background: #ffffff;
 		border-radius: 12px;
 		padding: 30px;
 		box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
 		flex: 1;
 		max-width: 600px;
-	  }
-
+		/* Added border below */
+		border: 2px solid #000000;
+	}
 	  h2 {
 		margin-top: 0;
 		font-size: 28px;
@@ -218,6 +219,28 @@ ob_end_flush();
 		color: #a33131;
 		border: 1px solid #f5a7a7;
 	  }
+		.message-view {
+			background: #ffffff;
+			border-radius: 12px;
+			padding: 30px;
+			box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
+			flex: 1;
+			max-width: 600px;
+			border: 2px solid #000000;
+			display: flex;
+			flex-direction: column;
+		}
+
+		.message-view form {
+			display: flex;
+			flex-direction: column;
+			flex-grow: 1;
+		}
+
+		.message-view form textarea {
+			flex-grow: 1;
+			resize: vertical;
+		}
 
 	  @media (max-width: 900px) {
 		.container {

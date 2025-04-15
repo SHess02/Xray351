@@ -1,4 +1,4 @@
-<?php 
+<?php  
 session_start();
 include '../includes/session_check.php';
 include '../includes/includes.php';
@@ -6,31 +6,60 @@ include 'db_connect_temp.php';
 
 $userid = $_SESSION['userid'];
 $messages = [];
+$other_userid = null;
+$error_message = '';
+$success_message = '';
 
 if (isset($_GET['id']) && is_numeric($_GET['id'])) {
-    $conversation_id = intval($_GET['id']);
+    $message_id = intval($_GET['id']);
 
-    $sql = "SELECT message.messageid,
-				   message.senderid,
-                   message.contents, 
-                   message.datetime, 
-                   CASE 
-                       WHEN message.senderid = ? THEN 'You' 
-                       ELSE u.email 
-                   END AS sender
-            FROM message 
-            LEFT JOIN user u ON u.userid = message.senderid
-            WHERE (message.senderid = ? OR message.receiverid = ?)
-            AND message.messageid = ?
-            ORDER BY message.datetime ASC";
-
-    $stmt = $conn->prepare($sql);
-    $stmt->bind_param("iiii", $userid, $userid, $userid, $conversation_id);
+    $stmt = $conn->prepare("SELECT senderid, receiverid FROM message WHERE messageid = ?");
+    $stmt->bind_param("i", $message_id);
     $stmt->execute();
     $result = $stmt->get_result();
 
-    while ($row = $result->fetch_assoc()) {
-        $messages[] = $row;
+    if ($row = $result->fetch_assoc()) {
+        $senderid = $row['senderid'];
+        $receiverid = $row['receiverid'];
+
+        # Determine who the other user is
+        $other_userid = ($senderid == $userid) ? $receiverid : $senderid;
+
+        # Handle message sending if POST
+        if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['message'])) {
+            $new_message = trim($_POST['message']);
+            if (!empty($new_message)) {
+                $datetime = date('Y-m-d H:i:s');
+                $send_stmt = $conn->prepare("INSERT INTO message (senderid, receiverid, contents, datetime) VALUES (?, ?, ?, ?)");
+                $send_stmt->bind_param("iiss", $userid, $other_userid, $new_message, $datetime);
+                if ($send_stmt->execute()) {
+                    $success_message = "Message sent!";
+                } else {
+                    $error_message = "Error sending message.";
+                }
+                $send_stmt->close();
+            }
+        }
+
+       # fetches full conversation
+        $sql = "SELECT messageid, senderid, contents, datetime, u.email AS sender
+                FROM message
+                JOIN user u ON u.userid = message.senderid
+                WHERE (senderid = ? AND receiverid = ?)
+                   OR (senderid = ? AND receiverid = ?)
+                ORDER BY datetime ASC";
+
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param("iiii", $userid, $other_userid, $other_userid, $userid);
+        $stmt->execute();
+        $result = $stmt->get_result();
+
+        while ($row = $result->fetch_assoc()) {
+            $messages[] = $row;
+        }
+    } else {
+        echo "Message not found.";
+        exit;
     }
 
     $stmt->close();
@@ -39,6 +68,7 @@ if (isset($_GET['id']) && is_numeric($_GET['id'])) {
     exit;
 }
 ?>
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -123,6 +153,7 @@ if (isset($_GET['id']) && is_numeric($_GET['id'])) {
     </style>
 </head>
 <body>
+
     <div class="container">
         <div class="conversation">
             <h2>Conversation</h2>
@@ -137,6 +168,31 @@ if (isset($_GET['id']) && is_numeric($_GET['id'])) {
 					  </div>
 					<?php endforeach; ?>
                 </div>
+				
+					<!-- 👇 Place the form right here -->
+					<?php if (!empty($error_message)): ?>
+						<p style="color: red; text-align:center;"><?= htmlspecialchars($error_message) ?></p>
+					<?php elseif (!empty($success_message)): ?>
+						<p style="color: green; text-align:center;"><?= htmlspecialchars($success_message) ?></p>
+					<?php endif; ?>
+
+					<form method="POST" style="margin-top: 20px;">
+						<label for="message">Reply:</label>
+						<textarea 
+							name="message" 
+							id="message" 
+							rows="4" 
+							style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #ccc;" 
+							required
+						></textarea>
+						<button 
+							type="submit" 
+							style="margin-top: 10px; padding: 12px 20px; background-color: #007bff; color: #fff; border: none; border-radius: 8px; font-weight: bold; cursor: pointer;"
+						>
+							Send
+						</button>
+					</form>
+
             <?php else: ?>
                 <p>No messages to display.</p>
             <?php endif; ?>

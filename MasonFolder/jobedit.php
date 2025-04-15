@@ -92,30 +92,10 @@ $conn->close();
 
 <!DOCTYPE html>
 <html lang="en">
-<nav class="navbar">
-    <button class="nav-btn back-btn" onclick="window.location.href='browsingtab.php'">&#8592;</button>
-    <a href="browsingtab.php" class="nav-btn">Recent</a>
-	<a href="browsingtab.php" class="nav-btn">Jobs</a>
-	<a href="browsingtab.php" class="nav-btn">Companies</a>
-	<a href="browsingtab.php" class="nav-btn">Events</a>
-
-    
-    <div class="search-container">
-        <input type="text" class="search-bar" placeholder="Search...">
-    </div>
-	
-	<a href="browsingtab.php" class="nav-btn">Recent</a>
-
-    <div class="nav-right">
-        <button class="nav-btn">🔔</button>
-        <button class="nav-btn profile-btn">👤</button>
-    </div>
-</nav>
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Edit Company</title>
     <style>
+		* {
+    font-family: Arial, sans-serif;
+}
         body {
             font-family: Arial, sans-serif;
             background-color: #f4f4f4;
@@ -141,7 +121,6 @@ $conn->close();
             color: #555;
         }
         input, textarea {
-			font-family: Arial,sans-serif;
             width: 90%;
             padding: 10px;
             margin-top: 5px;
@@ -159,28 +138,50 @@ $conn->close();
         input[type="submit"]:hover {
             background-color: #c2185b;
         }
+		.container form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.container form label,
+.container form input,
+.container form textarea {
+    width: 90%;
+    max-width: 500px;
+    margin-bottom: 15px;
+}
+
+.container form input[type="submit"] {
+    width: 50%;
+}
     </style>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Job</title>
 </head>
 <body>
     <div class="container">
-        <h2> Edit Job Details </h2>
+        <h2>Edit Job Details</h2>
         <form method="post">
             <input type="hidden" name="jobid" value="<?php echo $job['jobid']; ?>">
-            <label> Title: </label>
+
+            <label>Title:</label>
             <input type="text" name="title" value="<?php echo htmlspecialchars($job['title']); ?>">
-            
-            <label> Description: </label>
+
+            <label>Description:</label>
             <textarea name="description"><?php echo htmlspecialchars($job['description']); ?></textarea>
-			
-            <label> Open Date: </label>
-            <textarea name="opendate"><?php echo htmlspecialchars($job['opendate']); ?></textarea>
-			
-            <label> Close Date: </label>
-            <textarea name="closedate"><?php echo htmlspecialchars($job['closedate']); ?></textarea>
-			
-			<label> Contact Email: </label>
-            <textarea name="contactemail"><?php echo htmlspecialchars($job['contactemail']); ?></textarea>
-            
+
+            <label>Open Date:</label>
+            <input type="date" name="opendate" value="<?php echo htmlspecialchars($job['opendate']); ?>">
+
+            <label>Close Date:</label>
+            <input type="date" name="closedate" value="<?php echo htmlspecialchars($job['closedate']); ?>">
+
+            <label>Contact Email:</label>
+            <input type="email" name="contactemail" value="<?php echo htmlspecialchars($job['contactemail']); ?>">
+
             <input type="submit" value="Update">
         </form>
     </div>

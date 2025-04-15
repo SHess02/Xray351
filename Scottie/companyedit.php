@@ -83,25 +83,6 @@ $conn->close();
 
 <!DOCTYPE html>
 <html lang="en">
-<nav class="navbar">
-    <button class="nav-btn back-btn" onclick="window.location.href='browsingtab.php'">&#8592;</button>
-    <a href="browsingtab.php" class="nav-btn">Recent</a>
-	<a href="browsingtab.php" class="nav-btn">Jobs</a>
-	<a href="browsingtab.php" class="nav-btn">Companies</a>
-	<a href="browsingtab.php" class="nav-btn">Events</a>
-
-    
-    <div class="search-container">
-        <input type="text" class="search-bar" placeholder="Search...">
-    </div>
-	
-	<a href="browsingtab.php" class="nav-btn">Recent</a>
-
-    <div class="nav-right">
-        <button class="nav-btn">🔔</button>
-        <button class="nav-btn profile-btn">👤</button>
-    </div>
-</nav>
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">

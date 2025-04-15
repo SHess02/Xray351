@@ -30,7 +30,6 @@ $baseURL = "http://" . $_SERVER['HTTP_HOST'] . "/Xray351";
 		<a href="<?= $baseURL ?>/SH_folder/inbox.php">
 			<button class="nav-btn">📧</button>
 		</a>
-        <button class="nav-btn">🔔</button>
         <div class="profile-dropdown">
             <button class="nav-btn profile-btn">👤</button>
             <div class="dropdown-content">
@@ -172,6 +171,4 @@ $baseURL = "http://" . $_SERVER['HTTP_HOST'] . "/Xray351";
         font-size: 16px;
     }
 }
-
-
 </style>

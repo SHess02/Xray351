@@ -16,6 +16,6 @@
 	</style>
     <h1>You have been logged out</h1>
     <p>Thank you for visiting! You are now logged out.</p>
-    <a href="login.php">Click here to login again</a> <!-- Redirect back to the login page -->
+    <a class="btn btn-primary" role="button" href="login.php">Click here to login again</a>
 </body>
 </html>

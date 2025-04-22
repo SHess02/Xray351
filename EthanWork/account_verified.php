@@ -1,6 +1,10 @@
 <?php
 require '../SH_folder/db_connect_temp.php'; // Include your database connection
 
+$message = "";
+$link = "../SH_folder/login.php";
+$linkText = "Click here to login";
+
 if (isset($_GET['token'])) {
     $token = $_GET['token'];
 
@@ -17,11 +21,43 @@ if (isset($_GET['token'])) {
         $stmt->bind_param("i", $user['userid']);
         $stmt->execute();
 
-        echo "Email successfully verified! You can now <a href='../SH_folder/login.php'>log in</a>.";
+        $message = "Your email has been successfully verified!";
     } else {
-        echo "Invalid or expired token.";
+        $message = "Invalid or expired verification token.";
+        $linkText = "Return to login";
     }
 } else {
-    echo "No token provided.";
+    $message = "No verification token provided.";
+    $linkText = "Return to login";
 }
 ?>
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Account Verified</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background: linear-gradient(135deg, #6a11cb, #2575fc);
+            color: #fff;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+        .container {
+            max-width: 600px;
+            padding: 30px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1><?php echo $message; ?></h1>
+        <a class="btn btn-primary" role="button" href="<?php echo $link; ?>"><?php echo $linkText; ?></a>
+    </div>
+</body>
+</html>

@@ -1,35 +1,31 @@
 <?php
-include 'db_connect_temp.php';
+session_start();
+include '../SH_folder/db_connect_temp.php';
+require '../EthanWork/mailer.php'; // For sending verification email
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $name = trim($_POST['name']);
     $email = trim(strtolower($_POST['email']));
-    $role = $_POST['role'];
     $password = trim($_POST['password']);
     $confirm_password = trim($_POST['confirm_password']);
-    $security_a1 = trim(strtolower($_POST['security_a1']));
-    $security_a2 = trim(strtolower($_POST['security_a2']));
+    $role = 'admin'; // Fixed admin role
 
+    // Validate email format (must be @cnu.edu)
     if (!preg_match("/^[a-zA-Z0-9._%+-]+@cnu\.edu$/", $email)) {
         echo "Invalid email. You must use a @cnu.edu email address.";
         exit();
     }
 
-    if (!in_array($role, ['faculty', 'admin'])) {
-        echo "Invalid role selection.";
-        exit();
-    }
-
+    // Validate input lengths
     if (
         strlen($name) > 0 && strlen($name) <= 45 &&
         strlen($email) > 0 && strlen($email) <= 45 &&
-        strlen($confirm_password) >= 8 && strlen($confirm_password) <= 255 &&
-        strlen($security_a1) > 0 && strlen($security_a1) <= 100 &&
-        strlen($security_a2) > 0 && strlen($security_a2) <= 100) {
-        
+        strlen($confirm_password) >= 8 && strlen($confirm_password) <= 255
+    ) {
         if ($password !== $confirm_password) {
             echo "Passwords do not match";
         } else {
+            // Check if email already exists
             $stmt = $conn->prepare("SELECT userid FROM user WHERE email = ?");
             $stmt->bind_param("s", $email);
             $stmt->execute();
@@ -41,12 +37,17 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 $stmt->close();
 
                 $hashed_password = password_hash($password, PASSWORD_DEFAULT);
+                $verification_token = bin2hex(random_bytes(32));
 
-                $stmt = $conn->prepare("INSERT INTO user (email, role, name, password, securityans1, securityans2) VALUES (?, ?, ?, ?, ?, ?)");
-                $stmt->bind_param("ssssss", $email, $role, $name, $hashed_password, $security_a1, $security_a2);
+                $stmt = $conn->prepare("INSERT INTO user (email, role, name, password, email_verified, verification_token) VALUES (?, ?, ?, ?, 0, ?)");
+                $stmt->bind_param("sssss", $email, $role, $name, $hashed_password, $verification_token);
 
                 if ($stmt->execute()) {
-                    header("Location: login.php");
+                    // Send verification email
+                    sendVerificationEmail($email, $verification_token);
+
+                    // Redirect to a success page
+                    header("Location: registration_success.php");
                     exit();
                 } else {
                     echo "Error: " . $conn->error;
@@ -67,7 +68,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Registration | AlumniConnect</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    
+
     <style>
         body {
             background: linear-gradient(135deg, #6a11cb, #2575fc);
@@ -84,12 +85,22 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             padding: 2rem;
             border-radius: 10px;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            max-width: 400px;
+            max-width: 450px;
             width: 100%;
+        }
+
+        .form-header {
+            text-align: center;
+            margin-bottom: 1.5rem;
         }
 
         .form-label {
             font-weight: bold;
+        }
+
+        .form-control:focus {
+            box-shadow: 0 0 10px rgba(38, 143, 255, 0.5);
+            border-color: #268fff;
         }
 
         .btn-custom {
@@ -105,17 +116,21 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             justify-content: center;
             margin-top: 1rem;
         }
+
+        .text-muted {
+            font-size: 0.85rem;
+            text-align: center;
+            margin-top: 1rem;
+        }
     </style>
 </head>
 
 <body>
-
     <div class="registration-form">
-        <div class="text-center">
-            <h2>Admin Registration</h2>
+        <div class="form-header">
+            <h2>Register Admin Account</h2>
         </div>
-
-        <form action="admin_register.php" method="post">
+        <form method="POST" action="admin_register.php">
             <div class="mb-3">
                 <label for="name" class="form-label">Full Name</label>
                 <input type="text" class="form-control" id="name" name="name" placeholder="Enter your name" required>
@@ -127,42 +142,22 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             </div>
 
             <div class="mb-3">
-                <label class="form-label">Role:</label><br>
-                <div class="form-check form-check-inline">
-                    <input type="radio" class="form-check-input" id="faculty" name="role" value="faculty" required>
-                    <label class="form-check-label" for="faculty">Faculty</label>
-                </div>
-                <div class="form-check form-check-inline">
-                    <input type="radio" class="form-check-input" id="admin" name="role" value="admin" required>
-                    <label class="form-check-label" for="admin">Administrator</label>
-                </div>
+                <label for="password" class="form-label">Create Password</label>
+                <input type="password" class="form-control" id="password" name="password" placeholder="Create a password" required>
             </div>
 
             <div class="mb-3">
-                <label for="password" class="form-label">Create Password:</label>
-                <input type="password" class="form-control" id="password" name="password" placeholder="Enter password" required>
-            </div>
-
-            <div class="mb-3">
-                <label for="confirm_password" class="form-label">Confirm Password:</label>
-                <input type="password" class="form-control" id="confirm_password" name="confirm_password" placeholder="Enter password" required>
-            </div>
-
-            <div class="mb-3">
-                <label for="security_a1" class="form-label">Security Question #1:<br>What was the year, make, and model of your first car?</label>
-                <input type="text" class="form-control" id="security_a1" name="security_a1" placeholder="Enter answer" required>
-            </div>
-
-            <div class="mb-3">
-                <label for="security_a2" class="form-label">Security Question #2:<br>What was your childhood nickname?</label>
-                <input type="text" class="form-control" id="security_a2" name="security_a2" placeholder="Enter answer" required>
+                <label for="confirm_password" class="form-label">Confirm Password</label>
+                <input type="password" class="form-control" id="confirm_password" name="confirm_password" placeholder="Confirm your password" required>
             </div>
 
             <div class="btn-container">
                 <button type="submit" class="btn btn-custom">Register</button>
             </div>
         </form>
+        <div class="text-muted">
+            Already have an account? <a href="login.php" class="text-primary">Sign In</a>
+        </div>
     </div>
-
 </body>
 </html>

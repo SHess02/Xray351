@@ -1,11 +1,10 @@
 <?php
 require 'db_connect_temp.php';
-require '../EthanWork/mailer.php'; // Include mailer for sending emails
+require '../EthanWork/mailer.php';
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $email = trim(strtolower($_POST['email']));
 
-    // Check if email exists
     $stmt = $conn->prepare("SELECT userid FROM user WHERE email = ?");
     $stmt->bind_param("s", $email);
     $stmt->execute();
@@ -16,25 +15,18 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $stmt->fetch();
         $stmt->close();
 
-        // Generate password reset token (64 characters) and set expiration (1 hour)
         $reset_token = bin2hex(random_bytes(32));
         $expires_at = date("Y-m-d H:i:s", strtotime("+1 hour"));
 
-        // Store the token and expiration in the database
         $stmt = $conn->prepare("UPDATE user SET password_reset_token = ?, reset_expires_at = ? WHERE userid = ?");
         $stmt->bind_param("ssi", $reset_token, $expires_at, $userid);
         $stmt->execute();
         $stmt->close();
 
-        // Send password reset email
         sendPasswordResetEmail($email, $reset_token);
 
-        // Success message
-        echo "<p style='color: green;'>If this email is registered, a reset link has been sent.</p>";
-    } else {
-        // Generic response to prevent email enumeration attacks
-        echo "<p style='color: green;'>If this email is registered, a reset link has been sent.</p>";
-    }
+    $message = "<p style='color: black; text-align: center;'>If this email is registered, a reset link has been sent.</p>";
+	}
 }
 ?>
 
@@ -106,8 +98,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 <button type="submit" class="btn btn-custom">Send Reset Link</button>
             </div>
         </form>
-    </div>
-
+		<?php if (!empty($message)) echo $message; ?>
+	</div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

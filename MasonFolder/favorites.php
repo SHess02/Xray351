@@ -1,3 +1,4 @@
+<!-- Mason DeGraef -->
 <?php
 	ob_start(); // Start output buffering
 	session_start();

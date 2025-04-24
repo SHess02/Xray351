@@ -1,4 +1,5 @@
 <?php
+// Ethan Belote
 session_start();
 include '../includes/session_check.php';
 include '../includes/includes.php';

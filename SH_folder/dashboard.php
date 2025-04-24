@@ -1,5 +1,5 @@
 <?php
-
+// Shane Hess
 session_start();
 
 if (!isset($_SESSION['usernameinput'])) {

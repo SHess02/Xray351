@@ -1,4 +1,5 @@
-<?php  
+<?php
+// Shane Hess
 session_start();
 include '../includes/session_check.php';
 include '../includes/includes.php';

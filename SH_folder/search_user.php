@@ -1,4 +1,5 @@
 <?php
+// Shane Hess
 include 'db_connect_temp.php'; 
 
 if (isset($_GET['receiver_email'])) {

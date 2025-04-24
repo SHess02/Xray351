@@ -1,29 +1,4 @@
-<?php
-include '../includes/includes.php';
 
-$db = new Database();
-
-// Database connection settings
-$servername = "localhost";
-$userName = "root";
-$passWord = "";
-$dbname = "alumniconnectdb";
-
-// Create connection
-$conn = new mysqli($servername, $userName, $passWord, $dbname);
-// Check connection
-if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
-}
-
-// Handle form submission to add a new event
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $name = $_POST['name'] ?? '';
-    $location = $_POST['location'] ?? '';
-    $datetime = $_POST['datetime'] ?? '';
-    $creatorid = $_POST['creatorid'] ?? '';
-    $description = $_POST['description'] ?? '';
-	
 <?php
 include '../includes/includes.php';
 

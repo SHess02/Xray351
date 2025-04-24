@@ -18,43 +18,51 @@ if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $title = $_POST['title'] ?? '';
     $description = $_POST['description'] ?? '';
     $opendate = $_POST['opendate'] ?? '';
     $closedate = $_POST['closedate'] ?? '';
     $contactemail = $_POST['contactemail'] ?? '';
-    $alumniid = $_SESSION['userid'];
+    $userid = intval($_SESSION['userid']);
 
-    // Validate alumniid exists
-    $check_sql = "SELECT id FROM alumni WHERE id = ?";
-    $check_stmt = $conn->prepare($check_sql);
-    $check_stmt->bind_param("s", $alumniid);
-    $check_stmt->execute();
-    $check_stmt->store_result();
+    // Validate alumniid or adminid exists
+    $sql = "SELECT role FROM user WHERE userid = $userid";
+    $result = $db->query($sql);
 
-    if ($check_stmt->num_rows > 0) {
-        // Proceed with insert
-        $insert_sql = "INSERT INTO job (title, description, opendate, closedate, contactemail, alumniid) VALUES (?, ?, ?, ?, ?, ?)";
-        $stmt = $conn->prepare($insert_sql);
-        if ($stmt) {
-            $stmt->bind_param("ssssss", $title, $description, $opendate, $closedate, $contactemail, $alumniid);
-            if ($stmt->execute()) {
-                echo "<p>Job added successfully!</p>";
+    if ($result && $result->num_rows > 0) {
+        $row = $result->fetch_assoc();
+        $role = $row['role'];
+
+        $check_sql = "SELECT userid FROM user WHERE userid = ?";
+        $check_stmt = $conn->prepare($check_sql);
+        $check_stmt->bind_param("i", $userid);
+
+        $check_stmt->execute();
+        $check_stmt->store_result();
+
+        if ($check_stmt->num_rows > 0) {
+            // Proceed with insert
+            $insert_sql = "INSERT INTO job (title, description, opendate, closedate, contactemail, alumniid) VALUES (?, ?, ?, ?, ?, ?)";
+            $stmt = $conn->prepare($insert_sql);
+            if ($stmt) {
+                $stmt->bind_param("ssssss", $title, $description, $opendate, $closedate, $contactemail, $userid);
+                if ($stmt->execute()) {
+                    echo "<p>Job added successfully!</p>";
+                } else {
+                    echo "<p>Error adding job: " . $stmt->error . "</p>";
+                }
+                $stmt->close();
             } else {
-                echo "<p>Error adding job: " . $stmt->error . "</p>";
+                echo "<p>Failed to prepare insert statement: " . $conn->error . "</p>";
             }
-            $stmt->close();
         } else {
-            echo "<p>Failed to prepare insert statement: " . $conn->error . "</p>";
+            echo "<p style='color:red;'>Error: The provided Alumni ID does not exist.</p>";
         }
-    } else {
-        echo "<p style='color:red;'>Error: The provided Alumni ID does not exist.</p>";
+
+        $check_stmt->close();
     }
-
-    $check_stmt->close();
 }
-
 $conn->close();
 ?>
 <!DOCTYPE html>

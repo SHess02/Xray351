@@ -47,7 +47,10 @@ $conn->close();
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Add Company</title>
-    <style>
+       <style>
+		* {
+    font-family: Arial, sans-serif;
+}
         body {
             font-family: Arial, sans-serif;
             background-color: #f4f4f4;
@@ -79,13 +82,6 @@ $conn->close();
             border: 1px solid #ddd;
             border-radius: 5px;
         }
-        input[type="number"], input[type="text"], input[type="datetime-local"] {
-            width: 90%;
-            padding: 10px;
-            margin-top: 5px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-        }
         input[type="submit"] {
             background-color: #007bff;
             color: white;
@@ -97,6 +93,23 @@ $conn->close();
         input[type="submit"]:hover {
             background-color: #c2185b;
         }
+		.container form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.container form label,
+.container form input,
+.container form textarea {
+    width: 90%;
+    max-width: 500px;
+    margin-bottom: 15px;
+}
+
+.container form input[type="submit"] {
+    width: 50%;
+}
     </style>
     <script>
         // JavaScript validation

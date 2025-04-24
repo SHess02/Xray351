@@ -1,3 +1,4 @@
+/*Ethan Belote*/
 DROP DATABASE IF EXISTS alumniconnectdb;
 CREATE DATABASE alumniconnectdb;
 

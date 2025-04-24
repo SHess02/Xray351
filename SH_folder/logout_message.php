@@ -1,3 +1,6 @@
+<?php
+// Ethan Belote
+?>
 <!DOCTYPE html>
 <html>
 <head>

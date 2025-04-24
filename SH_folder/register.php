@@ -1,7 +1,8 @@
 <?php
+//Ethan Belote Shane Hess
 session_start();
 include '../SH_folder/db_connect_temp.php';
-require '../EthanWork/mailer.php'; // Include the mailer for email verification
+require '../EthanWork/mailer.php';
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $name = trim($_POST['name']);
@@ -10,13 +11,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $password = trim($_POST['password']);
     $confirm_password = trim($_POST['confirm_password']);
 
-    // Validate email format (must be @cnu.edu)
     if (!preg_match("/^[a-zA-Z0-9._%+-]+@cnu\.edu$/", $email)) {
         echo "Invalid email. You must use a @cnu.edu email address.";
         exit();
     }
 
-    // Validate input lengths
     if (
         strlen($name) > 0 && strlen($name) <= 45 &&
         strlen($email) > 0 && strlen($email) <= 45 &&
@@ -25,7 +24,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         if ($password !== $confirm_password) {
             echo "Passwords do not match";
         } else {
-            // Check if the email already exists
             $stmt = $conn->prepare("SELECT userid FROM user WHERE email = ?");
             $stmt->bind_param("s", $email);
             $stmt->execute();
@@ -36,21 +34,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             } else {
                 $stmt->close();
 
-                // Hash the password for security
                 $hashed_password = password_hash($password, PASSWORD_DEFAULT);
 
-                // Generate a random verification token
                 $verification_token = bin2hex(random_bytes(32));
 
-                // Insert new user into the database
                 $stmt = $conn->prepare("INSERT INTO user (email, role, name, password, email_verified, verification_token) VALUES (?, ?, ?, ?, 0, ?)");
                 $stmt->bind_param("sssss", $email, $role, $name, $hashed_password, $verification_token);
 
                 if ($stmt->execute()) {
-                    // Send verification email
                     sendVerificationEmail($email, $verification_token);
 
-                    // Redirect to success page
                     header("Location: registration_success.php");
                     exit();
                 } else {

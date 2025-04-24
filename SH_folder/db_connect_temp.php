@@ -1,4 +1,5 @@
 <?php
+// Ethan Belote
 $conn = mysqli_connect('localhost', 'root', '', 'alumniconnectdb');
 
 if (!$conn) {

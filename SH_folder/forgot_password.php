@@ -1,4 +1,5 @@
 <?php
+// Ethan Belote
 require 'db_connect_temp.php';
 require '../EthanWork/mailer.php';
 

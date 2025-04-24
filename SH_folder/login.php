@@ -1,4 +1,5 @@
 <?php
+//Ethan Belote Shane Hess
 session_start();
 include 'db_connect_temp.php';
 

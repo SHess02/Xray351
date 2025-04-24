@@ -1,4 +1,7 @@
+
 <?php
+session_start();
+include '../includes/session_check.php';
 include '../includes/includes.php';
 
 $db = new Database();
@@ -21,7 +24,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $opendate = $_POST['opendate'] ?? '';
     $closedate = $_POST['closedate'] ?? '';
     $contactemail = $_POST['contactemail'] ?? '';
-    $alumniid = $_POST['alumniid'] ?? '';
+    $alumniid = $_SESSION['userid'];
 
     // Validate alumniid exists
     $check_sql = "SELECT id FROM alumni WHERE id = ?";
@@ -132,9 +135,8 @@ $conn->close();
             const opendate = form["opendate"].value.trim();
             const closedate = form["closedate"].value.trim();
             const contactemail = form["contactemail"].value.trim();
-            const alumniid = form["alumniid"].value.trim();
 
-            if (!title || !description || !opendate || !closedate || !contactemail || !alumniid) {
+            if (!title || !description || !opendate || !closedate || !contactemail) {
                 alert("All fields are required.");
                 return false;
             }
@@ -160,9 +162,6 @@ $conn->close();
 
             <label for="contactemail">Contact Email:</label>
             <input type="email" name="contactemail" id="contactemail" required>
-
-            <label for="alumniid">Alumni ID:</label>
-            <input type="number" name="alumniid" id="alumniid" required>
 
             <input type="submit" value="Submit Job">
         </form>

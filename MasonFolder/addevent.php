@@ -1,6 +1,9 @@
 
 <?php
+session_start();
+include '../includes/session_check.php';
 include '../includes/includes.php';
+
 
 $db = new Database();
 
@@ -23,7 +26,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $name = $_POST['name'] ?? '';
     $location = $_POST['location'] ?? '';
     $datetime = $_POST['datetime'] ?? '';
-    $creatorid = $_POST['creatorid'] ?? '';
+	$creatorid = $_SESSION['userid'];
     $description = $_POST['description'] ?? '';
 
     // Convert datetime to proper format for MySQL
@@ -131,9 +134,6 @@ $conn->close();
              
              <label>Event Date & Time:</label>
              <input type="datetime-local" name="datetime" required>
-             
-             <label>Creator ID:</label>
-             <textarea name="creatorid" required></textarea>
              
              <label>Description</label>
              <textarea name="description" required></textarea>

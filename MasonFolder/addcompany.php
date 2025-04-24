@@ -1,4 +1,7 @@
+
 <?php
+session_start();
+include '../includes/session_check.php';
 include '../includes/includes.php';
 
 $db = new Database();
@@ -21,7 +24,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $name = $_POST['name'] ?? '';
     $description = $_POST['description'] ?? ''; 
     $activelistings = $_POST['activelistings'] ?? '';
-    $creatorid = $_POST['creatorid'] ?? '';
+    $creatorid = $_SESSION['userid'];
 
     // Insert information into table
     $insert_sql = "INSERT INTO company (name, description, activelistings, creatorid) VALUES (?, ?, ?, ?)";
@@ -116,10 +119,9 @@ $conn->close();
         function validateForm() {
             const name = document.forms["companyForm"]["name"].value;
             const description = document.forms["companyForm"]["description"].value;
-            const creatorid = document.forms["companyForm"]["creatorid"].value;
 
-            if (name === "" || description === "" || creatorid === "") {
-                alert("Name, Description, and Creator ID are required fields.");
+            if (name === "" || description === "") {
+                alert("Name and Description are required fields.");
                 return false;
             }
             return true;
@@ -138,9 +140,6 @@ $conn->close();
             
             <label>Active Listings:</label>
             <input type="number" name="activelistings">
-            
-            <label>Creator ID:</label>
-            <input type="text" name="creatorid" required>
             
             <input type="submit" value="Add Company">
         </form>

@@ -1,4 +1,4 @@
-
+<!-- Scottie Sage -->
 <?php
 session_start();
 include '../includes/session_check.php';

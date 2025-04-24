@@ -172,11 +172,13 @@ $isFavorited = $check_result->num_rows > 0;
 	if ($result && $result->num_rows > 0) {
 		$row = $result->fetch_assoc();
 		$role = $row['role'];
-
-		if (($role === "alumni" || $role === "admin") && isCompanyCreator($db, $userid, $company['companyid'])) {
-			echo "<button class='back-button' onclick=\"window.location.href='companyedit.php?companyid=" . htmlspecialchars($company['companyid']) . "'\">Edit Company</button>";
-			echo "<button class='back-button' onclick=\"window.location.href='deletecompany.php?companyid=" . htmlspecialchars($company['companyid']) . "'\">Delete Company</button>";
+		if ($role === "alumni" || $role === "admin") {
+			if ($role === "admin" || isCompanyFolder($db, $_SESSION['userid'], $job['eventid'])) {
+				echo "<button class='back-button' onclick=\"window.location.href='companyedit.php?companyid=" . htmlspecialchars($company['companyid']) . "'\">Edit Company</button>";
+				echo "<button class='back-button' onclick=\"window.location.href='deletecompany.php?companyid=" . htmlspecialchars($company['companyid']) . "'\">Delete Company</button>";
+			}
 		}
+
 	}
 	?>
 

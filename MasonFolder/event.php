@@ -150,10 +150,11 @@ $isFavorited = $check_result->num_rows > 0;
 	if ($result && $result->num_rows > 0) {
 		$row = $result->fetch_assoc();
 		$role = $row['role'];
-
-		if (($role === "alumni" || $role === "admin") && isEventCreator($db, $userid, $event['eventid'])) {
-			echo "<button class='back-button' onclick=\"window.location.href='eventedit.php?eventid=" . htmlspecialchars($event['eventid']) . "'\">Edit Event</button>";
-			echo "<button class='back-button' onclick=\"window.location.href='deleteevent.php?eventid=" . htmlspecialchars($event['eventid']) . "'\">Delete Event</button>";
+		if ($role === "alumni" || $role === "admin") {
+			if ($role === "admin" || isEventCreator($db, $_SESSION['userid'], $job['eventid'])) {
+				echo "<button class='back-button' onclick=\"window.location.href='eventedit.php?eventid=" . htmlspecialchars($event['eventid']) . "'\">Edit Event</button>";
+				echo "<button class='back-button' onclick=\"window.location.href='deleteevent.php?eventid=" . htmlspecialchars($event['eventid']) . "'\">Delete Event</button>";
+			}
 		}
 	}
 	?>

@@ -1,3 +1,4 @@
+<!-- Mason DeGraef -->
 <?php
 session_start();
 // Adjust path to session_check.php and includes.php

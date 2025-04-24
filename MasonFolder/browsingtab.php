@@ -1,3 +1,4 @@
+<!-- Mason DeGraef -->
 <?php
     session_start();
     include '../includes/session_check.php';

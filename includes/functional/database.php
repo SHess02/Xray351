@@ -1,3 +1,4 @@
+<!-- Mason DeGraef -->
 <?php
 class Database {
     private $host = "localhost";

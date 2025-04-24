@@ -1,3 +1,4 @@
+<!-- Mason DeGraef -->
 <?php
     if (isset($_GET['type'])) {
 		session_start();
